@@ -54,8 +54,17 @@ net_taxa <- sim.bdh.taxa(n=5, numbsim=1,
 
 ```
 
-We can also create newick strings for the networks we generated
+We can also create newick strings for the networks we generated. It is worth noting that the newick here includes the inheritance probabilities, unlike the write.evonet() function found in *ape*
 
 ```{r}
 write.net(net_age)
 ```
+
+We can try plotting this network in R
+
+```{r}
+plot(net_age)
+```
+
+What a beaut. However, we got lucky with this tree, some trees won't plot in R. Instead we can try plotting the network in [IcyTree](https://icytree.org/), this often works when plotting in R fails. Although, oddly enough, if we try plotting the network we just made in IcyTree it doesn't work. 
+Plotting networks in Julia is the only plotting function I've seen that works with any network but even that plotting function has its quirks. Unfortunately, it might be worth considering a network plotting  function at some point.
