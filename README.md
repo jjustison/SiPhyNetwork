@@ -30,24 +30,24 @@ library(phytools)
 #> Loading required package: maps
 #> Warning: package 'maps' was built under R version 3.5.3
 library(ape)
+set.seed(10)
 net_age <- sim.bdh.age(age=2,numbsim=1,
             lambda=0.4, mu=0.1,
-            nu=0.05,hybprops=c(0.5,0.3,0.2),
+            nu=0.1,hybprops=c(0.5,0.3,0.2),
             alpha=1,beta=1,
             frac=1,mrca = F,complete=TRUE,stochsampling = F)[[1]]
 
-##Currently not working
-# net_taxa <- sim.bdh.taxa(n=5, numbsim=1,
-#                          lambda=0.4, mu=0.3,
-#                          nu=0.05,hybprops = c(0.5,0.3,0.2),
-#                          alpha=1,beta=1,
-#                          frac=1, complete=TRUE,stochsampling = F)
+
+net_taxa <- sim.bdh.taxa(n=5, numbsim=1,
+                         lambda=0.4, mu=0.3,
+                         nu=0.05,hybprops = c(0.5,0.3,0.2),
+                         alpha=1,beta=1,
+                         frac=1, complete=TRUE,stochsampling = F)
 ```
 
 We can also create newick strings for the networks we generated
 
 ``` r
 write.net(net_age)
-#> [1] "adding inheritance for internal"
-#> [1] "(t2:0.8791724257,(((t5:0.2574956422,#H15:0::0.653201974229887):0.3143894536,t3:0.5718850958):0.2277070172,((t6:0.01753684847,t4:0.01753684847):0.7155743147,((t1:0.2574956422)#H15:0::0.346798025770113,t7:0.1397551533):0.475615521):0.06648094984):0.07958031268):1.120827574;"
+#> [1] "((((t2:0.5195518503,t4:0.7195636879):0.8929270535,(t6:0.03552307698,#H16:0::0.531064524082467):1.576967664):0.3072734784,#H10:0::0.985566094052047):0.05032296758,(((t1:0.07076038526,(t3:0.03552307698)#H16:0.03523730828::0.468935475917533):1.086977901,(t7:0.378549421,t5:0.378549421):0.7791888649):0.7620259339)#H10:0.05032296758::0.0144339059479534):0.02991281264;"
 ```

@@ -1,11 +1,9 @@
 sim.bdh.taxa.help <-function(dummy,n,lambda,mu,nu,hybprops,alpha,beta,frac=1,complete=TRUE,stochsampling=FALSE){
 	out<-sim.net.bdh.taxa.loop(n,1,lambda,mu,nu,hybprops,alpha,beta,frac,complete,stochsampling)
 
-	phy<-out[[1]][[1]]
 
-
-	if(class(phy)=="phylo"){
-	  out<-determineNetwork(phy=phy,n=n,lambda=lambda,mu=mu,nu=nu,hybprops=hybprops,alpha=alpha,beta=beta,frac=frac,complete=complete,stochsampling=stochsampling)
+	if(class(out[[1]][[1]])=="phylo"){
+	  out[[1]][[1]]<-determineNetwork(phy=out[[1]][[1]],n=n,lambda=lambda,mu=mu,nu=nu,hybprops=hybprops,alpha=alpha,beta=beta,frac=frac,complete=complete,stochsampling=stochsampling)
 	}
 	out
 }

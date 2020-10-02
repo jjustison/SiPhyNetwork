@@ -37,7 +37,7 @@ sim.bdh.taxa(
 
 \item{beta}{The beta parameter of the beta distribution. Used to determine inheritance probabilities.}
 
-\item{frac}{Sampling fraction: The actual number of tips is n/frac, but only n tips are included (incomplete sampling).}
+\item{frac}{Sampling fraction: The actual number of tips is n/frac. If Stochsampling=FALSE only n tips are included (incomplete sampling). If stochsampling=TRUE then only n tips are included on average but is not garaunteed.}
 
 \item{stochsampling}{When stochsampling=TRUE: Each tip is included into the final tree with probability frac.}
 }
