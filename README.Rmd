@@ -1,0 +1,60 @@
+---
+output: github_document
+---
+
+<!-- README.md is generated from README.Rmd. Please edit that file -->
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>",
+  fig.path = "man/figures/README-",
+  out.width = "100%"
+)
+```
+# NetSim
+
+<!-- badges: start -->
+<!-- badges: end -->
+
+The goal of NetSim is to generate Phylogenetic networks in a process-based manner. NetSim considers a birth-death-hybridization proccess for simulating Networks. We consider allow for hybridization to be lineage generative, lineage degenerative, and lineage neutral.
+
+## Installation
+
+
+You can install the development version from [GitHub](https://github.com/) with:
+
+``` r
+# install.packages("devtools")
+devtools::install_github("jjustison/NetSim")
+```
+## Example
+
+This is a basic example of simulating networks up to a certain age or number of taxa:
+
+```{r example}
+library(NetSim)
+library(phytools)
+library(ape)
+net_age <- sim.bdh.age(age=2,numbsim=1,
+            lambda=0.4, mu=0.1,
+            nu=0.05,hybprops=c(0.5,0.3,0.2),
+            alpha=1,beta=1,
+            frac=1,mrca = F,complete=TRUE,stochsampling = F)[[1]]
+
+##Currently not working
+# net_taxa <- sim.bdh.taxa(n=5, numbsim=1,
+#                          lambda=0.4, mu=0.3,
+#                          nu=0.05,hybprops = c(0.5,0.3,0.2),
+#                          alpha=1,beta=1,
+#                          frac=1, complete=TRUE,stochsampling = F)
+
+
+
+```
+
+We can also create newick strings for the networks we generated
+
+```{r}
+write.net(net_age)
+```
