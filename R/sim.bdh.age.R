@@ -21,9 +21,15 @@
 #' @examples
 sim.bdh.age <-function(age,numbsim,
                       lambda,mu,
-                      nu, hybprops,
+                      nu, hybprops, hyb.rate.function=NULL,
                       alpha=1,beta=1,
                       frac=1,mrca=FALSE,complete=TRUE,stochsampling=FALSE){
-	out<-lapply(1:numbsim,sim.bdh.age.help,age=age,lambda=lambda,mu=mu,frac=frac,mrca=mrca,complete=complete,nu=nu, hybprops=hybprops,alpha=alpha,beta=beta,stochsampling=stochsampling)
+	out<-lapply(1:numbsim,sim.bdh.age.help,age=age,lambda=lambda,mu=mu,frac=frac,mrca=mrca,complete=complete,nu=nu, hybprops=hybprops,hyb.rate.function=hyb.rate.function,alpha=alpha,beta=beta,stochsampling=stochsampling)
 	out
 }
+
+sim.bdh.age(age=1,numbsim = 100,
+            lambda = 1,mu=0.5,
+            nu=0.5,hybprops = c(0.33,0.33,0.33),  hyb.rate.function=NULL,
+            alpha = 1,beta = 1,
+            frac=0.75,mrca=FALSE,complete = T,stochsampling = F)

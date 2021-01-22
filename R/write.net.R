@@ -80,6 +80,9 @@ e2p <-  function(x)
   x$edge[x$edge > nTips] <-  x$edge[x$edge > nTips] + nrets
   x$reticulation[, 1] <- x$reticulation[, 1] + nrets
   x$reticulation[, 2] <- nTips + (1L:nrets)
+  colnames(x$edge)<-c('','')
+  colnames(x$reticulation)<-c('','')
+
   x$edge <- rbind(x$edge, x$reticulation)
   x
 }
