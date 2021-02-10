@@ -212,6 +212,56 @@ deleteTips<-function(net,tips){
 }
 
 
+timeSliceNetwork<-function(net,time,node_times){
 
+  nd_rm<- which(time < node_times) ##nodes to be removed, they exist past the timeslice
+  ntips_original<-length(net$tip.label)
+  tips<-1:ntips_original
+  tips_remaining<- tips[!(tips %in% nd_rm)]
+
+  ##delete rows that have a start time after the slice time
+  keep_edges    <- !(net$edge[,1] %in% nd_rm)
+  keep_hyb_edges<- !(net$reticulation[,1] %in% nd_rm)
+  net$edge<-subset(net$edge,subset = keep_edges)
+  net$edge.length<-net$edge.length[keep_edges]
+  net$reticulation<-subset(net$reticulation,subset= keep_hyb_edges)
+  net$inheritance<-net$inheritance[keep_hyb_edges]
+
+  ##Deal with edges that cross the timeslice
+  cross_edges_ind<-  ( !(net$edge[,1] %in% nd_rm) & (net$edge[,2] %in% nd_rm))
+  new_tips<-net$edge[cross_edges_ind,2]
+  net$edge.length[cross_edges_ind]<- time- node_times[net$edge[cross_edges_ind,1]]
+
+  ##reassign node numberings
+  leaf<-1
+  interior<-length(tips_remaining)+length(new_tips)+1
+  nds <- sort(unique(c(as.vector(net$edge),as.vector(net$reticulation))))
+  new_tip.label<-rep(NA,interior-1)
+  new_edge<-net$edge
+  new_reticulation<-net$reticulation
+  for(i in nds){
+    is_remaining_tip<- i %in% tips_remaining
+    is_new_tip<- i %in% new_tips
+    if( is_remaining_tip || is_new_tip) ){##This is a tip
+      new_edge[net$edge==i]<-leaf
+      new_reticulation[net$reticulation==i]<-leaf
+      if(is_remaining_tip){
+        new_tip.label[leaf]<- net$tip.label[i]
+      }else{
+        new_tip.label[leaf]<-paste('l',leaf,sep = '')
+      }
+      leaf<-leaf+1
+    } else{
+      new_edge[net$edge==i]<-interior
+      new_reticulation[net$reticulation==i]<-interior
+      interior<-interior+1
+    }
+  }
+  net$Nnode<-interior-leaf
+  net$edge<-new_edge
+  net$reticulation<-new_reticulation
+  net$tip.label<-new_tip.label
+  return(net)
+}
 
 

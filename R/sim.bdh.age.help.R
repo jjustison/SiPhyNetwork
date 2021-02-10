@@ -7,7 +7,8 @@ sim.bdh.age.help <-function(dummy,age,lambda,mu,
 }
 
 sim.bdh.age.loop <- function(age,numbsim,lambda,mu,nu,hybprops,alpha,beta,hyb.rate.function,frac=1,mrca,complete,stochsampling) {
-    phy <- sim2.bdh.origin(age=age,
+    phy <- sim2.bdh.origin(m=0,n=0,
+                           age=age,
                            lambda=lambda,mu=mu,
                            nu=nu,
                            alpha=alpha,beta=beta,
@@ -38,7 +39,8 @@ sim.bdh.age.loop <- function(age,numbsim,lambda,mu,nu,hybprops,alpha,beta,hyb.ra
     phy
   }
 
-sim2.bdh.origin <- function(age,lambda,mu,nu,alpha,beta,hybprops,hyb.rate.function,mrca){
+sim2.bdh.origin <- function(m=0,n=0,age,lambda,mu,nu,alpha,beta,hybprops,hyb.rate.function,mrca){
+
     ##TODO make edge a list and convert to a matrix at the end for quicker building
     hyb_edge<-list()    #list of hybrid edges
     num_hybs<-0         #number of hybridizations
@@ -47,6 +49,7 @@ sim2.bdh.origin <- function(age,lambda,mu,nu,alpha,beta,hybprops,hyb.rate.functi
     extinct <- vector()		#list of extinct leaves
     extincttree = 0
     stop = 0
+    time_in_n<-c()##records the times we have n number of lineages
 
     if(!mrca){#Start with one lineage
       edge <- matrix(c(-1,-2),nrow=1,ncol=2)		#matrix of edges
@@ -69,12 +72,14 @@ sim2.bdh.origin <- function(age,lambda,mu,nu,alpha,beta,hybprops,hyb.rate.functi
     while (stop == 0 ){
       if (nleaves == 0){
         #phy2 = 0
-        if (age >0) {
+        if (age >0 && m==0) {
           phy=0
         }
         extincttree=1
         stop = 1
-      } else {
+      } else if(nleaves==m){
+        stop = 1
+      }else {
         spec_rate<-nleaves*lambda
         ext_rate<-nleaves*mu
         hyb_rate<-choose(nleaves,2)*nu
@@ -82,6 +87,10 @@ sim2.bdh.origin <- function(age,lambda,mu,nu,alpha,beta,hybprops,hyb.rate.functi
         timestep <- rexp(1, (total_rate) )    #time since last event
         if ((age > 0 && (time+timestep) < age) || age == 0) {
           time = time+timestep			#time after origin
+
+          if(nleaves==n){
+            time_in_n<-c(time_in_n,time-timestep,time)
+          }
 
           genetic_dists<-lapply(genetic_dists, function(x) lapply(x, function(x) x+(2*timestep))) ##all species increase genetic distance by twice the timestep
           for(i in names(genetic_dists)){ ##lineages shouldn't have a distance from themselves
@@ -106,6 +115,7 @@ sim2.bdh.origin <- function(age,lambda,mu,nu,alpha,beta,hybprops,hyb.rate.functi
 
             leaves <- leaves[- del]
             timecreation <- c(timecreation,time,time)
+            timecreation[-species]<-time
 
             if(!is.null(hyb.rate.function)){
               ##update genetic distances
@@ -137,6 +147,8 @@ sim2.bdh.origin <- function(age,lambda,mu,nu,alpha,beta,hybprops,hyb.rate.functi
 
             ##update edge lengths
             edge.length[edgespecevent] <- time-timecreation[- species]
+
+            timecreation[-species]<-time
 
             if(!is.null(hyb.rate.function)){
               ##update genetic distances
@@ -289,30 +301,29 @@ sim2.bdh.origin <- function(age,lambda,mu,nu,alpha,beta,hybprops,hyb.rate.functi
                 timecreation <- c(timecreation,time,time)
                 maxspecies <- maxspecies-2
               }
+              timecreation[-species]<-time
             }
           }
         } else {
           stop = 1
         }
       }
-    }
-    if (extincttree==0){	#length pendant edge
-      if (age==0){
-        timestep <- rexp(1,((length(leaves)*(lambda+mu))+((choose(length(leaves),2)*(hyb_lambda+hyb_mu))) ) )      #time since last event
-        time = time+timestep			#time after origin
-      } else {
-        timestep<-age-time ##we need the length of time between age and the previous event for updating genetic distances
-        time = age
-      }
-    }
-
+    } ##end while loop
 
     if (extincttree==0 || age ==0){
-      #assign pendant edge length
-      for (j in (1:length(leaves))){
-        k = which( edge == leaves[j]  ) - length(edge.length)
-        edge.length[ k ] <- time - timecreation[- leaves[j]]
+
+      if (extincttree==0){	#length pendant edge
+        timestep<-age-time ##we need the length of time between age and the previous event for updating genetic distances
+        time = age
+
+        #assign pendant edge length
+        for (j in (1:length(leaves))){
+          k = which( edge == leaves[j]  ) - length(edge.length)
+          edge.length[ k ] <- time - timecreation[- leaves[j]]
+        }
+        timecreation[-leaves]<-age
       }
+
 
       ##used for debugging and testing of the distance matrix creation
       # if(!is.null(hyb.rate.function)){
@@ -340,6 +351,7 @@ sim2.bdh.origin <- function(age,lambda,mu,nu,alpha,beta,hybprops,hyb.rate.functi
       leaf=1 ##Start numbering for leaves
       interior=nleaves+length(extinct)+1 ##Start numberings. start at n+1 because 1:n is reserved for tips
       extinct_tips<-rep(NA,length(extinct)) ##record all extinct tips
+      timecreation_order<-rep(NA,length(timecreation)) ##reorder timecreation so node numbers and creation match
       Nextinct<-1
       for (j in (1:num_nodes)){
         if (sum(match(leaves,- j,0)) + sum(match(extinct,- j,0)) == 0) {
@@ -353,6 +365,7 @@ sim2.bdh.origin <- function(age,lambda,mu,nu,alpha,beta,hybprops,hyb.rate.functi
             Nextinct<-Nextinct+1
           }
         }
+        timecreation_order[replaced_value] <- timecreation[j]
         hyb_edge[hyb_edge== - j]<-replaced_value
         edge[edge == -j]<-replaced_value
       }
@@ -370,6 +383,11 @@ sim2.bdh.origin <- function(age,lambda,mu,nu,alpha,beta,hybprops,hyb.rate.functi
       hyb_tip_indices<-match(extinct_tips,phy$reticulation[,1],0)>0
       phy$hyb_tips<-extinct_tips[hyb_tip_indices] ## Keep track of tips that have an edge going into a hybrid one. These will be fused later
       phy$extinct<-phy$tip.label[extinct_tips[!hyb_tip_indices]] ##Keep track of extinct tips. Will be used if using the reconstructed tree
+
+      #if(m!=0){ ##we use these for GSA
+      phy$timecreation <- timecreation_order
+      phy$time_in_n<-time_in_n
+      #}
     }
     phy
   }
@@ -377,7 +395,7 @@ sim2.bdh.origin <- function(age,lambda,mu,nu,alpha,beta,hybprops,hyb.rate.functi
 
 
 tree<-sim2.bdh.origin(age=1,lambda=1,mu=0.5,nu=0.5,
-                      alpha=1,beta=1,hybprops=c(1,0,0),
+                      alpha=1,beta=1,hybprops=c(0.5,0.25,0.25),
                       mrca=T,hyb.rate.function = NULL)
 
 hybrid.rate.function<-make.stepwise(rates<-c(1,0),c(1,2))
