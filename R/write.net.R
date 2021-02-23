@@ -84,6 +84,7 @@ e2p <-  function(x)
   colnames(x$reticulation)<-c('','')
 
   x$edge <- rbind(x$edge, x$reticulation)
+  x$reticulation<-NULL
   x
 }
 

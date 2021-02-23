@@ -8,30 +8,25 @@
 #' @export
 #'
 #' @examples
-reconstructNetwork<-function(net){
+reconstructedNetwork<-function(net){
+  extinct_tips<- getReconstructedTips(net$tip.label,getExtinct(net))
 
-  if(is.null(net$extinct)){
-    extinct_tips<-which( net$tip.label %in% getExtinct(net))
-  } else{
-    extinct_tips<-getReconstructedTips(net$tip.label,net$extinct)
-  }
   if(length(extinct_tips)==0){
-    warning('No extinct tips found. Returning NA')
-    return(NA)
+    warning('No extinct tips found. Returning Network unchanged')
+    return(net)
   }
 
   net<-deleteTips(net,extinct_tips)
-  net$extinct<-NULL
   return(net)
 }
 
-getReconstructedTips<- function(tip.labels,extinct){
-  return( which(tip.labels %in% extinct) )
+getReconstructedTips<- function(tip.labels,extinct_labels){
+  return( which(tip.labels %in% extinct_labels) )
 }
 
 #' Sample Tips on a Phylogenetic Network
 #'
-#' @description This function samples tips from a network. Both extant and extinct tips are sampled from the network.
+#' @description This function samples tips from a network. Only extant tips are downsampled from the network. Extinct tips, if they are present, will be unchanged.
 #'
 #' @param net An object of class 'evonet.'
 #' @param rho The sampling probability.
@@ -42,12 +37,28 @@ getReconstructedTips<- function(tip.labels,extinct){
 #'
 #' @examples
 incompleteSampling<-function(net,rho,stochastic=F){
-  deltips<-getSamplingTips(1:length(net$tip.label),rho,stochastic)
+  extinct_tips <- getReconstructedTips(1:length(net$tip.label),getExtinct(net))
+  extant_tips <- (1:length(net$tip.label))[-extinct_tips]
+
+  deltips<-getSamplingTips(extant_tips,rho,stochastic)
   if(length(tracked$deltips)>0){ ##only delete tips if there are tips to delete
     net<-deleteTips(net,deltips)
   }
 
   return(net)
+}
+
+getEffectiveN <-function(n,frac,stochsampling){
+  if(frac!=1){
+    if(stochsampling){
+      effective_n<-rnbinom(1,size = n,prob = frac)
+    } else{
+      effective_n<-round(n/frac)
+    }
+  }else{
+    effective_n <- n
+  }
+  return(effective_n)
 }
 
 getSamplingTips <- function(tips,rho,stochastic){
@@ -212,12 +223,25 @@ deleteTips<-function(net,tips){
 }
 
 
-timeSliceNetwork<-function(net,time,node_times){
+timeSliceNetwork<- function(net,time){
+  node_times<-node.depth.edgelength(net)
+  net<- internalTimeSliceNetwork(net,time,node_times,extinct_labels = NULL)
+  return(net)
+}
 
-  nd_rm<- which(time < node_times) ##nodes to be removed, they exist past the timeslice
+
+internalTimeSliceNetwork<-function(net,time,node_times,extinct_labels=NULL){
+
+  Nnode<-max(c(net$edge,net$reticulation))
+  nd_rm<- which(time <= node_times) ##nodes to be removed, they exist past the timeslice
   ntips_original<-length(net$tip.label)
   tips<-1:ntips_original
   tips_remaining<- tips[!(tips %in% nd_rm)]
+
+  if(!is.null(extinct_labels)){ ##update the remaining extinct tips if we have that label
+    remaining_tip_labels<-net$tip.label[tips_remaining]
+    net$extinct<- remaining_tip_labels[remaining_tip_labels %in% extinct_labels]
+  }
 
   ##delete rows that have a start time after the slice time
   keep_edges    <- !(net$edge[,1] %in% nd_rm)
@@ -230,7 +254,22 @@ timeSliceNetwork<-function(net,time,node_times){
   ##Deal with edges that cross the timeslice
   cross_edges_ind<-  ( !(net$edge[,1] %in% nd_rm) & (net$edge[,2] %in% nd_rm))
   new_tips<-net$edge[cross_edges_ind,2]
+  tips_remaining<-c(tips_remaining,new_tips[new_tips %in% tips])
+  new_tips<- new_tips[!(new_tips %in% tips)]
   net$edge.length[cross_edges_ind]<- time- node_times[net$edge[cross_edges_ind,1]]
+
+  ##Deal with the hybrid edges that cross the timeslice
+  cross_hyb_edges_ind<-  ( !(net$reticulation[,1] %in% nd_rm) & (net$reticulation[,2] %in% nd_rm))
+  if(sum(cross_hyb_edges_ind) > 0){
+    cross_hyb_e_lengths <- time - node_times[net$reticulation[cross_hyb_edges_ind,1]]
+    new_hyb_tips<- (Nnode+1):(Nnode+sum(cross_hyb_edges_ind))
+    new_tips <- c(new_tips,new_hyb_tips)
+    net$reticulation[cross_hyb_edges_ind,2] <- new_hyb_tips ##renumber these nodes as they may match some of the tips in new_tips
+    net$edge<-rbind(net$edge,net$reticulation[cross_hyb_edges_ind,]) ##add these hyb edges as normal edges
+    net$edge.length <- c(net$edge.length,cross_hyb_e_lengths)
+    net$reticulation<- subset(net$reticulation,subset = !cross_hyb_edges_ind)
+    net$inheritance<-net$inheritance[!cross_hyb_edges_ind]
+  }
 
   ##reassign node numberings
   leaf<-1
@@ -242,7 +281,7 @@ timeSliceNetwork<-function(net,time,node_times){
   for(i in nds){
     is_remaining_tip<- i %in% tips_remaining
     is_new_tip<- i %in% new_tips
-    if( is_remaining_tip || is_new_tip) ){##This is a tip
+    if(is_remaining_tip || is_new_tip){##This is a tip
       new_edge[net$edge==i]<-leaf
       new_reticulation[net$reticulation==i]<-leaf
       if(is_remaining_tip){
@@ -263,5 +302,71 @@ timeSliceNetwork<-function(net,time,node_times){
   net$tip.label<-new_tip.label
   return(net)
 }
+
+handleTipsTaxa<-function(phy,complete,target_ntaxa,current_n){
+
+  ##delete nessecary tips
+  deltips<-phy$hyb_tips ##These are tips that result form the bdh process and should be fused
+  extinct_tips<-getReconstructedTips(phy$tip.label,phy$extinct)
+  if(!complete){
+    deltips<-c(deltips,extinct_tips) ##add extinct tips if we want the reconstructed tree
+
+  }
+  extant_tips<-setdiff(1:length(phy$tip.label),c(phy$hyb_tips,extinct_tips))
+  if(current_n!=length(extant_tips)){
+    print(c(current_n,length(extant_tips)))
+
+    stop("the extant tips don't match the current_n")
+  }
+  sampling_tips <- sample(x = extant_tips, size = current_n-target_ntaxa)
+  deltips<-c(deltips,sampling_tips)
+  deltips<-rev(deltips)##we want to get rid of hyb_tips first
+
+  if(length(deltips)==0){
+    ##do nothing we don't want to get rid of anything
+  }else if(length(deltips)==length(phy$tip.label)){
+    warning('deleting all tips, returning 0')
+    return(0)
+  }else if(length(deltips) == (length(phy$tip.label)-1) ){
+    warning('Only 1 tip remaining, returning 1')
+    return(1)
+  }else{
+    phy<-deleteTips(phy,deltips)
+  }
+  phy$hyb_tips <- NULL
+  phy$extinct <- NULL
+  return(phy)
+}
+
+
+ltt.network<-function(phy,node_times=NULL){
+  if(is.null(node_times)){
+    node_times<-node.depth.edgelength(phy)
+  }
+
+  edges<-rbind(phy$edge,phy$reticulation) ##we want to look at regular edges and hyb edges
+
+  time_intervals<-sort(unique(node_times))
+  n_intervals<-length(time_intervals)-1
+
+  start <- time_intervals[1:(n_intervals)]
+  end   <- time_intervals[2:(n_intervals+1)]
+
+  intervals<-data.frame(start,end)
+  n_lineages<-rep(NA,n_intervals)
+  for(i in 1:n_intervals){
+    rw<-unlist(intervals[i,])
+    ave_time <- mean(rw) ##we get a time between the start and end of the interval. This garuantees we are between events
+    x<- sum((node_times[edges[,1]] < ave_time) & (ave_time < node_times[edges[,2]]))
+
+    n_lineages[i] <- x ##the number of lineages is the number of edges that start before the time and end after it
+  }
+  intervals<-cbind(intervals,n_lineages)
+  return(intervals)
+}
+
+
+
+
 
 

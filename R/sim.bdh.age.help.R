@@ -16,25 +16,18 @@ sim.bdh.age.loop <- function(age,numbsim,lambda,mu,nu,hybprops,alpha,beta,hyb.ra
                            mrca=mrca)
 
     if( "phylo" %in% class(phy)){
-      ##delete nessecary tips
-      deltips<-phy$hyb_tips ##These are tips that result form the bdh process and should be fused
-      if(!complete){
-        deltips<-c(deltips,getReconstructedTips(phy$tip.label,phy$extinct)) ##add extinct tips if we want the reconstructed tree
-      }
-      sampling_tips <- getSamplingTips(setdiff(1:length(phy$tip.label),deltips),rho=frac,stochastic = stochsampling)
-      deltips<-c(deltips,sampling_tips)
-      deltips<-rev(deltips)##we want to get rid of hyb_tips first
+      nleaves<-phy$nleaves
+      phy$nleaves<-NULL
 
-      if(length(deltips)==0){
-        ##do nothing we don't want to get rid of anything
-      }else if(length(deltips)==length(phy$tip.label)){
-        warning('deleting all tips, returning 0')
-        return(0)
+      ###Determine how many tips need to be deleted###
+      if(stochsampling){
+        ntips_remaining<-rbinom(1,nleaves,frac)
       }else{
-        phy<-deleteTips(phy,deltips)
+        ntips_remaining<-round(nleaves*frac)
       }
-      phy$hyb_tips <- NULL
-      phy$extinct <- NULL
+      phy<-handleTipsTaxa(phy=phy,complete=complete,target_ntaxa = ntips_remaining, current_n = nleaves)
+
+
     }
     phy
   }
@@ -72,20 +65,18 @@ sim2.bdh.origin <- function(m=0,n=0,age,lambda,mu,nu,alpha,beta,hybprops,hyb.rat
     while (stop == 0 ){
       if (nleaves == 0){
         #phy2 = 0
-        if (age >0 && m==0) {
+        if (age >0) {
           phy=0
         }
         extincttree=1
         stop = 1
-      } else if(nleaves==m){
-        stop = 1
-      }else {
+      } else {
         spec_rate<-nleaves*lambda
         ext_rate<-nleaves*mu
         hyb_rate<-choose(nleaves,2)*nu
         total_rate<-spec_rate+ext_rate+hyb_rate
         timestep <- rexp(1, (total_rate) )    #time since last event
-        if ((age > 0 && (time+timestep) < age) || age == 0) {
+        if ((age > 0 && (time+timestep) < age) && !(nleaves==m) ) {
           time = time+timestep			#time after origin
 
           if(nleaves==n){
@@ -167,7 +158,6 @@ sim2.bdh.origin <- function(m=0,n=0,age,lambda,mu,nu,alpha,beta,hybprops,hyb.rat
                 hyb_occurs<-F
               }
             }
-            ##TODO
             if (!is.null(hyb.rate.function)){ ##Use this to restrict hybridizations based on genetic distance
               randevent<-runif(1,0,1)
               if(randevent > hyb.rate.function(genetic_dists[[as.character(species[1])]][[as.character(species[2])]])){
@@ -313,8 +303,14 @@ sim2.bdh.origin <- function(m=0,n=0,age,lambda,mu,nu,alpha,beta,hybprops,hyb.rat
     if (extincttree==0 || age ==0){
 
       if (extincttree==0){	#length pendant edge
-        timestep<-age-time ##we need the length of time between age and the previous event for updating genetic distances
-        time = age
+        if(m!=0){
+          time<- time+timestep
+          age<-time
+        }else{
+          timestep<-age-time ##we need the length of time between age and the previous event for updating genetic distances
+          time = age
+        }
+
 
         #assign pendant edge length
         for (j in (1:length(leaves))){
@@ -379,25 +375,22 @@ sim2.bdh.origin <- function(m=0,n=0,age,lambda,mu,nu,alpha,beta,hybprops,hyb.rat
       phy$reticulation<-hyb_edge
       #phy$dists<-genetic_dists
       phy$inheritance<-inheritance
+      phy$nleaves<-nleaves
 
       hyb_tip_indices<-match(extinct_tips,phy$reticulation[,1],0)>0
       phy$hyb_tips<-extinct_tips[hyb_tip_indices] ## Keep track of tips that have an edge going into a hybrid one. These will be fused later
       phy$extinct<-phy$tip.label[extinct_tips[!hyb_tip_indices]] ##Keep track of extinct tips. Will be used if using the reconstructed tree
 
-      #if(m!=0){ ##we use these for GSA
-      phy$timecreation <- timecreation_order
-      phy$time_in_n<-time_in_n
-      #}
+      if(n!=0){ ##we use these for GSA
+        phy$timecreation <- timecreation_order
+        if(is.null(time_in_n)){
+          time_in_n<-NA ##We were never in the correct n
+        } else{
+          time_in_n<- time_in_n[!(time_in_n %in% unique(time_in_n[duplicated(time_in_n)]))]
+          time_in_n<-matrix(time_in_n,ncol=2,byrow=T)
+        }
+        phy$time_in_n<-time_in_n
+      }
     }
     phy
   }
-
-
-
-tree<-sim2.bdh.origin(age=1,lambda=1,mu=0.5,nu=0.5,
-                      alpha=1,beta=1,hybprops=c(0.5,0.25,0.25),
-                      mrca=T,hyb.rate.function = NULL)
-
-hybrid.rate.function<-make.stepwise(rates<-c(1,0),c(1,2))
-tree2<-sim.bd.age(1,1,2,0)[[1]]
-tree2
