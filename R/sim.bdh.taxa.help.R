@@ -1,16 +1,18 @@
 sim.bdh.taxa.ssa.help <-function(dummy,n,numbsim,
                              lambda,mu,
-                             nu, hybprops, hyb.rate.function=NULL,
-                             alpha=1,beta=1,
-                             frac=1,mrca=FALSE,complete=TRUE,stochsampling=FALSE){
+                             nu, hybprops, hyb.rate.fxn=NULL,
+                             hyb.inher.fxn,
+                             frac=1,mrca=FALSE,complete=TRUE,stochsampling=FALSE,
+                             trait.model){
 
   effective_n<-getEffectiveN(n=n,frac = frac,stochsampling = stochsampling)
 	phy<-sim2.bdh.origin(m=effective_n,n=0,age=Inf,
 	                     lambda=lambda,mu=mu,
 	                     nu=nu,
-	                     alpha=alpha,beta=beta,
-	                     hybprops=hybprops,hyb.rate.function=hyb.rate.function,
-	                     mrca=mrca)
+	                     hyb.inher.fxn = hyb.inher.fxn,
+	                     hybprops=hybprops,hyb.rate.fxn=hyb.rate.fxn,
+	                     mrca=mrca,
+	                     trait.model=trait.model)
 
 	##handle incomplete sampling and reconstruction
 	if( "phylo" %in% class(phy)){
@@ -24,18 +26,20 @@ sim.bdh.taxa.ssa.help <-function(dummy,n,numbsim,
 
 sim.bdh.taxa.gsa.help <-function(dummy,m,n,numbsim,
                                  lambda,mu,
-                                 nu, hybprops, hyb.rate.function=NULL,
-                                 alpha=1,beta=1,
-                                 frac=1,mrca=FALSE,complete=TRUE,stochsampling=FALSE){
+                                 nu, hybprops, hyb.rate.fxn=NULL,
+                                 hyb.inher.fxn,
+                                 frac=1,mrca=FALSE,complete=TRUE,stochsampling=FALSE,
+                                 trait.model){
 
   effective_n<-getEffectiveN(n=n,frac = frac,stochsampling = stochsampling)
 
   phy<-sim2.bdh.origin(m=m,n=effective_n,age=Inf,
                        lambda=lambda,mu=mu,
                        nu=nu,
-                       alpha=alpha,beta=beta,
-                       hybprops=hybprops,hyb.rate.function=hyb.rate.function,
-                       mrca=mrca)
+                       hyb.inher.fxn = hyb.inher.fxn,
+                       hybprops=hybprops,hyb.rate.fxn=hyb.rate.fxn,
+                       mrca=mrca,
+                       trait.model)
 
 
   ##only do things if we have a phylogeny

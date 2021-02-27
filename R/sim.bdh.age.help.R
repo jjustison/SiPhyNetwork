@@ -1,19 +1,28 @@
 sim.bdh.age.help <-function(dummy,age,lambda,mu,
-                           nu, hybprops,hyb.rate.function,
-                           alpha,beta,
-                           frac=1,mrca=FALSE,complete=TRUE,stochsampling=FALSE){
-	out<-sim.bdh.age.loop(age=age,numbsim=1,lambda=lambda,mu=mu,nu=nu, hybprops=hybprops,alpha=alpha,beta=beta,hyb.rate.function=hyb.rate.function,frac=frac,mrca=mrca,complete=complete,stochsampling=stochsampling)
+                           nu, hybprops,hyb.rate.fxn,
+                           hyb.interitance.fxn,
+                           frac=1,mrca=FALSE,complete=TRUE,stochsampling=FALSE,
+                           trait.model){
+	out<-sim.bdh.age.loop(age=age,
+	                      lambda=lambda,mu=mu,
+	                      nu=nu, hybprops=hybprops,
+	                      hyb.inher.fxn=hyb.inher.fxn,
+	                      hyb.rate.fxn=hyb.rate.fxn,
+	                      frac=frac,mrca=mrca,
+	                      complete=complete,stochsampling=stochsampling,
+	                      trait.model=trait.model)
 	out
 }
 
-sim.bdh.age.loop <- function(age,numbsim,lambda,mu,nu,hybprops,alpha,beta,hyb.rate.function,frac=1,mrca,complete,stochsampling) {
+sim.bdh.age.loop <- function(age,lambda,mu,nu,hybprops,hyb.inher.fxn,hyb.rate.fxn,frac=1,mrca,complete,stochsampling) {
     phy <- sim2.bdh.origin(m=0,n=0,
                            age=age,
                            lambda=lambda,mu=mu,
                            nu=nu,
-                           alpha=alpha,beta=beta,
-                           hybprops=hybprops,hyb.rate.function=hyb.rate.function,
-                           mrca=mrca)
+                           hyb.inher.fxn=hyb.inher.fxn,
+                           hybprops=hybprops,hyb.rate.fxn=hyb.rate.fxn,
+                           mrca=mrca,
+                           trait.model=trait.model)
 
     if( "phylo" %in% class(phy)){
       nleaves<-phy$nleaves
@@ -32,7 +41,7 @@ sim.bdh.age.loop <- function(age,numbsim,lambda,mu,nu,hybprops,alpha,beta,hyb.ra
     phy
   }
 
-sim2.bdh.origin <- function(m=0,n=0,age,lambda,mu,nu,alpha,beta,hybprops,hyb.rate.function,mrca){
+sim2.bdh.origin <- function(m=0,n=0,age,lambda,mu,nu,hyb.inher.fxn,hybprops,hyb.rate.fxn,mrca,trait.model){
 
     ##TODO make edge a list and convert to a matrix at the end for quicker building
     hyb_edge<-list()    #list of hybrid edges
@@ -43,6 +52,14 @@ sim2.bdh.origin <- function(m=0,n=0,age,lambda,mu,nu,alpha,beta,hybprops,hyb.rat
     extincttree = 0
     stop = 0
     time_in_n<-c()##records the times we have n number of lineages
+
+    is_null_trait<- is.null(trait.model)
+    if(!is_null_trait){
+      trait_state <- trait.model[['initial']]
+      if(length(trait_state)!= (mrca+1)){
+        stop(paste('there are ',(mrca+1),' starting species. There were ',length(trait_state),' initial polyploid states',sep = ''))
+      }
+    }
 
     if(!mrca){#Start with one lineage
       edge <- matrix(c(-1,-2),nrow=1,ncol=2)		#matrix of edges
@@ -87,6 +104,10 @@ sim2.bdh.origin <- function(m=0,n=0,age,lambda,mu,nu,alpha,beta,hybprops,hyb.rat
           for(i in names(genetic_dists)){ ##lineages shouldn't have a distance from themselves
             genetic_dists[[i]][[i]]<- genetic_dists[[i]][[i]]-(2*timestep)
           }
+          if(!is_null_trait){
+            trait_state<-trait.model[['time.fxn']](trait_state,timestep)
+          }
+
           species <- sample(leaves,1+(nleaves>1))
           del <- match(species,leaves)
           edgespecevent <- match(species,edge) - length(edge.length)
@@ -108,7 +129,7 @@ sim2.bdh.origin <- function(m=0,n=0,age,lambda,mu,nu,alpha,beta,hybprops,hyb.rat
             timecreation <- c(timecreation,time,time)
             timecreation[-species]<-time
 
-            if(!is.null(hyb.rate.function)){
+            if(!is.null(hyb.rate.fxn)){
               ##update genetic distances
               new_species_rw<-genetic_dists[[as.character(species)]]
               new_species_rw[[as.character(species)]]<-NULL
@@ -122,6 +143,10 @@ sim2.bdh.origin <- function(m=0,n=0,age,lambda,mu,nu,alpha,beta,hybprops,hyb.rat
               }
               genetic_dists[[as.character(maxspecies-1)]]<-new_species_rw ##add row for maxspecies-1
               genetic_dists[[as.character(maxspecies-2)]]<-new_species_rw ##add row for maxspecies-2
+            }
+            if(!is_null_trait){
+              trait_state<-c( trait_state, trait.model[['spec_fxn']](trait_state[del]) )
+              trait_state<-trait_state[-del]
             }
 
             maxspecies <- maxspecies-2
@@ -141,33 +166,34 @@ sim2.bdh.origin <- function(m=0,n=0,age,lambda,mu,nu,alpha,beta,hybprops,hyb.rat
 
             timecreation[-species]<-time
 
-            if(!is.null(hyb.rate.function)){
+            if(!is.null(hyb.rate.fxn)){
               ##update genetic distances
               genetic_dists[[as.character(species)]]<-NULL ##remove the row with species
               for(i in names(genetic_dists)){ ##delete column with species
                 genetic_dists[[i]][[as.character(species)]]<-NULL
               }
             }
+            if(!is_null_trait){
+              trait_state<-trait_state[-del]
+            }
             nleaves<-nleaves-1
           } else{ ##Hybridization Event
             hyb_occurs<-T
 
-            ##TODO
-            if (FALSE){ ##use this for hybridization of similar ploidy
-              if(!same_ploidy){
-                hyb_occurs<-F
-              }
+            if (!is_null_trait){ ##use this for hybridization of similar ploidy
+                hyb_occurs<-trait.model[['hyb.compatability.fxn']](trait_state[del])
             }
-            if (!is.null(hyb.rate.function)){ ##Use this to restrict hybridizations based on genetic distance
+
+            if (hyb_occurs && !is.null(hyb.rate.fxn)){ ##Use this to restrict hybridizations based on genetic distance
               randevent<-runif(1,0,1)
-              if(randevent > hyb.rate.function(genetic_dists[[as.character(species[1])]][[as.character(species[2])]])){
+              if(randevent > hyb.rate.fxn(genetic_dists[[as.character(species[1])]][[as.character(species[2])]])){
                 hyb_occurs<-F
               }
             }
             if(hyb_occurs){
               ##Update things that are constant between all hybridization types
               num_hybs<-num_hybs+1
-              inheritance[num_hybs]<- rbeta(n=1,shape1 = alpha,shape2 = beta)
+              inheritance[num_hybs]<- hyb.inher.fxn()
 
               randevent <- runif(1,0,1)
               if( randevent<=(hybprops[1]/sum(hybprops)) ){ #Lineage Generating
@@ -183,7 +209,7 @@ sim2.bdh.origin <- function(m=0,n=0,age,lambda,mu,nu,alpha,beta,hybprops,hyb.rat
                 ##Update edge lengths
                 edge.length[edgespecevent] <- time-timecreation[- species] ##update the edge length of the lineages with the event
                 edge.length <- c(edge.length,0,0,0,0)
-                if(!is.null(hyb.rate.function)){
+                if(!is.null(hyb.rate.fxn)){
                   ##update genetic distances
                   species1<-as.character(species[1])
                   species2<-as.character(species[2])
@@ -213,6 +239,11 @@ sim2.bdh.origin <- function(m=0,n=0,age,lambda,mu,nu,alpha,beta,hybprops,hyb.rat
                     genetic_dists[[i]][[species2]]<-NULL
                   }
                 }
+                if(!is_null_trait){
+                  trait_state<-c( trait_state,trait_state[del], trait.model[['hyb.event.fxn']](trait_state[del]) )
+                  trait_state<-trait_state[-del]
+                }
+
                 timecreation <- c(timecreation,time,time,time,time)
                 maxspecies <- maxspecies-4
                 nleaves<-nleaves+1
@@ -228,7 +259,7 @@ sim2.bdh.origin <- function(m=0,n=0,age,lambda,mu,nu,alpha,beta,hybprops,hyb.rat
                 ##update edge lengths
                 edge.length[edgespecevent] <- time-timecreation[- species]
                 edge.length<- c(edge.length,0) ##new edge for hybrid lineage
-                if(!is.null(hyb.rate.function)){
+                if(!is.null(hyb.rate.fxn)){
                   ##update genetic distances
                   species1<-as.character(species[1])
                   species2<-as.character(species[2])
@@ -249,6 +280,11 @@ sim2.bdh.origin <- function(m=0,n=0,age,lambda,mu,nu,alpha,beta,hybprops,hyb.rat
                     genetic_dists[[i]][[species2]]<-NULL
                   }
                 }
+                if(!is_null_trait){
+                  trait_state<-c( trait_state, trait.model[['hyb.event.fxn']](trait_state[del]) )
+                  trait_state<-trait_state[-del]
+                }
+
                 timecreation <- c(timecreation,time)
                 maxspecies <- maxspecies-1
                 nleaves<-nleaves-1
@@ -264,7 +300,7 @@ sim2.bdh.origin <- function(m=0,n=0,age,lambda,mu,nu,alpha,beta,hybprops,hyb.rat
                 ##update edge lengths
                 edge.length[edgespecevent] <- time-timecreation[- species]
                 edge.length<- c(edge.length,0,0)
-                if(!is.null(hyb.rate.function)){
+                if(!is.null(hyb.rate.fxn)){
                   ##update genetic distances
                   species1<-as.character(species[1])
                   species2<-as.character(species[2])
@@ -288,6 +324,11 @@ sim2.bdh.origin <- function(m=0,n=0,age,lambda,mu,nu,alpha,beta,hybprops,hyb.rat
                   genetic_dists[[maxspecies1]]<-hybrid_species_row
                   genetic_dists[[maxspecies1]][[maxspecies1]]<-0.0
                 }
+                if(!is_null_trait){
+                  trait_state<-c( trait_state,trait_state[del[2]], trait.model[['hyb.event.fxn']](trait_state[del]) )
+                  trait_state<-trait_state[-del]
+                }
+
                 timecreation <- c(timecreation,time,time)
                 maxspecies <- maxspecies-2
               }
@@ -322,7 +363,7 @@ sim2.bdh.origin <- function(m=0,n=0,age,lambda,mu,nu,alpha,beta,hybprops,hyb.rat
 
 
       ##used for debugging and testing of the distance matrix creation
-      # if(!is.null(hyb.rate.function)){
+      # if(!is.null(hyb.rate.fxn)){
       #   ##update genetic distances
       #   genetic_dists<-lapply(genetic_dists, function(x) lapply(x, function(x) x+(2*timestep))) ##add twice the timestep to all indices
       #   for(i in names(genetic_dists)){ ##lineages shouldn't have a distance from themselves

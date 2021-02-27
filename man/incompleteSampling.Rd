@@ -17,5 +17,5 @@ incompleteSampling(net, rho, stochastic = F)
 net A network with sampled tips
 }
 \description{
-This function samples tips from a network. Both extant and extinct tips are sampled from the network.
+This function samples tips from a network. Only extant tips are downsampled from the network. Extinct tips, if they are present, will be unchanged.
 }
