@@ -7,11 +7,11 @@
 write.net(net, file = "", append = FALSE, digits = 10, tree.names = FALSE)
 }
 \arguments{
-\item{net}{A phylogenetic network of class 'evonet.' The network may include an optional attribute 'inheritance' that represents the inheritance probbilities on the edges found in the 'reticulation' attribute}
+\item{net}{A phylogenetic network of class \code{evonet}. The network may include an optional attribute `inheritance`` that represents the inheritance probbilities on the edges found in the 'reticulation' attribute}
 
-\item{file}{a file name specified by either a variable of mode character, or a double-quoted string; if file = "" (the default) then the tree is written on the standard output connection (i.e. the console).}
+\item{file}{a file name specified by either a variable of mode character, or a double-quoted string; if `file = ""`` (the default) then the tree is written on the standard output connection (i.e. the console).}
 
-\item{append}{a logical, if TRUE the tree is appended to the file without erasing the data possibly existing in the file, otherwise the file (if it exists) is overwritten (FALSE the default).}
+\item{append}{a logical, if TRUE the tree is appended to the file without erasing the data possibly existing in the file, otherwise the file (if it exists) is overwritten (`FALSE`` the default).}
 
 \item{digits}{a numeric giving the number of digits used for printing branch lengths.}
 

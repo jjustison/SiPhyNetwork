@@ -1,6 +1,6 @@
 sim.bdh.age.help <-function(dummy,age,lambda,mu,
                            nu, hybprops,hyb.rate.fxn,
-                           hyb.interitance.fxn,
+                           hyb.inher.fxn,
                            frac=1,mrca=FALSE,complete=TRUE,stochsampling=FALSE,
                            trait.model){
 	out<-sim.bdh.age.loop(age=age,
@@ -14,7 +14,13 @@ sim.bdh.age.help <-function(dummy,age,lambda,mu,
 	out
 }
 
-sim.bdh.age.loop <- function(age,lambda,mu,nu,hybprops,hyb.inher.fxn,hyb.rate.fxn,frac=1,mrca,complete,stochsampling) {
+sim.bdh.age.loop <- function(age,
+                             lambda,mu,
+                             nu,hybprops,
+                             hyb.inher.fxn,
+                             hyb.rate.fxn,
+                             frac=1,mrca,complete,stochsampling,
+                             trait.model) {
     phy <- sim2.bdh.origin(m=0,n=0,
                            age=age,
                            lambda=lambda,mu=mu,
@@ -145,7 +151,7 @@ sim2.bdh.origin <- function(m=0,n=0,age,lambda,mu,nu,hyb.inher.fxn,hybprops,hyb.
               genetic_dists[[as.character(maxspecies-2)]]<-new_species_rw ##add row for maxspecies-2
             }
             if(!is_null_trait){
-              trait_state<-c( trait_state, trait.model[['spec_fxn']](trait_state[del]) )
+              trait_state<-c( trait_state, trait.model[['spec.fxn']](trait_state[del]) )
               trait_state<-trait_state[-del]
             }
 
@@ -181,7 +187,9 @@ sim2.bdh.origin <- function(m=0,n=0,age,lambda,mu,nu,hyb.inher.fxn,hybprops,hyb.
             hyb_occurs<-T
 
             if (!is_null_trait){ ##use this for hybridization of similar ploidy
-                hyb_occurs<-trait.model[['hyb.compatability.fxn']](trait_state[del])
+              print(paste('The two traits are',paste(trait_state[del],collapse = ' ' )))
+              hyb_occurs<-trait.model[['hyb.compatability.fxn']](trait_state[del])
+              print(paste('hyb_occurs is', hyb_occurs))
             }
 
             if (hyb_occurs && !is.null(hyb.rate.fxn)){ ##Use this to restrict hybridizations based on genetic distance
@@ -193,7 +201,8 @@ sim2.bdh.origin <- function(m=0,n=0,age,lambda,mu,nu,hyb.inher.fxn,hybprops,hyb.
             if(hyb_occurs){
               ##Update things that are constant between all hybridization types
               num_hybs<-num_hybs+1
-              inheritance[num_hybs]<- hyb.inher.fxn()
+              inher<-hyb.inher.fxn()
+              inheritance[num_hybs]<- inher
 
               randevent <- runif(1,0,1)
               if( randevent<=(hybprops[1]/sum(hybprops)) ){ #Lineage Generating
@@ -219,7 +228,7 @@ sim2.bdh.origin <- function(m=0,n=0,age,lambda,mu,nu,hyb.inher.fxn,hybprops,hyb.
                   ##First we need to create the hybrid lineage
                   hybrid_species_row<-list()
                   for(i in names(genetic_dists)){
-                    hybrid_species_row[[i]]<- ( (1-inheritance[num_hybs])*genetic_dists[[species1]][[i]] ) + ( inheritance[num_hybs]*genetic_dists[[species2]][[i]] ) ##add row values for the recipient
+                    hybrid_species_row[[i]]<- ( (1-inher)*genetic_dists[[species1]][[i]] ) + ( inher*genetic_dists[[species2]][[i]] ) ##add row values for the recipient
                     genetic_dists[[i]][[maxspecies4]]<-hybrid_species_row[[i]] ##add column values for the recipient
                   }
                   genetic_dists[[maxspecies4]]<-hybrid_species_row
@@ -240,7 +249,7 @@ sim2.bdh.origin <- function(m=0,n=0,age,lambda,mu,nu,hyb.inher.fxn,hybprops,hyb.
                   }
                 }
                 if(!is_null_trait){
-                  trait_state<-c( trait_state,trait_state[del], trait.model[['hyb.event.fxn']](trait_state[del]) )
+                  trait_state<-c( trait_state,trait_state[del], trait.model[['hyb.event.fxn']](trait_state[del],inher))
                   trait_state<-trait_state[-del]
                 }
 
@@ -268,7 +277,7 @@ sim2.bdh.origin <- function(m=0,n=0,age,lambda,mu,nu,hyb.inher.fxn,hybprops,hyb.
                   hybrid_species_row<-list()
                   genetic_dists[[species1]]<-NULL ##remove species 1 row
                   for(i in names(genetic_dists)){
-                    hybrid_species_row[[i]]<- ( (1-inheritance[num_hybs])*genetic_dists[[i]][[species1]] ) + ( inheritance[num_hybs]*genetic_dists[[species2]][[i]] ) ##add row values for the recipient
+                    hybrid_species_row[[i]]<- ( (1-inher)*genetic_dists[[i]][[species1]] ) + ( inher*genetic_dists[[species2]][[i]] ) ##add row values for the recipient
                     genetic_dists[[i]][[maxspecies1]]<-hybrid_species_row[[i]] ##add column values for the recipient
                     genetic_dists[[i]][[species1]]<-NULL ##remove species 1 column
                   }
@@ -281,7 +290,7 @@ sim2.bdh.origin <- function(m=0,n=0,age,lambda,mu,nu,hyb.inher.fxn,hybprops,hyb.
                   }
                 }
                 if(!is_null_trait){
-                  trait_state<-c( trait_state, trait.model[['hyb.event.fxn']](trait_state[del]) )
+                  trait_state<-c( trait_state, trait.model[['hyb.event.fxn']](trait_state[del],inher))
                   trait_state<-trait_state[-del]
                 }
 
@@ -317,7 +326,7 @@ sim2.bdh.origin <- function(m=0,n=0,age,lambda,mu,nu,hyb.inher.fxn,hybprops,hyb.
                   hybrid_species_row<-list()
                   genetic_dists[[species1]]<-NULL ##remove species 1 row
                   for(i in names(genetic_dists)){
-                    hybrid_species_row[[i]]<- ( (1-inheritance[num_hybs])*genetic_dists[[i]][[species1]] ) + ( inheritance[num_hybs]*genetic_dists[[maxspecies2]][[i]] ) ##add row values for the recipient
+                    hybrid_species_row[[i]]<- ( (1-inher)*genetic_dists[[i]][[species1]] ) + ( inher*genetic_dists[[maxspecies2]][[i]] ) ##add row values for the recipient
                     genetic_dists[[i]][[maxspecies1]]<-hybrid_species_row[[i]] ##add column values for the recipient
                     genetic_dists[[i]][[species1]]<-NULL ##remove species 1 column
                   }
@@ -325,7 +334,7 @@ sim2.bdh.origin <- function(m=0,n=0,age,lambda,mu,nu,hyb.inher.fxn,hybprops,hyb.
                   genetic_dists[[maxspecies1]][[maxspecies1]]<-0.0
                 }
                 if(!is_null_trait){
-                  trait_state<-c( trait_state,trait_state[del[2]], trait.model[['hyb.event.fxn']](trait_state[del]) )
+                  trait_state<-c( trait_state, trait.model[['hyb.event.fxn']](trait_state[del],inher), trait_state[del[2]] )
                   trait_state<-trait_state[-del]
                 }
 

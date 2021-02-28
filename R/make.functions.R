@@ -163,10 +163,10 @@ make.categorical.draw <- function(inheritances, weights){
 #' @param time.fxn A function that describes how ploidy changes over time. See Details for more information
 #' @param spec.fxn A function that describes how ploidy changes after speciation events. See Details for more information
 #' @details
-#' `hyb.event.fxn` is a function that denotes the ploidy of a hybrid child after a hybridization event. The function should have the argument `parent_states`, a vector with the ploidy states of the two parents to the hybrid child. The function should return a single value for the ploidy state of the hybrid child
+#' `hyb.event.fxn` is a function that denotes the ploidy of a hybrid child after a hybridization event. The function should have the argument `parent_states`, a vector with the trait states of the two parents to the hybrid child. The function should return a single value for the ploidy state of the hybrid child
 #' The default value of `NULL` causes the hybrid child to randomly inherit the ploidy of one of the parents.
 #'
-#' `hyb.compatability.fxn` describes when hybridization events can occur between two taxa based on their ploidy. The function should have the argument `parent_states`, a vector with the ploidy states of the hybrid parents. The function should return `TRUE` for when a hybridization event is allowed to proceed and `FALSE` otherwise.
+#' `hyb.compatability.fxn` describes when hybridization events can occur between two taxa based on their ploidy. The function should have the arguments `parent_states` and `inheritance`. `parent_states` is vector with the ploidy states of the hybrid parents while `inheritance` is the inheritance probability of the first lineage denoted in `parent_states`. The function should return `TRUE` for when a hybridization event is allowed to proceed and `FALSE` otherwise.
 #' The default value of `NULL` causes hybridizations to always occur, regardless of ploidy.
 #'
 #' `time.fxn` is a function that describes how ploidy changes over time. The function should have the arguments `poly_states` and `timestep` in that order. `poly_states` is a vector containing the ploidy of all taxa while `timestep` is the amount of time given for ploidy evolution. The function should return a vector with the updated ploidy states of all taxa.
@@ -177,8 +177,8 @@ make.categorical.draw <- function(inheritances, weights){
 #'
 #' @export
 #' @examples
-make.polyploid.model <-function(inital_states=1, hyb.event.fxn=NULL, hyb.compatability.fxn=NULL, time.fxn=NULL, spec.fxn=NULL){
-  if(is.null(spec.fxn) && in.null(hyb.event.fxn) && is.null(time.fxn) && is.null(hyb.compatability.fxn)){
+make.polyploid.model <-function(initial_states=1, hyb.event.fxn=NULL, hyb.compatability.fxn=NULL, time.fxn=NULL, spec.fxn=NULL){
+  if(is.null(spec.fxn) && is.null(hyb.event.fxn) && is.null(time.fxn) && is.null(hyb.compatability.fxn)){
     warning('All components of the polyploid model are NULL. Returning NULL')
   }
 
@@ -194,7 +194,7 @@ make.polyploid.model <-function(inital_states=1, hyb.event.fxn=NULL, hyb.compata
     }
   }
   if(is.null(hyb.event.fxn)){
-    hyb.event.fxn <-function(parent_states){
+    hyb.event.fxn <-function(parent_states,inheritance){
       return(sample(parent_states,size = 1))
     }
   }
@@ -209,7 +209,7 @@ make.polyploid.model <-function(inital_states=1, hyb.event.fxn=NULL, hyb.compata
           hyb.compatability.fxn=hyb.compatability.fxn,
           time.fxn=time.fxn,
           spec.fxn=spec.fxn)
-  x[['initial']]<-inital_states
+  x[['initial']]<-initial_states
   x[['hyb.event.fxn']]<-hyb.event.fxn
   x[['hyb.compatability.fxn']]<-hyb.compatability.fxn
   x[['time.fxn']]<-time.fxn
@@ -218,7 +218,7 @@ make.polyploid.model <-function(inital_states=1, hyb.event.fxn=NULL, hyb.compata
 }
 
 make.allopolyploid.event <-function(prob){
-  myfunc<-function(parent_states){
+  myfunc<-function(parent_states,inheritance){
     if(runif(1)<=prob){
       return(sum(parent_states))
     }else{

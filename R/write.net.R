@@ -10,9 +10,9 @@
 #'
 #' The tip labels (and the node labels if present) are checked before being printed: the leading and trailing spaces, and the leading left and trailing right parentheses are deleted; the other spaces are replaced by underscores; the commas, colons, semicolons, and the other parentheses are replaced with dashes
 #'
-#' @param net A phylogenetic network of class 'evonet.' The network may include an optional attribute 'inheritance' that represents the inheritance probbilities on the edges found in the 'reticulation' attribute
-#' @param file a file name specified by either a variable of mode character, or a double-quoted string; if file = "" (the default) then the tree is written on the standard output connection (i.e. the console).
-#' @param append a logical, if TRUE the tree is appended to the file without erasing the data possibly existing in the file, otherwise the file (if it exists) is overwritten (FALSE the default).
+#' @param net A phylogenetic network of class `evonet`. The network may include an optional attribute `inheritance`` that represents the inheritance probbilities on the edges found in the 'reticulation' attribute
+#' @param file a file name specified by either a variable of mode character, or a double-quoted string; if `file = ""`` (the default) then the tree is written on the standard output connection (i.e. the console).
+#' @param append a logical, if TRUE the tree is appended to the file without erasing the data possibly existing in the file, otherwise the file (if it exists) is overwritten (`FALSE`` the default).
 #' @param digits a numeric giving the number of digits used for printing branch lengths.
 #' @param tree.names either a logical or a vector of mode character. If TRUE then any tree names will be written prior to the tree on each line. If character, specifies the name of "phylo" objects which can be written to the file.
 #'
@@ -34,7 +34,6 @@ write.net<-function(net,file="",append = FALSE, digits = 10, tree.names = FALSE)
 ##This function returns the node timings.
 ##branching.times() and node.depth.edgelength() both call reorder() which causes memory errors in the RCPP calls
 ##This function serves the same purpose as those without making that call - makes phytools a dependency
-###TODO I think the file branching.times.complete.R has a function that serves the same purpose but doesn't depend on phytools. Swap this out for that function
 node.times<-function(tree){
   nd_heights<-as.numeric(nodeHeights(tree))
   nd_nums<-as.integer(tree$edge)
@@ -91,7 +90,7 @@ e2p <-  function(x)
 ###########################################
 ###functions below are modified from ape###
 ###########################################
-#TODO properly acredit ape package
+#TODO properly credit ape package
 
 ## write.tree.R (2010-12-07)
 

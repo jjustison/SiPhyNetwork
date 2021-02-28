@@ -17,7 +17,7 @@ sim.bdh.taxa.ssa(
   complete = TRUE,
   stochsampling = FALSE,
   hyb.rate.fxn = NULL,
-  polyploid.model = NULL
+  trait.model = NULL
 )
 }
 \arguments{
@@ -45,12 +45,10 @@ sim.bdh.taxa.ssa(
 
 \item{hyb.rate.fxn}{The probability of a successful hybridization as a function of genetic distance between taxa. The default value of `NULL`` assumes that hybridizaion success is independent of genetic distance between taxa.}
 
-\item{polyploid.model}{A list that dictates how polyploidy affects the diversification process. The default value of \code{NULL} doesn't take ploidy into account for simulation. See Details for more information.}
+\item{trait.model}{A list that dictates how a trait affects the hybridization process. The default value of \code{NULL} doesn't take a trait into account for simulation. See Details for more information.}
 }
 \value{
 out Returns a list of numbsim networks with the time since origin / most recent common ancestor being 'age.' If tree goes extinct or no tips are sampled, return value is '0'. If only one extant and no extinct tips are sampled, return value is '1'. Each network has an additional attirbute "inheritance" that represents the inheritance probabilities on the edges in the "reticulation" attribute.
-
-out Returns a list of numbsim networks. Each network has an additional attirbute "inheritance" that represents the inheritance probabilities on the edges in the "reticulation" attribute.
 }
 \description{
 Simulates a Phylogenetic Network under a birth-death-hybridization model. Simulates to a specified number of extant tips under the Simple Sampling Approach.
@@ -60,13 +58,13 @@ Simulates a Phylogenetic Network under a birth-death-hybridization model. Simula
 
 \code{hyb.rate.fxn} should take one argument for the genetic distance. The function should be defined on the range \eqn{[0,Inf)} and return values between \eqn{[0,1]}
 
-\code{polyploid.model} is a list with the following named elements:
+\code{trait.model} is a list with the following named elements:
 \itemize{
-\item{\code{initial}}{ The initial ploidy state on the phylogeny}
-\item{\code{hyb.event.fxn}}{ A function that denotes the ploidy of a hybrid child after a hybridization event.}
-\item{\code{hyb.compatability.fxn}}{ A function that describes when hybridization events can occur between two taxa based on their ploidy.}
-\item{\code{time.fxn}}{ A function that describes how ploidy changes over time.}
-\item{\code{spec.fxn}}{ A function that describes how ploidy changes at speciation events.}
+\item{\code{initial}}{ The initial trait state on the phylogeny}
+\item{\code{hyb.event.fxn}}{ A function that denotes the trait of a hybrid child after a hybridization event.}
+\item{\code{hyb.compatability.fxn}}{ A function that describes when hybridization events can occur between two taxa based on their traits.}
+\item{\code{time.fxn}}{ A function that describes how traits change over time.}
+\item{\code{spec.fxn}}{ A function that describes how the trait changes at speciation events.}
 }
 See \link{make.polyploid.model} for more information about using and creating this list.
 }
