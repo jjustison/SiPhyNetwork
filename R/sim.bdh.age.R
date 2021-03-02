@@ -38,7 +38,7 @@ sim.bdh.age <-function(age,numbsim,
                       hyb.inher.fxn,
                       frac=1,mrca=FALSE,complete=TRUE,stochsampling=FALSE,
                       hyb.rate.fxn=NULL,
-                      trait.model){
+                      trait.model=NULL){
 	out<-lapply(1:numbsim,sim.bdh.age.help,
 	            age=age,
 	            lambda=lambda,mu=mu,

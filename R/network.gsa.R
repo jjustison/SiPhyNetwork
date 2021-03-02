@@ -10,7 +10,7 @@ network.gsa <- function(net,ntaxa,complete=T,frac=1,stochsampling=F){
   }
   times <- times[,-3]
 
-  extinct_labels <- getExtinct(net)
+  extinct_labels <- get.extinct(net)
   phy<-internal.network.gsa(net = net,times=times,timecreation = node_times,extinct_labels = extinct_labels)
 
   ##handle complete and sampling frac

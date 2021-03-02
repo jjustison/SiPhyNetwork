@@ -17,7 +17,7 @@ sim.bdh.age(
   complete = TRUE,
   stochsampling = FALSE,
   hyb.rate.fxn = NULL,
-  trait.model
+  trait.model = NULL
 )
 }
 \arguments{

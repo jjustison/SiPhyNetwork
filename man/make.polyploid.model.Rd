@@ -6,8 +6,8 @@
 \usage{
 make.polyploid.model(
   initial_states = 1,
-  hyb.event.fxn = NULL,
-  hyb.compatability.fxn = NULL,
+  hyb.event.fxn = make.allopolyploid.event(1),
+  hyb.compatability.fxn = make.states.incompatible(),
   time.fxn = NULL,
   spec.fxn = NULL
 )
@@ -31,10 +31,10 @@ Create a model that dictates how ploidy evolves and affects the diversification 
 }
 \details{
 \code{hyb.event.fxn} is a function that denotes the ploidy of a hybrid child after a hybridization event. The function should have the argument \code{parent_states}, a vector with the trait states of the two parents to the hybrid child. The function should return a single value for the ploidy state of the hybrid child
-The default value of \code{NULL} causes the hybrid child to randomly inherit the ploidy of one of the parents.
+The default value of \code{make.allopolyploid.event(1)} causes the ploidy of the hybrid child to be the sum of the ploidy of the two parental lineages.
 
 \code{hyb.compatability.fxn} describes when hybridization events can occur between two taxa based on their ploidy. The function should have the arguments \code{parent_states} and \code{inheritance}. \code{parent_states} is vector with the ploidy states of the hybrid parents while \code{inheritance} is the inheritance probability of the first lineage denoted in \code{parent_states}. The function should return \code{TRUE} for when a hybridization event is allowed to proceed and \code{FALSE} otherwise.
-The default value of \code{NULL} causes hybridizations to always occur, regardless of ploidy.
+The default value of \code{make.states.incompatible()} assumes only taxa of the same ploidy can hybridize.
 
 \code{time.fxn} is a function that describes how ploidy changes over time. The function should have the arguments \code{poly_states} and \code{timestep} in that order. \code{poly_states} is a vector containing the ploidy of all taxa while \code{timestep} is the amount of time given for ploidy evolution. The function should return a vector with the updated ploidy states of all taxa.
 The default value of \code{NULL} indicates that ploidy will not evolve within a lineage over time. \strong{NOTE:} ploidy can still change at speciation or hybridization events if allowed.

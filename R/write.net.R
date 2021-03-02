@@ -22,9 +22,8 @@
 #' @examples
 write.net<-function(net,file="",append = FALSE, digits = 10, tree.names = FALSE){
 
-  p<-e2p(net)
 
-  w.tree(phy=p,file=file,append=append,digits=digits,tree.names = tree.names)
+  w.tree(phy=net,file=file,append=append,digits=digits,tree.names = tree.names)
 
   }
 
@@ -35,14 +34,16 @@ write.net<-function(net,file="",append = FALSE, digits = 10, tree.names = FALSE)
 ##branching.times() and node.depth.edgelength() both call reorder() which causes memory errors in the RCPP calls
 ##This function serves the same purpose as those without making that call - makes phytools a dependency
 node.times<-function(tree){
-  nd_heights<-as.numeric(nodeHeights(tree))
-  nd_nums<-as.integer(tree$edge)
-
-  num_nds<-tree$Nnode+length(tree$tip.label)
-  node_times<-rep(NA,length(num_nds))
-  for(i in 1:length(nd_heights)){
-    node_times[nd_nums[i]] <- nd_heights[i]
-  }
+  node_times<-node.depth.edgelength(tree)
+  ##Trying to remove dependency on 'phytools'
+  # nd_heights<-as.numeric(nodeHeights(tree))
+  # nd_nums<-as.integer(tree$edge)
+  #
+  # num_nds<-tree$Nnode+length(tree$tip.label)
+  # node_times<-rep(NA,length(num_nds))
+  # for(i in 1:length(nd_heights)){
+  #   node_times[nd_nums[i]] <- nd_heights[i]
+  # }
   return(node_times)
 }
 
@@ -83,7 +84,6 @@ e2p <-  function(x)
   colnames(x$reticulation)<-c('','')
 
   x$edge <- rbind(x$edge, x$reticulation)
-  x$reticulation<-NULL
   x
 }
 
@@ -155,7 +155,9 @@ w.tree <- function(phy, file = "", append = FALSE, digits = 10, tree.names = FAL
     }
 
     for (i in 1:N)
-      res[i] <- .w.tree2(phy[[i]], digits = digits,
+      p<-e2p(phy[[i]])
+
+      res[i] <- .w.tree2(p, digits = digits,
                              tree.prefix = tree.names[i])
 
     if (file == "") return(res)
@@ -221,6 +223,7 @@ w.tree <- function(phy, file = "", append = FALSE, digits = 10, tree.names = FAL
   if (brl) LS <- LS + 4*n
   if (nodelab)  LS <- LS + n
   if (inherits(phy,"evonet")) LS <- LS + (2*nrow(phy$reticulation))
+
   STRING <- character(LS)
   k <- 1
   cp(tree.prefix)

@@ -9,7 +9,7 @@
 #'
 #' @examples
 reconstructedNetwork<-function(net){
-  extinct_tips<- getReconstructedTips(net$tip.label,getExtinct(net))
+  extinct_tips<- getReconstructedTips(net$tip.label,get.extinct(net))
 
   if(length(extinct_tips)==0){
     warning('No extinct tips found. Returning Network unchanged')
@@ -37,11 +37,16 @@ getReconstructedTips<- function(tip.labels,extinct_labels){
 #'
 #' @examples
 incompleteSampling<-function(net,rho,stochastic=F){
-  extinct_tips <- getReconstructedTips(1:length(net$tip.label),getExtinct(net))
-  extant_tips <- (1:length(net$tip.label))[-extinct_tips]
+  extinct_tips <- getReconstructedTips(1:length(net$tip.label),get.extinct(net))
+  if(length(extinct_tips)!=0){
+    extant_tips <- (1:length(net$tip.label))[-extinct_tips]
+  }else{
+    extant_tips <- 1:length(net$tip.label)
+  }
+
 
   deltips<-getSamplingTips(extant_tips,rho,stochastic)
-  if(length(tracked$deltips)>0){ ##only delete tips if there are tips to delete
+  if(length(deltips)>0){ ##only delete tips if there are tips to delete
     net<-deleteTips(net,deltips)
   }
 
@@ -314,8 +319,6 @@ handleTipsTaxa<-function(phy,complete,target_ntaxa,current_n){
   }
   extant_tips<-setdiff(1:length(phy$tip.label),c(phy$hyb_tips,extinct_tips))
   if(current_n!=length(extant_tips)){
-    print(c(current_n,length(extant_tips)))
-
     stop("the extant tips don't match the current_n")
   }
   sampling_tips <- sample(x = extant_tips, size = current_n-target_ntaxa)
@@ -365,8 +368,90 @@ ltt.network<-function(phy,node_times=NULL){
   return(intervals)
 }
 
+#' Create a more Plotting-Friendly phylogenetic Network
+#'
+#' @description This function creates a more plotting-friendly `evonet` object to be used with the `plot()` function
+#'
+#' @param net An object of class `evonet`.
 
+#' @return a network to be used with the `plot()` function
+#' @export
+#'
+#' @examples
+plottable.net<-function(net){
 
+  node_times<-node.depth.edgelength(net)
+
+  nhybs<-nrow(net$reticulation)
+
+  nd_num<- max(net$edge)
+  bad_hybs<-c()
+  new_elength<-c()
+  for(i in 1:nhybs){
+    rw<-net$reticulation[i,]
+    from_time<-node_times[rw[1]]
+    to_time<-node_times[rw[2]]
+    if(from_time!=to_time){
+      bad_hybs<-c(bad_hybs,i)
+      new_elength<-c(new_elength,(to_time-from_time))
+    }
+  }
+  if(length(bad_hybs)>0){
+
+    new_edges<-matrix(nrow = length(bad_hybs),ncol=2)
+
+    for(i in 1:length(bad_hybs)){
+      bad_e<-bad_hybs[i]
+      new_edges[i,]<-net$reticulation[bad_e,]
+      new_edges[i,2]<-nd_num+i
+      net$reticulation[bad_e,1]<-nd_num+i
+    }
+
+    net$edge<-rbind(net$edge,new_edges)
+    net$edge.length<-c(net$edge.length,new_elength)
+
+    ##adjust node numberings now that we've deleted things
+    tip.labels<-rep(NA,length(net$tip.label)+length(bad_hybs))
+    orig_tips<-(1:length(net$tip.label))
+    new_tips <-nd_num+(1:length(bad_hybs))
+    tips<-c(orig_tips,new_tips)
+    net$edge<-net$edge*(-1)
+    net$reticulation<-net$reticulation*(-1)
+
+    leaf=1 ##Start numbering for leaves
+    interior=length(tip.labels)+1 ##Start numberings. start at n+1 because 1:n is reserved for tips
+    for( j in (-1:-(nd_num+length(bad_e)))  ){
+      if( -j %in% tips ) {
+        replaced_value <- leaf
+        if(-j %in% orig_tips){
+          tip.labels[leaf]<-net$tip.label[-j]
+        }else{
+          tip.labels[leaf]<- ''
+        }
+        leaf <- leaf +1
+      } else {
+        replaced_value <- interior
+        interior <- interior +1
+      }
+      net$reticulation[net$reticulation ==  j]<-replaced_value
+      net$edge[net$edge == j]<-replaced_value
+    }
+    net$Nnode<-interior-leaf
+    net$tip.label<-tip.labels
+
+  }
+  return(net)
+}
+
+get.extinct<-function(net,tol=1e-8){
+  nd_times<-node.depth.edgelength(net)
+  extant_time<-max(nd_times)
+  tips<-1:length(net$tip.label)
+  tip_times<-nd_times[tips]
+  extinct_tips<-which(abs(extant_time-tip_times)>tol)
+  extinct_labels<-net$tip.label[extinct_tips]
+  return(extinct_labels)
+}
 
 
 

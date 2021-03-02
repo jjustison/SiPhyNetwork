@@ -50,7 +50,7 @@ sim.bdh.taxa.gsa.help <-function(dummy,m,n,numbsim,
     phy$timecreation<-NULL
 
     ##recompute phy$hyb_tips since we deleted tips and changed node numberings
-    phy$hyb_tips <- which(1:length(phy$tip.label) %in% phy$reticulation[,2])
+    phy$hyb_tips <- which(1:length(phy$tip.label) %in% phy$reticulation[,1])
 
     phy<-handleTipsTaxa(phy=phy,complete=complete,target_ntaxa=n,current_n=effective_n)
 

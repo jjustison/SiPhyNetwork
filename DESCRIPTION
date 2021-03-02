@@ -16,6 +16,5 @@ Suggests:
     rmarkdown
 Imports: 
     stats,
-    ape,
-    phytools
+    ape
 VignetteBuilder: knitr

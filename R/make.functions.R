@@ -40,11 +40,9 @@ make.linear.decay<-function(threshold){
     stop("threshold must be positive")
   }
   myfunction<-function(distance){
-    if(distance>threshold){
-      return(0)
-    } else{
-      return(1-(distance/threshold))
-    }
+    mult<-(distance<threshold)
+    val<-mult*(1-(distance/threshold))
+    return(val)
   }
 }
 #' Make a stepwise decay function
@@ -63,7 +61,7 @@ make.stepwise<-function(probs,distances){
   if(length(probs) != length(distances) ){
     stop("the length of the probs vector should be equal to the length of the distance vector")
   }
-  if(sum(rates<0)!=0){
+  if(sum(probs<0)!=0){
     stop("probs should all be nonnegative")
   }
   if(sum(distances<=0)!=0){
@@ -100,11 +98,9 @@ make.polynomial.decay<-function(threshold,degree=1){
     stop("degree must be positive")
   }
   myfunction<-function(distance){
-    if(distance>threshold){
-      return(0)
-    } else{
-      return(1- ((distance/threshold)^degree) )
-    }
+    mult<-(distance<threshold)
+    val<- mult*(1- ((distance/threshold)^degree))
+    return(val)
   }
   return(myfunction)
 }
@@ -164,10 +160,10 @@ make.categorical.draw <- function(inheritances, weights){
 #' @param spec.fxn A function that describes how ploidy changes after speciation events. See Details for more information
 #' @details
 #' `hyb.event.fxn` is a function that denotes the ploidy of a hybrid child after a hybridization event. The function should have the argument `parent_states`, a vector with the trait states of the two parents to the hybrid child. The function should return a single value for the ploidy state of the hybrid child
-#' The default value of `NULL` causes the hybrid child to randomly inherit the ploidy of one of the parents.
+#' The default value of `make.allopolyploid.event(1)` causes the ploidy of the hybrid child to be the sum of the ploidy of the two parental lineages.
 #'
 #' `hyb.compatability.fxn` describes when hybridization events can occur between two taxa based on their ploidy. The function should have the arguments `parent_states` and `inheritance`. `parent_states` is vector with the ploidy states of the hybrid parents while `inheritance` is the inheritance probability of the first lineage denoted in `parent_states`. The function should return `TRUE` for when a hybridization event is allowed to proceed and `FALSE` otherwise.
-#' The default value of `NULL` causes hybridizations to always occur, regardless of ploidy.
+#' The default value of `make.states.incompatible()` assumes only taxa of the same ploidy can hybridize.
 #'
 #' `time.fxn` is a function that describes how ploidy changes over time. The function should have the arguments `poly_states` and `timestep` in that order. `poly_states` is a vector containing the ploidy of all taxa while `timestep` is the amount of time given for ploidy evolution. The function should return a vector with the updated ploidy states of all taxa.
 #' The default value of `NULL` indicates that ploidy will not evolve within a lineage over time. **NOTE:** ploidy can still change at speciation or hybridization events if allowed.
@@ -177,9 +173,15 @@ make.categorical.draw <- function(inheritances, weights){
 #'
 #' @export
 #' @examples
-make.polyploid.model <-function(initial_states=1, hyb.event.fxn=NULL, hyb.compatability.fxn=NULL, time.fxn=NULL, spec.fxn=NULL){
-  if(is.null(spec.fxn) && is.null(hyb.event.fxn) && is.null(time.fxn) && is.null(hyb.compatability.fxn)){
+make.polyploid.model <-function(initial_states=1,
+                                hyb.event.fxn=make.allopolyploid.event(1),
+                                hyb.compatability.fxn=make.states.incompatible(),
+                                time.fxn=NULL,
+                                spec.fxn=NULL){
+
+  if(is.null(spec.fxn) && is.null(hyb.event.fxn) && is.null(time.fxn) ){
     warning('All components of the polyploid model are NULL. Returning NULL')
+    return(NULL)
   }
 
   ##implement default functions if null
@@ -191,16 +193,6 @@ make.polyploid.model <-function(initial_states=1, hyb.event.fxn=NULL, hyb.compat
   if(is.null(time.fxn)){
     time.fxn <-function(poly_states,timestep){
       return(poly_states)
-    }
-  }
-  if(is.null(hyb.event.fxn)){
-    hyb.event.fxn <-function(parent_states,inheritance){
-      return(sample(parent_states,size = 1))
-    }
-  }
-  if(is.null(hyb.compatability.fxn)){
-    hyb.compatability.fxn <-function(){
-      return(T)
     }
   }
 
@@ -217,6 +209,16 @@ make.polyploid.model <-function(initial_states=1, hyb.event.fxn=NULL, hyb.compat
   return(x)
 }
 
+
+#' Allopolyploidy at Hybridization Events
+#'
+#' @description Create a function that creates rules for allopolyploidy at hybridization events. The function creates an argument for the `hyb.event.fxn` element of the `trait.model` argument of `sim.bdh` style functions.
+#' @return A function that simulates allopolyploidy at hybridization events
+#' @param prob The probability that a hybridization event is an allopolploidy event
+#' @export
+#' @details
+#' If a hybridization event is an allopolyploidy event then the ploidy of the hybrid child is the sum of the ploidy of the two parental lineages. Otherwise, the ploidy of the hybrid child is randomly selected from one of thetwo parental lineages.
+#' @examples
 make.allopolyploid.event <-function(prob){
   myfunc<-function(parent_states,inheritance){
     if(runif(1)<=prob){
@@ -229,7 +231,12 @@ make.allopolyploid.event <-function(prob){
 }
 
 
-
+#' Incompatability at Hybridization Events
+#'
+#' @description Create a function that makes hybridizations unsuccessul if the two parental taxa don't have the same state. The function creates an argument for the `hyb.compatability.fxn` element of the `trait.model` argument of `sim.bdh` style functions.
+#' @return A function that creates a rule for whether hybridization events occur
+#' @export
+#' @examples
 make.states.incompatible <-function(){
   myfunc <- function(parent_states){
     if(parent_states[1]!=parent_states[2]){
