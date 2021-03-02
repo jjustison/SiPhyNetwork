@@ -104,13 +104,30 @@ print(age_net)
 ```
 There are a few things worth noting here. Firstly, if we looked at `age_nets` we would notice that some of the elements are `0`, the`sim.bdh` style functions return `0` if the phylogeny goes extinct before reaching the stopping condition.
 
-Second, we can see that each phylogeny is an `evonet` object, however, they have an additional attribute `inheritance`. `inheritance` contains a vector of inheritance prbabilities. The $i^{th}$ element in `inheritance` corresponds to the inheritance probability of the hybrid edge denoted in the $i^{th}$ row of the `reticulation` attribute.
+
+
+Secondly, we can see that each phylogeny is an `evonet` object, however, they have an additional attribute `inheritance`. `inheritance` contains a vector of inheritance prbabilities. The $i^{th}$ element in `inheritance` corresponds to the inheritance probability of the hybrid edge denoted in the $i^{th}$ row of the `reticulation` attribute.
 ```{r}
 age_net$inheritance ##This corresponds to the edges found in reticulation
 age_net$reticulation
 
 
 ```
+
+Further, we can use the `gsa.network()` function to sample phylogenies under the GSA. This allows us to properly sample $n$ taxa from any phylogenetic model, regardless if the phylogenetic networks were generated from the `NetSim` package or not. 
+
+```{r}
+##We can simulate to 30 extant tips under the SSA. In this case the 30 acts as the m parameter of the GSA
+ssa_nets<-sim.bdh.taxa.ssa(n=30,numbsim=10,
+                    lambda=1,mu=0.2,
+                    nu=0.20, hybprops = hybrid_proportions,
+                    hyb.inher.fxn = inheritance.fxn)
+
+my_net<-ssa_nets[[1]]
+my_net<-network.gsa(net=my_net,ntaxa=5,complete=T,frac=1,stochsampling=F)
+
+```
+
 Lastly, Most of the arguments in the `sim.bdh` type functions take either a numeric or boolean, however, `hyb.inher.fxn`, `hyb.rate.fxn` take functions as arguments while `trait.model` takes a list of functions as an argument. These take functions as arugments so the user can define functions as they please to model the specific biology of interest. Some utility functions exist to aid in creating functions that fit the specific purpose of these arguments. 
 
 For example, when simulating above, we used `make.beta.draw(10,10)` to create a function that makes draws from a beta distribution with shape parameters 10 and 10. We might chose a beta function like this if we believed that inheritance proportions are generally equal but have some variation. `make.uniform.draw()`, and `make.categorical.draw()` are other utility functions for creating appropriate functions for the `hyb.inher.fxn` argument. In fact, any function will work as long as that function requires no arguments itself and returns values on the range $[0,1]$. 

@@ -1,3 +1,17 @@
+#' Sample under the Generalized Sampling Approach
+#'
+#' @description Takes a phylogeny and samples a period where n lineages exist. This method properly samples n taxa under the GSA
+#'
+#' @param net A network to sample phylogenies.
+#' @param n The number of desired taxa.
+#' @param frac Sampling fraction: The proportion of extant tips included in the phylogeny (incomplete sampling).
+#' @param mrca If `mrca=FALSE`: age is the time since origin. If `mrca=TRUE`: age is the time since most recent common ancestor of the extant tips.
+#' @param complete If complete = TRUE, the tree with the extinct lineages is returned. If complete = FALSE, the extinct lineages are suppressed.
+#' @param stochsampling When `stochsampling=TRUE`: Each extant tip is included into the final tree with probability frac.
+#' @return A network with n extant taxa
+#'
+#' @export
+#' @examples
 network.gsa <- function(net,ntaxa,complete=T,frac=1,stochsampling=F){
   effective_n<-getEffectiveN(n=ntaxa,frac = frac,stochsampling = stochsampling)
 
