@@ -1,8 +1,9 @@
 ---
-title: "Introduction to NetSim"
+title: "Introduction"
 subtitle: "An R Package for Simulating Phylogenetic Networks"
 author: "Josh Justison"
 output: rmarkdown::html_vignette
+bibliography: vignette.bib
 vignette: >
   %\VignetteIndexEntry{Introduction}
   %\VignetteEngine{knitr::rmarkdown}
@@ -14,9 +15,11 @@ The NetSim R package is a tool for simulating phylogenetic networks under birth-
 
 # Introduction 
 
-Birth-death processes are commonly used to describe species diversification (cite). There exist several phylogenetic simulation tools that generate trees under the birth-death process as well as extenstions for density-dependent diversification (cite), time-dependent rates (cite), lineage age dependent rates (cite), and fossilisation (cite). Recently, an extension of the birth-death process that includes hybridization was developed as a prior for Bayesian phylogenetic inference. AS process-based phylogenetic inference methods receive increased attention, it becomes imperative that we can simulate phylogenetic networks for the testing of these methods and for creating hypotheses about empirical systems. 
+Birth-death processes are commonly used to describe species diversification _[@Nee2006]_. There exist several phylogenetic simulation tools that generate trees under the birth-death process _[See @Stadler2011]_ as well as extentions for density-dependent diversification , time-dependent rates _[@Hoehna2013; @Hoehna2015]_, lineage age dependent rates _[@Hagen2018]_, and fossilisation _[@BaridoSottani2019]_. 
 
-#The Netsim Package
+Gene flow and hybridization is found throughout the tree of life and has had a nontrivial role in shaping diversity _[@Mallet2016]_. Recently, an extension of the birth-death process that includes hybridization was developed as a prior for Bayesian phylogenetic inference _[@Zhang2018]_. This model assumes the waiting time between hybridizations is exponentially distributed with rate parameter ${ntaxa \choose 2}\nu$, where $\nu$ is the hybridization rate. A few tools exist that simulate phylogenetic networks under variants of this model _[@Morin2006; @Woodhams2016; @Davin2020]_, however they all have different conceptualizations on how hybridization events affect the number of lineages on the phylogeny. As process-based phylogenetic inference methods receive increased attention, it becomes imperative that we can simulate biologically relevant phylogenetic network for the testing of these methods and for creating hypotheses about empirical systems. 
+
+# The Netsim Package
 
 The Netsim R package allows simulation of phylogenetic networks under a birth-death-hybridization process. This package extends the capabilities of other existing birth-death-hybridization based simulators by allowing:
 
@@ -33,7 +36,13 @@ Throughout this vignette we will cover how to use these features in NetSim.
 
 ## Simulating Networks
 
-There are three core functions for simulating phylogenetic networks: `sim.bdh.age`, `sim.bdh.taxa.ssa`, and `sim.bdh.taxa.gsa` (collectively refered to as `sim.bdh` style functions). These functions all use the same birth-death-hybridization models but differ in their stopping conditions. `sim.bdh.age` simulates until a specified `age`. `sim.bdh.taxa.ssa` uses the Simple Sampling Approach (SSA) to simulating to a specified number of taxa `n`, that is, the simulation will stop once the phylogeny has `n` tips. `sim.bdh.taxa.gsa` uses the General Sampling Approach (GSA) as described in  to simulate to a specified number of taxa `n`. Briefly, the GSA simulates `m` taxa under the SSA and samples the phylogeny from time periods where `n` taxa are present.
+There are three core functions for simulating phylogenetic networks: `sim.bdh.age`, `sim.bdh.taxa.ssa`, and `sim.bdh.taxa.gsa` (collectively refered to as `sim.bdh` style functions). These functions all use the same birth-death-hybridization models but differ in their stopping conditions. 
+
+* The `sim.bdh.age` function simulates until a specified `age`.
+* The `sim.bdh.taxa.ssa` function uses the Simple Sampling Approach (SSA) to simulate to a specified number of taxa `n`, that is, the simulation will stop once the phylogeny has `n` tips.
+* The `sim.bdh.taxa.gsa` function uses the General Sampling Approach (GSA) to simulate to a specified number of taxa `n`. Briefly, the GSA simulates `m` taxa under the SSA and samples the phylogeny from time periods where `n` taxa are present. 
+
+Both the SSA and GSA are described with greater detail in *@Hartmann2010* and *@Stadler2011*.
 
 ### Example 1: Simulating Networks under a simple hybridization model
 
@@ -82,38 +91,30 @@ hybrid_proportions <-c(0.5,  ##Lineage Generative
                        0.25, ##Lineage Degenerative
                        0.25) ##Lineage Neutral
 
-
 ##We can simulate to 7 extant tips with the SSA
 ssa_nets<-sim.bdh.taxa.ssa(n=7,numbsim=20,
                     lambda=1,mu=0.2,
                     nu=0.20, hybprops = hybrid_proportions,
                     hyb.inher.fxn = inheritance.fxn)
-ssa_net<-ssa_nets[[20]] ##The sim.bdh functions return a list of length numbsim. We get the fifth simulation
+ssa_net<-ssa_nets[[20]] ##The sim.bdh functions return a list of length numbsim. We get the 20th simulation
 print(ssa_net)
 
-##We can also simulate 7 extant taxa with the GSA. We choose m=30 because it becomes very unlikely that at 30 tips we will ever return to 7
+##We can also simulate 7 extant taxa with the GSA. 
+##We choose m=30 because it becomes very unlikely that at 30 tips we will ever return to 7
 gsa_nets<-sim.bdh.taxa.gsa(m=30,n=7,numbsim=20,
                     lambda=1,mu=0.6,
                     nu=0.3, hybprops = hybrid_proportions,
                     hyb.inher.fxn = inheritance.fxn)
 gsa_net<-gsa_nets[[19]]
-# print(gsa_net)
-# 
-# 
-# 
 
-##Simulate a work up to age 2
+##Simulate a network up to age 2
 age_nets <-sim.bdh.age(age=2,numbsim=20,
                     lambda=1,mu=0.2,
                     nu=0.25, hybprops = hybrid_proportions,
                     hyb.inher.fxn = inheritance.fxn)
 age_net<-age_nets[[8]]
-print(age_net)
-
-
-
 ```
-There are a few things worth noting here. Firstly, if we looked at `age_nets` we would notice that some of the elements are `0`, the`sim.bdh` style functions return `0` if the phylogeny goes extinct before reaching the stopping condition.
+There are a few things worth noting here. Firstly, if we looked at `age_nets` we would notice that some of the elements are `0`, the `sim.bdh` style functions return `0` if the phylogeny goes extinct before reaching the stopping condition.
 
 
 
@@ -121,8 +122,6 @@ Secondly, we can see that each phylogeny is an `evonet` object, however, they ha
 ```{r}
 age_net$inheritance ##This corresponds to the edges found in reticulation
 age_net$reticulation
-
-
 ```
 
 Further, we can use the `gsa.network()` function to sample phylogenies under the GSA. This allows us to properly sample $n$ taxa from any phylogenetic model, regardless if the phylogenetic networks were generated from the `NetSim` package or not. 
@@ -136,12 +135,11 @@ ssa_nets<-sim.bdh.taxa.ssa(n=30,numbsim=10,
 
 my_net<-ssa_nets[[1]]
 my_net<-network.gsa(net=my_net,ntaxa=5,complete=T,frac=1,stochsampling=F)
-
 ```
 
 Lastly, Most of the arguments in the `sim.bdh` type functions take either a numeric or boolean, however, `hyb.inher.fxn`, `hyb.rate.fxn` take functions as arguments while `trait.model` takes a list of functions as an argument. These take functions as arguments so the user can define functions as they please to model the specific biology of interest. Some utility functions exist to aid in creating functions that fit the specific purpose of these arguments. 
 
-For example, when simulating above, we used `make.beta.draw(10,10)` to create a function that makes draws from a beta distribution with shape parameters 10 and 10. We might chose a beta function like this if we believed that inheritance proportions are generally equal but have some variation. `make.uniform.draw()`, and `make.categorical.draw()` are other utility functions for creating appropriate functions for the `hyb.inher.fxn` argument. In fact, any function will work as long as that function requires no arguments itself and returns values on the range $[0,1]$. 
+For example, when simulating above, we used `make.beta.draw(10,10)` to create a function that makes draws from a beta distribution with shape parameters 10 and 10. We might chose a beta function like this if we believed that inheritance proportions are generally equal but have some variation. Alternatively, `make.uniform.draw()`, and `make.categorical.draw()` are other utility functions for creating appropriate functions for the `hyb.inher.fxn` argument. In fact, any function will work as long as that function requires no arguments itself and returns values on the range $[0,1]$. 
 
 We will explore how to appropriately make arguments for `hyb.rate.fxn` and `trait.model` later in this vignette.
 
@@ -153,19 +151,16 @@ After simulating phylogenetic networks it can be helpful to identify certain cha
 ### Example 2 Plotting Networks
 One of the first ways of understanding the type of phylogenetic networks we generated would be to plot them
 ```{r, fig.show='hold',fig.height = 4,}
-
 plot(ssa_net,main="SSA Network")
 plot(gsa_net,main="GSA Network") 
 plot(age_net,main="Age Network")
-
-
 ```
 
 A few odd things happened here when we tried plotting the networks we simulated. We will go over these network by network.
 
-* The **SSA network**  only shows one hybridization event although we can see from the `reticulation` element that there are two events. This occurs when there is a hybridization where the two donor lineages have the same parental node.
+* The **SSA network**  only shows one hybridization event although we can see from the `reticulation` element that there are two events. This occurs when there is a hybridization where the two donor lineages have the same parental node. We can identify where this occurs on the phylogeny by using `nodelabels()`. We can notice nodes $15$ and $17$ sitting on the edge between $11$ and $18$. In fact, if we looked at the `reticulation` element of our network we would notice gene flow from node $15$ to node $17$ so this is indeed where the hybridization occurs. Although only one edge is drawn between these nodes, we can imagine another hybrid edge between $15$ and $17$.
 * From the **GSA network** figure we can notice two issues. Firstly, it looks cut off or was plotting incorrectly. While the edge and reticulation matrix would confirm that the network is properly conformed, the plotting function of `ape` doesn't always render networks correctly. Secondly, the GSA network has a diagonal hybrid edge, and while this isn't improper, it does muddle the interpretation of the phylogeny. The diagonal line would seem to imply that there was gene flow from a lineage in the past to a more recent lineage. This clearly isn't the case as no lineages that we know of can time travel. These diagonal hybrid edges can result from incomplete lineage sampling, gene flow from a now extinct species, or lineage degenerative hybridization but it can still be hard to interpret diagonal edges. 
-* In the **Age network** we can see the same issue with one of the hybrid edges not appearing as in the **GSA netowrk**. However, this tree also is a good example of all three different type of hybridization. We can see lineage neutral hybridization between $t7$ and $t8$. After looking at the `reticulation` element we can see that the gene flow goes from the $t7$ lineage to the $t8$ lineage. Next, we can see lineage generating hybridization with the vertical blue line from lineage $t3$ to lineage $t8$. Although, the gene flow looks like it goes from $t3$ to a common ancestor of $t9$ and $t4$, we can use `nodelabels()` and look at the `reticulation` element to confirm where the hybridization occurs. Lastly, we can see lineage degenerative hybridization with diagonal edge denoting gene flow from lineage $t9$ to lineage $t3$. 
+* In the **Age network** we can see the same issue with one of the hybrid edges not appearing as in the **SSA netowrk**. However, this tree also is a good example of all three different type of hybridization. We can see lineage neutral hybridization between $t7$ and $t8$. After looking at the `reticulation` element we can see that the gene flow goes from the $t7$ lineage to the $t8$ lineage. Next, we can see lineage generating hybridization with the vertical blue line from lineage $t3$ to lineage $t8$. Although, the gene flow looks like it goes from $t3$ to a common ancestor of $t9$ and $t4$, using `nodelabels()` and the `reticulation` element we can confirm where the hybridization occurs. Lastly, we can see lineage degenerative hybridization with diagonal edge denoting gene flow from lineage $t9$ to lineage $t3$. 
 
 We correct these issues by using the `plottable.net()` function to modify the phylogeny to a more plotting-friendly network where gene flow always occurs between contemporary lineages. We aren't changing anything fundamental about the network, just how the edges get drawn. 
 
@@ -182,7 +177,7 @@ plot(age_pnet,main="Age Network")
 
 ### Example 3 Network Input and Output
 
-Now that we've gotten a look at the networks we may wish to save these networks to file. We will be using the rich Newick Format for saving the phylogenies(cite). Notaby, the `ape` function `write.evonet` does not save inheritance probabilities to file so we defined `write.net` for this purpose
+Now that we've gotten a look at the networks we may wish to save these networks to file. We will be using the rich Newick Format for saving the phylogenies *[@Cardona2008; but see @Wen2018]*. Notaby, the `ape` function `write.evonet` does not save inheritance probabilities to file so we defined `write.net` for this purpose
 ```{r}
 
 write.evonet(ssa_net,file='') ##we can see that inheritance probabilities aren't included here
@@ -194,8 +189,6 @@ print(my_net)
 str(my_net)##we can see that my_net has the inheritance element for inheritance probabilities
 
 ```
-
-
 
 ## Reconstructed Phylogenies & Incomplete Sampling
 
@@ -218,12 +211,12 @@ plot(plottable.net(pruned_gsa),main='Reconstructed Phylogeny with Incomplete Sam
 
 We can extend our model of hybridization in two main ways:
 
-1. **Make the probability of a successful hybridization a function of genetic distance.** We can do this to model the belief that it is less likely for more distantly related taxa to hybridize. This function will take in the genetic distance between two taxa and return the probability that the hybridization is successful. We use the same matrix of genetic distances that is defined in ____. The genetic distance between two taxa $X$ and $Y$ is defined as the summation of all edge lengths on the path from $X$ to $Y$. Genetic distances involving hybridized taxa is similar but hybridizations lead to multiple paths from $X$ to $Y$; in this case we use a weighted summation across all different paths where the weight for each path depends on the inheritance probabilities. 
+1. **Make the probability of a successful hybridization a function of genetic distance.** We can do this to model the belief that it is less likely for more distantly related taxa to hybridize. This function will take in the genetic distance between two taxa and return the probability that the hybridization is successful. We use the same matrix of genetic distances that is defined in *@Woodhams2016*. Briefly, the genetic distance between two non hybrid taxa $X$ and $Y$ is defined as the summation of all edge lengths on the path from $X$ to $Y$. Genetic distances involving hybridized taxa is similar but hybridizations lead to multiple paths from $X$ to $Y$; in this case we use a weighted summation across all different paths where the weight for each path depends on the inheritance probabilities. 
 
-2. **Make successful hybridizations depend on some trait that also evolves along the tree.** This extension was made to model the belief that typically only lineages with the same ploidy and chromosome number can hybridize, although this can be generalized to model any discrete or continuous trait.
+2. **Make successful hybridizations depend on some trait that also evolves along the tree.** This extension was made to model the belief that typically only lineages with the same ploidy and chromosome number can hybridize, although this can be generalized to model any discrete or continuous trait and rules for restricting hybridization.
 
 ### Example 5A: Hybridizations Dependent on Genetic Distance
-We can make the probability that a hybridization is successful by providing a function that is defined on the range $[0,\infty)$ and returns values from $0$ to $1$. We have implemented several `make` functions for creating functions that fit these criteria. These functions are then used as the `hyb.rate.fxn` argument in the `sim.bdh` style functions.
+We can make the probability that a hybridization is successful by providing a function that is defined on the range $[0,\infty)$ for genetic distances and returns values from $0$ to $1$ for the probability of a successful hybridization. We have implemented several `make` functions for creating functions that fit these criteria. These functions are then used as the `hyb.rate.fxn` argument in the `sim.bdh` style functions.
 
 ```{r}
 ##Here are some of the make functions
@@ -269,11 +262,14 @@ We can use the `make.polyploid.model` to create a list containing all the nessec
 ```{r}
 
 ##Make a trait model
+
 plypld.model <- make.polyploid.model(initial_states=1, 
                                 hyb.event.fxn=make.allopolyploid.event(1), 
                                 hyb.compatability.fxn=make.states.incompatible(), 
                                 time.fxn=NULL,
                                 spec.fxn=NULL)
+##These are the default values so one can use make.polyploid.model() for the same effect
+
 ##simulate Networks
 age_nets <-sim.bdh.age(age=2,numbsim=10,
                     lambda=1,mu=0.2,
@@ -318,3 +314,5 @@ age_nets <-sim.bdh.age(age=2,numbsim=10,
 
 ```
 
+
+# Works Cited 

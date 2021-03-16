@@ -250,7 +250,7 @@ as.evonet.phylo2 <- function(x, ...)
   pos <- grep("#", x$tip.label)
   ind <- match(pos, x$edge[, 2])
   reticulation <- x$edge[ind, , drop = FALSE]
-  inheritance<-x$inheritance[ind]
+  inheritance<-x$prob[ind]
   edge <- x$edge[-ind, , drop = FALSE]
   nTips <- as.integer(length(x$tip.label))
   reticulation[, 2] <- as.integer(match(x$tip.label[pos], x$node.label) + nTips)
@@ -261,6 +261,8 @@ as.evonet.phylo2 <- function(x, ...)
   x$edge <- edge
   x$reticulation <- reticulation
   if (!is.null(x$edge.length)) x$edge.length <- x$edge.length[-ind]
+  x$prob<-NULL
+  x$inheritance<-inheritance
   x$tip.label <- x$tip.label[-pos]
   class(x) <- c("evonet", "phylo")
   x
