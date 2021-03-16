@@ -44,7 +44,7 @@ There are three core functions for simulating phylogenetic networks: `sim.bdh.ag
 
 Both the SSA and GSA are described with greater detail in *@Hartmann2010* and *@Stadler2011*.
 
-### Example 1: Simulating Networks under a simple hybridization model
+### Example 1: Simulating Networks Under A Simple Hybridization Model
 
 The `sim.bdh` style functions have many optional arguments with default values. For this first set of simulations we won't adjust any optional arguments, we'll be playing with these arguments in later sections. However, it is important to know the assumptions we are making with our model by using default parameters. Specifically, we assume:
 
@@ -144,7 +144,7 @@ For example, when simulating above, we used `make.beta.draw(10,10)` to create a 
 We will explore how to appropriately make arguments for `hyb.rate.fxn` and `trait.model` later in this vignette.
 
 
-## Characterizing and Using Phylogenetic Networks
+## Characterizing And Using Phylogenetic Networks
 
 After simulating phylogenetic networks it can be helpful to identify certain characteristics of the networks and eventually save those networks to file so they can be used in other pipelines.
 
@@ -175,7 +175,7 @@ plot(gsa_pnet,main="GSA Network")
 plot(age_pnet,main="Age Network")
 ```
 
-### Example 3 Network Input and Output
+### Example 3 Network Input And Output
 
 Now that we've gotten a look at the networks we may wish to save these networks to file. We will be using the rich Newick Format for saving the phylogenies *[@Cardona2008; but see @Wen2018]*. Notaby, the `ape` function `write.evonet` does not save inheritance probabilities to file so we defined `write.net` for this purpose
 ```{r}
@@ -207,7 +207,7 @@ plot(plottable.net(pruned_gsa),main='Reconstructed Phylogeny with Incomplete Sam
 
 ```
 
-## More complex Hybridization Models
+## More Complex Hybridization Models
 
 We can extend our model of hybridization in two main ways:
 
@@ -215,7 +215,7 @@ We can extend our model of hybridization in two main ways:
 
 2. **Make successful hybridizations depend on some trait that also evolves along the tree.** This extension was made to model the belief that typically only lineages with the same ploidy and chromosome number can hybridize, although this can be generalized to model any discrete or continuous trait and rules for restricting hybridization.
 
-### Example 5A: Hybridizations Dependent on Genetic Distance
+### Example 5A: Hybridizations Dependent On Genetic Distance
 We can make the probability that a hybridization is successful by providing a function that is defined on the range $[0,\infty)$ for genetic distances and returns values from $0$ to $1$ for the probability of a successful hybridization. We have implemented several `make` functions for creating functions that fit these criteria. These functions are then used as the `hyb.rate.fxn` argument in the `sim.bdh` style functions.
 
 ```{r}
