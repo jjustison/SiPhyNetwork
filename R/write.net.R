@@ -256,4 +256,3 @@ w.tree <- function(phy, file = "", append = FALSE, digits = 10, tree.names = FAL
 
 
 
-

@@ -420,7 +420,7 @@ plottable.net<-function(net){
 
     leaf=1 ##Start numbering for leaves
     interior=length(tip.labels)+1 ##Start numberings. start at n+1 because 1:n is reserved for tips
-    for( j in (-1:-(nd_num+length(bad_e)))  ){
+    for( j in (unique(as.vector(net$edge)))  ){
       if( -j %in% tips ) {
         replaced_value <- leaf
         if(-j %in% orig_tips){

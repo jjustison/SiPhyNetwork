@@ -217,7 +217,7 @@ make.polyploid.model <-function(initial_states=1,
 #' @param prob The probability that a hybridization event is an allopolploidy event
 #' @export
 #' @details
-#' If a hybridization event is an allopolyploidy event then the ploidy of the hybrid child is the sum of the ploidy of the two parental lineages. Otherwise, the ploidy of the hybrid child is randomly selected from one of thetwo parental lineages.
+#' If a hybridization event is an allopolyploidy event then the ploidy of the hybrid child is the sum of the ploidy of the two parental lineages. Otherwise, the ploidy of the hybrid child is randomly selected from one of the two parental lineages.
 #' @examples
 make.allopolyploid.event <-function(prob){
   myfunc<-function(parent_states,inheritance){

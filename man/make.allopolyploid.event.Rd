@@ -16,5 +16,5 @@ A function that simulates allopolyploidy at hybridization events
 Create a function that creates rules for allopolyploidy at hybridization events. The function creates an argument for the \code{hyb.event.fxn} element of the \code{trait.model} argument of \code{sim.bdh} style functions.
 }
 \details{
-If a hybridization event is an allopolyploidy event then the ploidy of the hybrid child is the sum of the ploidy of the two parental lineages. Otherwise, the ploidy of the hybrid child is randomly selected from one of thetwo parental lineages.
+If a hybridization event is an allopolyploidy event then the ploidy of the hybrid child is the sum of the ploidy of the two parental lineages. Otherwise, the ploidy of the hybrid child is randomly selected from one of the two parental lineages.
 }
