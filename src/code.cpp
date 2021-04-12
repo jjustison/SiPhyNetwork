@@ -15,18 +15,21 @@ int which1(const LogicalVector & x) {
 }
 
 void biconnectedHelper(const IntegerMatrix &edges,const int nd,int &index, IntegerVector &edgeS, List &blobs, IntegerVector &depth, IntegerVector &lowpoint, IntegerVector &prev){
+  Rcout<<"we are in node "<<nd<<"\n";
   int children = 0;
 
   depth[nd-1]    = index;
   lowpoint[nd-1] = index;
   index++;
-
+  Rcout<<"  "<<"The index is "<<index<<"\n";
   IntegerVector adj_edges = which2( (edges(_,0)==nd) | (edges(_,1)==nd) );
   for(auto e : adj_edges){
     IntegerVector nd_edge=edges(e,_);
     IntegerVector child_nd = nd_edge[nd_edge != nd];
 
     int w = child_nd[0];
+    Rcout<<"  "<<w<<" is adjacent to "<<nd<<" and has a depth of "<<depth[w-1]<<"\n";
+
 
     if(depth[w-1]==-1){
       prev[w-1]= nd;
@@ -36,19 +39,22 @@ void biconnectedHelper(const IntegerMatrix &edges,const int nd,int &index, Integ
 
       lowpoint[nd-1]= min(as<IntegerVector>(lowpoint[nd_edge-1]));
 
-      if((prev[nd-1]==-1 && children >1) | ((prev[nd-1] != -1) & (lowpoint[w-1] >= depth[nd-1]) )) { //The node is an articulation point or the root
+      if(( (prev[nd-1]==-1) & (children >1) ) | ((prev[nd-1] != -1) & (lowpoint[w-1] >= depth[nd-1]) )) { //The node is an articulation point or the root
         //We make a new blob
-
+        Rcout<<"we completed a blob"<<"\n";
+        Rcout<<"The stack is currently "<<edgeS<<"\n";
         IntegerVector indices = seq(0, edgeS.size()-1);
         int start_ind = which1(edgeS == e); //The blob are all edges including and past this one
         if(start_ind != (indices.size()-1)){//only add the blob if it has more than one edge in it
+          Rcout<<"pushing a new blob";
           blobs.push_back(as<IntegerVector>(edgeS[indices>=start_ind]));//Add the blob
         }
         edgeS = edgeS[indices<start_ind]; //Remove the blob edges from edgeS
-      } else if(prev[nd-1]!=w && depth[nd-1]>depth[w-1]){ //e is a back edge
+        Rcout<<"The Stack is now "<<edgeS<<"\n";
+      }
+    } else if( (prev[nd-1]!=w) & (depth[nd-1]>depth[w-1]) ){ //e is a back edge
         lowpoint[nd-1] = std::min(lowpoint[nd-1],depth[w-1]);
         edgeS.push_back(e);
-      }
     }
   }
 }
