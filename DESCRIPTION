@@ -16,5 +16,8 @@ Suggests:
     rmarkdown
 Imports: 
     stats,
-    ape
+    ape,
+    Rcpp
 VignetteBuilder: knitr
+LinkingTo: 
+    Rcpp
