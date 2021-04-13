@@ -32,8 +32,8 @@ isTreeChild <-function(net){
 #' @param net A phylogenetic network of class `evonet`.
 
 #' @return A logical that is `TRUE` if the network is tree-based
-#' @details A phylogenetic network is said to be tree-based if it can be constructed with a base tree that has additional linking arcs added.
-#' @references See @jetten2016 Corollary 2.11 for the algorithm used to determine whether the network is tree-based
+#' @details A phylogenetic network is said to be tree-based if it can be constructed with a base tree that has additional linking arcs added.See jetten 2016 Corollary 2.11 for the algorithm used to determine whether the network is tree-based
+#'
 #' @export
 #'
 #' @examples
@@ -64,22 +64,24 @@ isTreeBased <- function(net){
         if( !(curr_nd %in% hyb_nds) ){
           path_finished <- T
         }else{ ## move on to the next node
+
           nd_parents<- edges[edges[,2]==curr_nd,1]
           temp_nd<-curr_nd
-          curr_nd<-nd_parents[nd_parents!=curr_nd]
+          curr_nd<-nd_parents[nd_parents!=prev_nd]
+
           prev_nd<-temp_nd
           zig<-F
         }
       }else{ ##zag
         ##The node should be an omnian. i.e. all children should be reticulate
-        nd_children <- edges[edges[,1]==nd,2]
+        nd_children <- edges[edges[,1]==curr_nd,2]
         if(!all(nd_children %in% hyb_nds)){
           path_finished <- T
         }else if(curr_nd %in% hyb_nds){ ##check if the node itself is reticulate
-          return(F) ##two reticulate omnians are connected by a zigzag path
+          return(FALSE) ##two reticulate omnians are connected by a zigzag path
         }else{ ##move on to the next node
           temp_nd<-curr_nd
-          curr_nd<-nd_children[nd_children!=curr_nd]
+          curr_nd<-nd_children[nd_children!=prev_nd]
           prev_nd<-temp_nd
           zig<-T
         }
@@ -107,7 +109,7 @@ getNetworkLevel <- function(net){
   nNode <- length(net$tip.label)+net$Nnode ##The total number of nodes
 
   blobs <- biconnectedComponents(edges,rt,nNode)
-
+  return(blobs)
 }
 
 isStable <- function(net){

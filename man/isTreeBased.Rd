@@ -16,8 +16,5 @@ A logical that is \code{TRUE} if the network is tree-based
 This function determines whether a network is tree-based
 }
 \details{
-A phylogenetic network is said to be tree-based if it can be constructed with a base tree that has additional linking arcs added.
-}
-\references{
-See @jetten2016 Corollary 2.11 for the algorithm used to determine whether the network is tree-based
+A phylogenetic network is said to be tree-based if it can be constructed with a base tree that has additional linking arcs added.See jetten 2016 Corollary 2.11 for the algorithm used to determine whether the network is tree-based
 }
