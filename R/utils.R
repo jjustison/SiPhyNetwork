@@ -1,3 +1,15 @@
+#' Determine whether a network is tree-child
+#'
+#' @description This function determines whether a network is tree-child
+#'
+#' @param net A phylogenetic network of class `evonet`.
+
+#' @return A logical that is `TRUE` if the network is tree-child
+#' @details A phylogenetic network is said to be tree-child if all internal nodes have at least one tree-like or leaf node as children.
+#' @export
+#'
+#' @examples
+
 isTreeChild <-function(net){
   parent_nds <- net$reticulation[,1]
   hyb_nds <- net$reticulation[,2]
@@ -13,8 +25,21 @@ isTreeChild <-function(net){
 
 
 
-## Corollary 2.11 of Jetten & Iersel 2016
+#' Determine whether a network is tree-based
+#'
+#' @description This function determines whether a network is tree-based
+#'
+#' @param net A phylogenetic network of class `evonet`.
+
+#' @return A logical that is `TRUE` if the network is tree-based
+#' @details A phylogenetic network is said to be tree-based if it can be constructed with a base tree that has additional linking arcs added.
+#' @references See @jetten2016 Corollary 2.11 for the algorithm used to determine whether the network is tree-based
+#' @export
+#'
+#' @examples
+
 isTreeBased <- function(net){
+  ## Corollary 2.11 of Jetten & Iersel 2016
   hyb_nds <- net$reticulation[,2]
 
   edges<- rbind(net$edge,net$reticulation)
@@ -85,5 +110,30 @@ getNetworkLevel <- function(net){
 
 }
 
+isStable <- function(net){
 
+  hyb_nds<-net$reticulation[,2]
+  edges<-rbind(net$edge,net$reticulation)
+  ## First check to see if compressed
+  children<- edges[edges[,1] %in% hyb_nds,2] ##children of the hyb_nodes
+  if(any(children %in% hyb_nds)){ ##none of the children should be reticulate
+    return(FALSE)
+  }
+
+  ##Now check to see if any of the tree vertices have the same children
+  internal_nds <- unique(as.vector(net$edge))
+  internal_nds <- internal_nds[internal_nds > length(net$tip.label)]
+  tree_nds <- internal_nds[!(internal_nds %in% hyb_nds)]
+  tree_children <- list() ##store the children of all the tree nodes
+  index_added<-0 ##Keep track of the index of the tree nodes we've added
+  for(nd in tree_nds){
+    tree_children[[nd]] <- edges[edges[,1]==nd,2]
+
+    for(nd2 in tree_children[seq_along(rep(NA,index_added))]){
+      ##TODO compare the children of nd and nd2
+    }
+  }
+
+
+}
 
