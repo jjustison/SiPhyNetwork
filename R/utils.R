@@ -15,7 +15,7 @@ isTreeChild <-function(net){
   hyb_nds <- net$reticulation[,2]
 
   for(nd in parent_nds){##Make sure all parent nodes have at least one tree node child
-    children <- net$edge[nd==net$edge,2]
+    children <- net$edge[nd==net$edge[,1],2]
     if( sum(!(children %in% hyb_nds))==0){ ##all children are hybrid nodes
       return(F)
     }
@@ -32,7 +32,7 @@ isTreeChild <-function(net){
 #' @param net A phylogenetic network of class `evonet`.
 
 #' @return A logical that is `TRUE` if the network is tree-based
-#' @details A phylogenetic network is said to be tree-based if it can be constructed with a base tree that has additional linking arcs added.See jetten 2016 Corollary 2.11 for the algorithm used to determine whether the network is tree-based
+#' @details A phylogenetic network is said to be tree-based if it can be constructed with a base tree that has additional linking arcs added. See jetten 2016 Corollary 2.11 for the algorithm used to determine whether the network is tree-based
 #'
 #' @export
 #'
@@ -112,7 +112,18 @@ getNetworkLevel <- function(net){
   return(blobs)
 }
 
-isStable <- function(net){
+
+#' Get the level of a Network
+#'
+#' @description This function gets the level of the network
+#'
+#' @param net A phylogenetic network of class `evonet`.
+
+#' @return A numeric with the level of the network
+#' @export
+#'
+#' @examples
+isFUStable <- function(net){
 
   hyb_nds<-net$reticulation[,2]
   edges<-rbind(net$edge,net$reticulation)

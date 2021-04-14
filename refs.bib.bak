@@ -303,13 +303,4 @@
   publisher = {Springer},
 }
 
-@InProceedings{Gambette2009,
-  author    = {Gambette, Philippe and Berry, Vincent and Paul, Christophe},
-  booktitle = {Annual Symposium on Combinatorial Pattern Matching},
-  title     = {The structure of level-k phylogenetic networks},
-  year      = {2009},
-  pages     = {289--300},
-  publisher = {Springer},
-}
-
 @Comment{jabref-meta: databaseType:bibtex;}
