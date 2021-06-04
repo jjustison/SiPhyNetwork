@@ -39,7 +39,7 @@ void biconnectedHelper(const IntegerMatrix &edges,const int nd,int &index, Integ
         IntegerVector indices = seq(0, edgeS.size()-1);
         int start_ind = which1(edgeS == e); //The blob are all edges including and past this one
         if(start_ind != (indices.size()-1)){//only add the blob if it has more than one edge in it
-          blobs.push_back(as<IntegerVector>(edgeS[indices>=start_ind]));//Add the blob
+			    blobs.push_back(as<IntegerVector>(edgeS[indices>=start_ind]));//Add the blob
         }
         edgeS = edgeS[indices<start_ind]; //Remove the blob edges from edgeS
       }

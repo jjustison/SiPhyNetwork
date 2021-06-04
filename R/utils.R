@@ -103,13 +103,39 @@ isTreeBased <- function(net){
 #'
 #' @examples
 getNetworkLevel <- function(net){
+  nrets<-nrow(net$reticulation)
+  if(nrets==0){ ##if there are no reticulations then the network must be level 0
+    return(0)
+  }
+  if(nrets==1){ ##having 1 reticulation always means level 1
+    return(1)
+  }
+
   rt<-as.integer(length(net$tip.labels)+1)
   edges<- rbind(net$edge,net$reticulation)
+  hyb_nds <- net$reticulation[,2]
   mode(edges)<-'integer'
   nNode <- length(net$tip.label)+net$Nnode ##The total number of nodes
 
-  blobs <- biconnectedComponents(edges,rt,nNode)
-  return(blobs)
+  blobs <- biconnectedComponents(edges,rt,nNode) ##Get the biconnected components
+
+  nds<-c()
+  for(blob in blobs){
+    blob<-blob+1
+    blob_nds<-unique(as.vector(edges[blob,])) ##get all nodes from the blob
+    blob_nds<-blob_nds[blob_nds %in% hyb_nds]
+    nds<-c(nds,blob_nds)
+  }
+
+  if(is.null(nds)){ ##We don't find blobs if all non-trivial ones are blobs where the two edges have the same parent and go to the same child
+    return(-1) ##We want to return 1 in this case
+  }else{
+    lev<-max(table(nds))
+    return(lev)
+  }
+
+
+
 }
 
 
@@ -144,6 +170,9 @@ isFUStable <- function(net){
 
     for(nd2 in tree_children[seq_along(rep(NA,index_added))]){
       ##TODO compare the children of nd and nd2
+      if( length(nd)==length(nd2)){
+
+      }
     }
   }
 

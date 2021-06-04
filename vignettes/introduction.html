@@ -220,54 +220,55 @@ div.csl-indent {
 </ul>
 <p>Now we can try running some simulations</p>
 <div class="sourceCode" id="cb1"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(ape)</span>
-<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(NetSim)</span>
-<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">82589933</span>) <span class="do">##set the seed for reproducibility. This is the exponent of the largest known Mersenne prime number</span></span>
-<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a><span class="do">##First we need a function that describes how inheritance probabilities are drawn</span></span>
-<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a>inheritance.fxn <span class="ot">&lt;-</span> <span class="fu">make.beta.draw</span>(<span class="dv">10</span>,<span class="dv">10</span>)</span>
-<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a><span class="do">##We can see that this function makes draws from a beta(10,10) distribution</span></span>
-<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a><span class="fu">inheritance.fxn</span>() </span>
-<span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; [1] 0.4893861</span></span>
-<span id="cb1-10"><a href="#cb1-10" aria-hidden="true" tabindex="-1"></a><span class="fu">inheritance.fxn</span>()</span>
-<span id="cb1-11"><a href="#cb1-11" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; [1] 0.4677096</span></span>
-<span id="cb1-12"><a href="#cb1-12" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-13"><a href="#cb1-13" aria-hidden="true" tabindex="-1"></a><span class="do">##We also want to set the proportion of each type of hybrid event</span></span>
-<span id="cb1-14"><a href="#cb1-14" aria-hidden="true" tabindex="-1"></a>hybrid_proportions <span class="ot">&lt;-</span><span class="fu">c</span>(<span class="fl">0.5</span>,  <span class="do">##Lineage Generative</span></span>
-<span id="cb1-15"><a href="#cb1-15" aria-hidden="true" tabindex="-1"></a>                       <span class="fl">0.25</span>, <span class="do">##Lineage Degenerative</span></span>
-<span id="cb1-16"><a href="#cb1-16" aria-hidden="true" tabindex="-1"></a>                       <span class="fl">0.25</span>) <span class="do">##Lineage Neutral</span></span>
-<span id="cb1-17"><a href="#cb1-17" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-18"><a href="#cb1-18" aria-hidden="true" tabindex="-1"></a><span class="do">##We can simulate to 7 extant tips with the SSA</span></span>
-<span id="cb1-19"><a href="#cb1-19" aria-hidden="true" tabindex="-1"></a>ssa_nets<span class="ot">&lt;-</span><span class="fu">sim.bdh.taxa.ssa</span>(<span class="at">n=</span><span class="dv">7</span>,<span class="at">numbsim=</span><span class="dv">20</span>,</span>
-<span id="cb1-20"><a href="#cb1-20" aria-hidden="true" tabindex="-1"></a>                    <span class="at">lambda=</span><span class="dv">1</span>,<span class="at">mu=</span><span class="fl">0.2</span>,</span>
-<span id="cb1-21"><a href="#cb1-21" aria-hidden="true" tabindex="-1"></a>                    <span class="at">nu=</span><span class="fl">0.20</span>, <span class="at">hybprops =</span> hybrid_proportions,</span>
-<span id="cb1-22"><a href="#cb1-22" aria-hidden="true" tabindex="-1"></a>                    <span class="at">hyb.inher.fxn =</span> inheritance.fxn)</span>
-<span id="cb1-23"><a href="#cb1-23" aria-hidden="true" tabindex="-1"></a>ssa_net<span class="ot">&lt;-</span>ssa_nets[[<span class="dv">20</span>]] <span class="do">##The sim.bdh functions return a list of length numbsim. We get the 20th simulation</span></span>
-<span id="cb1-24"><a href="#cb1-24" aria-hidden="true" tabindex="-1"></a><span class="fu">print</span>(ssa_net)</span>
-<span id="cb1-25"><a href="#cb1-25" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; </span></span>
-<span id="cb1-26"><a href="#cb1-26" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;     Evolutionary network with 2 reticulations</span></span>
-<span id="cb1-27"><a href="#cb1-27" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; </span></span>
-<span id="cb1-28"><a href="#cb1-28" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;                --- Base tree ---</span></span>
-<span id="cb1-29"><a href="#cb1-29" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; Phylogenetic tree with 8 tips and 12 internal nodes.</span></span>
-<span id="cb1-30"><a href="#cb1-30" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; </span></span>
-<span id="cb1-31"><a href="#cb1-31" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; Tip labels:</span></span>
-<span id="cb1-32"><a href="#cb1-32" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;   t2, t4, t7, t6, t9, t8, ...</span></span>
-<span id="cb1-33"><a href="#cb1-33" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; </span></span>
-<span id="cb1-34"><a href="#cb1-34" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; Rooted; includes branch lengths.</span></span>
-<span id="cb1-35"><a href="#cb1-35" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-36"><a href="#cb1-36" aria-hidden="true" tabindex="-1"></a><span class="do">##We can also simulate 7 extant taxa with the GSA. </span></span>
-<span id="cb1-37"><a href="#cb1-37" aria-hidden="true" tabindex="-1"></a><span class="do">##We choose m=30 because it becomes very unlikely that at 30 tips we will ever return to 7</span></span>
-<span id="cb1-38"><a href="#cb1-38" aria-hidden="true" tabindex="-1"></a>gsa_nets<span class="ot">&lt;-</span><span class="fu">sim.bdh.taxa.gsa</span>(<span class="at">m=</span><span class="dv">30</span>,<span class="at">n=</span><span class="dv">7</span>,<span class="at">numbsim=</span><span class="dv">20</span>,</span>
-<span id="cb1-39"><a href="#cb1-39" aria-hidden="true" tabindex="-1"></a>                    <span class="at">lambda=</span><span class="dv">1</span>,<span class="at">mu=</span><span class="fl">0.6</span>,</span>
-<span id="cb1-40"><a href="#cb1-40" aria-hidden="true" tabindex="-1"></a>                    <span class="at">nu=</span><span class="fl">0.3</span>, <span class="at">hybprops =</span> hybrid_proportions,</span>
-<span id="cb1-41"><a href="#cb1-41" aria-hidden="true" tabindex="-1"></a>                    <span class="at">hyb.inher.fxn =</span> inheritance.fxn)</span>
-<span id="cb1-42"><a href="#cb1-42" aria-hidden="true" tabindex="-1"></a>gsa_net<span class="ot">&lt;-</span>gsa_nets[[<span class="dv">19</span>]]</span>
-<span id="cb1-43"><a href="#cb1-43" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-44"><a href="#cb1-44" aria-hidden="true" tabindex="-1"></a><span class="do">##Simulate a network up to age 2</span></span>
-<span id="cb1-45"><a href="#cb1-45" aria-hidden="true" tabindex="-1"></a>age_nets <span class="ot">&lt;-</span><span class="fu">sim.bdh.age</span>(<span class="at">age=</span><span class="dv">2</span>,<span class="at">numbsim=</span><span class="dv">20</span>,</span>
-<span id="cb1-46"><a href="#cb1-46" aria-hidden="true" tabindex="-1"></a>                    <span class="at">lambda=</span><span class="dv">1</span>,<span class="at">mu=</span><span class="fl">0.2</span>,</span>
-<span id="cb1-47"><a href="#cb1-47" aria-hidden="true" tabindex="-1"></a>                    <span class="at">nu=</span><span class="fl">0.25</span>, <span class="at">hybprops =</span> hybrid_proportions,</span>
-<span id="cb1-48"><a href="#cb1-48" aria-hidden="true" tabindex="-1"></a>                    <span class="at">hyb.inher.fxn =</span> inheritance.fxn)</span>
-<span id="cb1-49"><a href="#cb1-49" aria-hidden="true" tabindex="-1"></a>age_net<span class="ot">&lt;-</span>age_nets[[<span class="dv">8</span>]]</span></code></pre></div>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; Warning: package &#39;ape&#39; was built under R version 4.0.5</span></span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(NetSim)</span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">82589933</span>) <span class="do">##set the seed for reproducibility. This is the exponent of the largest known Mersenne prime number</span></span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a><span class="do">##First we need a function that describes how inheritance probabilities are drawn</span></span>
+<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a>inheritance.fxn <span class="ot">&lt;-</span> <span class="fu">make.beta.draw</span>(<span class="dv">10</span>,<span class="dv">10</span>)</span>
+<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a><span class="do">##We can see that this function makes draws from a beta(10,10) distribution</span></span>
+<span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a><span class="fu">inheritance.fxn</span>() </span>
+<span id="cb1-10"><a href="#cb1-10" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; [1] 0.4893861</span></span>
+<span id="cb1-11"><a href="#cb1-11" aria-hidden="true" tabindex="-1"></a><span class="fu">inheritance.fxn</span>()</span>
+<span id="cb1-12"><a href="#cb1-12" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; [1] 0.4677096</span></span>
+<span id="cb1-13"><a href="#cb1-13" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-14"><a href="#cb1-14" aria-hidden="true" tabindex="-1"></a><span class="do">##We also want to set the proportion of each type of hybrid event</span></span>
+<span id="cb1-15"><a href="#cb1-15" aria-hidden="true" tabindex="-1"></a>hybrid_proportions <span class="ot">&lt;-</span><span class="fu">c</span>(<span class="fl">0.5</span>,  <span class="do">##Lineage Generative</span></span>
+<span id="cb1-16"><a href="#cb1-16" aria-hidden="true" tabindex="-1"></a>                       <span class="fl">0.25</span>, <span class="do">##Lineage Degenerative</span></span>
+<span id="cb1-17"><a href="#cb1-17" aria-hidden="true" tabindex="-1"></a>                       <span class="fl">0.25</span>) <span class="do">##Lineage Neutral</span></span>
+<span id="cb1-18"><a href="#cb1-18" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-19"><a href="#cb1-19" aria-hidden="true" tabindex="-1"></a><span class="do">##We can simulate to 7 extant tips with the SSA</span></span>
+<span id="cb1-20"><a href="#cb1-20" aria-hidden="true" tabindex="-1"></a>ssa_nets<span class="ot">&lt;-</span><span class="fu">sim.bdh.taxa.ssa</span>(<span class="at">n=</span><span class="dv">7</span>,<span class="at">numbsim=</span><span class="dv">20</span>,</span>
+<span id="cb1-21"><a href="#cb1-21" aria-hidden="true" tabindex="-1"></a>                    <span class="at">lambda=</span><span class="dv">1</span>,<span class="at">mu=</span><span class="fl">0.2</span>,</span>
+<span id="cb1-22"><a href="#cb1-22" aria-hidden="true" tabindex="-1"></a>                    <span class="at">nu=</span><span class="fl">0.20</span>, <span class="at">hybprops =</span> hybrid_proportions,</span>
+<span id="cb1-23"><a href="#cb1-23" aria-hidden="true" tabindex="-1"></a>                    <span class="at">hyb.inher.fxn =</span> inheritance.fxn)</span>
+<span id="cb1-24"><a href="#cb1-24" aria-hidden="true" tabindex="-1"></a>ssa_net<span class="ot">&lt;-</span>ssa_nets[[<span class="dv">20</span>]] <span class="do">##The sim.bdh functions return a list of length numbsim. We get the 20th simulation</span></span>
+<span id="cb1-25"><a href="#cb1-25" aria-hidden="true" tabindex="-1"></a><span class="fu">print</span>(ssa_net)</span>
+<span id="cb1-26"><a href="#cb1-26" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; </span></span>
+<span id="cb1-27"><a href="#cb1-27" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;     Evolutionary network with 2 reticulations</span></span>
+<span id="cb1-28"><a href="#cb1-28" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; </span></span>
+<span id="cb1-29"><a href="#cb1-29" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;                --- Base tree ---</span></span>
+<span id="cb1-30"><a href="#cb1-30" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; Phylogenetic tree with 8 tips and 12 internal nodes.</span></span>
+<span id="cb1-31"><a href="#cb1-31" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; </span></span>
+<span id="cb1-32"><a href="#cb1-32" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; Tip labels:</span></span>
+<span id="cb1-33"><a href="#cb1-33" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;   t2, t4, t7, t6, t9, t8, ...</span></span>
+<span id="cb1-34"><a href="#cb1-34" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; </span></span>
+<span id="cb1-35"><a href="#cb1-35" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; Rooted; includes branch lengths.</span></span>
+<span id="cb1-36"><a href="#cb1-36" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-37"><a href="#cb1-37" aria-hidden="true" tabindex="-1"></a><span class="do">##We can also simulate 7 extant taxa with the GSA. </span></span>
+<span id="cb1-38"><a href="#cb1-38" aria-hidden="true" tabindex="-1"></a><span class="do">##We choose m=30 because it becomes very unlikely that at 30 tips we will ever return to 7</span></span>
+<span id="cb1-39"><a href="#cb1-39" aria-hidden="true" tabindex="-1"></a>gsa_nets<span class="ot">&lt;-</span><span class="fu">sim.bdh.taxa.gsa</span>(<span class="at">m=</span><span class="dv">30</span>,<span class="at">n=</span><span class="dv">7</span>,<span class="at">numbsim=</span><span class="dv">20</span>,</span>
+<span id="cb1-40"><a href="#cb1-40" aria-hidden="true" tabindex="-1"></a>                    <span class="at">lambda=</span><span class="dv">1</span>,<span class="at">mu=</span><span class="fl">0.6</span>,</span>
+<span id="cb1-41"><a href="#cb1-41" aria-hidden="true" tabindex="-1"></a>                    <span class="at">nu=</span><span class="fl">0.3</span>, <span class="at">hybprops =</span> hybrid_proportions,</span>
+<span id="cb1-42"><a href="#cb1-42" aria-hidden="true" tabindex="-1"></a>                    <span class="at">hyb.inher.fxn =</span> inheritance.fxn)</span>
+<span id="cb1-43"><a href="#cb1-43" aria-hidden="true" tabindex="-1"></a>gsa_net<span class="ot">&lt;-</span>gsa_nets[[<span class="dv">19</span>]]</span>
+<span id="cb1-44"><a href="#cb1-44" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-45"><a href="#cb1-45" aria-hidden="true" tabindex="-1"></a><span class="do">##Simulate a network up to age 2</span></span>
+<span id="cb1-46"><a href="#cb1-46" aria-hidden="true" tabindex="-1"></a>age_nets <span class="ot">&lt;-</span><span class="fu">sim.bdh.age</span>(<span class="at">age=</span><span class="dv">2</span>,<span class="at">numbsim=</span><span class="dv">20</span>,</span>
+<span id="cb1-47"><a href="#cb1-47" aria-hidden="true" tabindex="-1"></a>                    <span class="at">lambda=</span><span class="dv">1</span>,<span class="at">mu=</span><span class="fl">0.2</span>,</span>
+<span id="cb1-48"><a href="#cb1-48" aria-hidden="true" tabindex="-1"></a>                    <span class="at">nu=</span><span class="fl">0.25</span>, <span class="at">hybprops =</span> hybrid_proportions,</span>
+<span id="cb1-49"><a href="#cb1-49" aria-hidden="true" tabindex="-1"></a>                    <span class="at">hyb.inher.fxn =</span> inheritance.fxn)</span>
+<span id="cb1-50"><a href="#cb1-50" aria-hidden="true" tabindex="-1"></a>age_net<span class="ot">&lt;-</span>age_nets[[<span class="dv">8</span>]]</span></code></pre></div>
 <p>There are a few things worth noting here. Firstly, if we looked at <code>age_nets</code> we would notice that some of the elements are <code>0</code>, the <code>sim.bdh</code> style functions return <code>0</code> if the phylogeny goes extinct before reaching the stopping condition.</p>
 <p>Secondly, we can see that each phylogeny is an <code>evonet</code> object, however, they have an additional attribute <code>inheritance</code>. <code>inheritance</code> contains a vector of inheritance probabilities. The <span class="math inline">\(i^{th}\)</span> element in <code>inheritance</code> corresponds to the inheritance probability of the hybrid edge denoted in the <span class="math inline">\(i^{th}\)</span> row of the <code>reticulation</code> attribute.</p>
 <div class="sourceCode" id="cb2"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a>age_net<span class="sc">$</span>inheritance <span class="do">##This corresponds to the edges found in reticulation</span></span>
