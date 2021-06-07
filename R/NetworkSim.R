@@ -328,16 +328,35 @@ handleTipsTaxa<-function(phy,complete,target_ntaxa,current_n){
   if(length(deltips)==0){
     ##do nothing we don't want to get rid of anything
   }else if(length(deltips)==length(phy$tip.label)){
-    warning('deleting all tips, returning 0')
+    #warning('deleting all tips, returning 0')
     return(0)
   }else if(length(deltips) == (length(phy$tip.label)-1) ){
-    warning('Only 1 tip remaining, returning 1')
+    #warning('Only 1 tip remaining, returning 1')
     return(1)
   }else{
     phy<-deleteTips(phy,deltips)
   }
   phy$hyb_tips <- NULL
   phy$extinct <- NULL
+
+  ##################################
+  ####Hotfix of Github Issue #1 ####
+  ##################################
+  large_left<-max(phy$edge[,1])
+  large_right<-max(phy$edge[,2])
+
+  if(large_right>large_left){ ##we only care if the largest node number only appears in the second column
+
+    ##do a switcheroo of the node numbering
+    phy$edge[phy$edge==large_left]<- -Inf
+    phy$edge[phy$edge==large_right] <-large_left
+    phy$edge[phy$edge== -Inf] <-large_right
+  }
+  ##################################
+  ######## End hotfix Code #########
+  ##################################
+
+
   return(phy)
 }
 

@@ -238,7 +238,7 @@ sim2.bdh.origin <- function(m=0,n=0,age,lambda,mu,nu,hyb.inher.fxn,hybprops,hyb.
                     genetic_dists[[i]][[maxspecies2]]<-genetic_dists[[i]][[species1]]
                     genetic_dists[[i]][[species1]]<-NULL
                   }
-                  ##update the species1 lineage with a new name essentially
+                  ##update the species2 lineage with a new name essentially
                   genetic_dists[[maxspecies3]]<-genetic_dists[[species2]] ##add the new lineage as a row
                   genetic_dists[[species2]]<-NULL
                   for(i in names(genetic_dists)){ ##add the new lineage as a column
