@@ -143,12 +143,50 @@ For example, when simulating above, we used `make.beta.draw(10,10)` to create a 
 
 We will explore how to appropriately make arguments for `hyb.rate.fxn` and `trait.model` later in this vignette.
 
+### Types of Hybridization
+
+We often think of hybridization as a species forming event, a new hybrid species gets created. Although a new hybrid species gets created, the net number of lineages doesn't need to strictly increase. We should also consider cases where one or both of the parental lineages go extinct as a result of the hybridization. The hybrid species could either outcompete one or both of the parental lineages and displace them or the hybrid species could continually backcross with the parental lineages until one homoogenous lineage remains, a process known as genetic assimilation. If one parental lineage goes extinct we have zero change in the number of lineages while if both parental lineages go extinct we have a net loss of one lineage even with the creation of the hybrid species. We call these different outcomes lineage generative, lineage neutral, and lineage degenerative hybridization.
+
+![](./figures/hybridization_types.png){width=100%}
+
+### Example 2 Types of Hybridization in SiPhyNetwork
+
+Modeling the different types of hybridization in SiPhyNetwork is relatively straighforward with use of the `hybprops` argument in the `sim.bdh` functions. `hybprops` is a vector of length three that denotes the relative probability that a hybridization event is lineage generative, lineage degenerative, or lineage neutral respectively.
+
+```{r}
+
+##Equal chance of all three types
+hybprops1 <-c(1/3, ##Lineage Generative
+              1/3, ##Lineage Degenerative
+              1/3) ##Lineage Neutral
+
+##Skewed chance of all three types
+hybprops2 <-c(0.5, ##Lineage Generative
+              0.2, ##Lineage Degenerative
+              0.3) ##Lineage Neutral
+
+##Only Lineage Generative Hybridization occurs
+hybprops3 <-c(1, ##Lineage Generative
+              0, ##Lineage Degenerative
+              0) ##Lineage Neutral
+
+
+##simulate where all 3 are equally likely
+age_nets <-sim.bdh.age(age=2,numbsim=20,
+                    lambda=1,mu=0.2,
+                    nu=0.25, hybprops = hybprops1,
+                    hyb.inher.fxn = inheritance.fxn)
+
+
+```
+
+
 
 ## Characterizing And Using Phylogenetic Networks
 
 After simulating phylogenetic networks it can be helpful to identify certain characteristics of the networks and eventually save those networks to file so they can be used in other pipelines.
 
-### Example 2 Plotting Networks
+### Example 3 Plotting Networks
 One of the first ways of understanding the type of phylogenetic networks we generated would be to plot them
 ```{r, fig.show='hold',fig.height = 4,}
 plot(ssa_net,main="SSA Network")
@@ -158,9 +196,9 @@ plot(age_net,main="Age Network")
 
 A few odd things happened here when we tried plotting the networks we simulated. We will go over these network by network.
 
-* The **SSA network**  only shows one hybridization event although we can see from the `reticulation` element that there are two events. This occurs when there is a hybridization where the two donor lineages have the same parental node. We can identify where this occurs on the phylogeny by using `nodelabels()`. We can notice nodes $15$ and $17$ sitting on the edge between $11$ and $18$. In fact, if we looked at the `reticulation` element of our network we would notice gene flow from node $15$ to node $17$ so this is indeed where the hybridization occurs. Although only one edge is drawn between these nodes, we can imagine another hybrid edge between $15$ and $17$.
+* The **SSA network**  only shows one hybridization event although we can see from the `reticulation` element that there are two events. This occurs when there is a hybridization where the two donor lineages have the same parental node.
 * From the **GSA network** figure we can notice two issues. Firstly, it looks cut off or was plotting incorrectly. While the edge and reticulation matrix would confirm that the network is properly conformed, the plotting function of `ape` doesn't always render networks correctly. Secondly, the GSA network has a diagonal hybrid edge, and while this isn't improper, it does muddle the interpretation of the phylogeny. The diagonal line would seem to imply that there was gene flow from a lineage in the past to a more recent lineage. This clearly isn't the case as no lineages that we know of can time travel. These diagonal hybrid edges can result from incomplete lineage sampling, gene flow from a now extinct species, or lineage degenerative hybridization but it can still be hard to interpret diagonal edges. 
-* In the **Age network** we can see the same issue with one of the hybrid edges not appearing as in the **SSA netowrk**. However, this tree also is a good example of all three different type of hybridization. We can see lineage neutral hybridization between $t7$ and $t8$. After looking at the `reticulation` element we can see that the gene flow goes from the $t7$ lineage to the $t8$ lineage. Next, we can see lineage generating hybridization with the vertical blue line from lineage $t3$ to lineage $t8$. Although, the gene flow looks like it goes from $t3$ to a common ancestor of $t9$ and $t4$, using `nodelabels()` and the `reticulation` element we can confirm where the hybridization occurs. Lastly, we can see lineage degenerative hybridization with diagonal edge denoting gene flow from lineage $t9$ to lineage $t3$. 
+* In the **Age network** we can see the same issue with one of the hybrid edges not appearing as in the **SSA netowrk** and the diagonal edges as in the **GSA network**.
 
 We correct these issues by using the `plottable.net()` function to modify the phylogeny to a more plotting-friendly network where gene flow always occurs between contemporary lineages. We aren't changing anything fundamental about the network, just how the edges get drawn. 
 
@@ -174,7 +212,8 @@ plot(ssa_pnet,main="SSA Network")
 plot(gsa_pnet,main="GSA Network")
 plot(age_pnet,main="Age Network")
 ```
-### Example 3 Network Classification
+
+### Example 4 Network Classification
 
 Certain classes of phylogenetic networks have ideal properties. As such we may wish to know which classes our networks belong. Specifically, we can check whether our simulated networks are:
 
@@ -191,7 +230,7 @@ isFUStable(gsa_net)
 getNetworkLevel(gsa_net)
 ```
 
-### Example 3 Network Input And Output
+### Example 5 Network Input And Output
 
 Now that we've gotten a look at the networks we may wish to save these networks to file. We will be using the rich Newick Format for saving the phylogenies *[@Cardona2008; but see @Wen2018]*. Notaby, the `ape` function `write.evonet` does not save inheritance probabilities to file so we defined `write.net` for this purpose
 ```{r}
@@ -210,7 +249,7 @@ str(my_net)##we can see that my_net has the inheritance element for inheritance 
 
 Often not all extant tips on a phylogeny are sampled, nor do we have clear fossil records that tell us about the extinct species. We may wish to reflect this lack of knowledge by generating phylogenies with incomplete sampling or extinct lineages pruned. We can do this directly in the `sim.bdh` type functions by changing the `frac` and `stochsampling` arguments for incomplete sampling and by setting the `complete` argument to `FALSE` for the reconstructed phylogeny with extinct lineages removed. However, we can also do both of these actions post-hoc with the `incompleteSampling()` and `reconstructedNetwork()` functions.
 
-### Example 4: Post-hoc Incomplete Sampling an Reconstructed Networks
+### Example 6: Post-hoc Incomplete Sampling an Reconstructed Networks
 Our GSA network had a few extinct lineages, we can try pruning those with `reconstructedNetwork`. We will then randomly subsample 5 out of the 7 extant tips.
 
 ```{r,fig.show='hold',fig.height = 3.5,fig.align='center',fig.width=7}
@@ -231,7 +270,7 @@ We can extend our model of hybridization in two main ways:
 
 2. **Make successful hybridizations depend on some trait that also evolves along the tree.** This extension was made to model the belief that typically only lineages with the same ploidy and chromosome number can hybridize, although this can be generalized to model any discrete or continuous trait and rules for restricting hybridization.
 
-### Example 5A: Hybridizations Dependent On Genetic Distance
+### Example 7A: Hybridizations Dependent On Genetic Distance
 We can make the probability that a hybridization is successful by providing a function that is defined on the range $[0,\infty)$ for genetic distances and returns values from $0$ to $1$ for the probability of a successful hybridization. We have implemented several `make` functions for creating functions that fit these criteria. These functions are then used as the `hyb.rate.fxn` argument in the `sim.bdh` style functions.
 
 ```{r}
@@ -265,7 +304,7 @@ plot(x,f4(x),xlim = c(0,1.2),ylim = c(0,1),type = 'l',main = 'f4 Polynomial Deca
 }
 ```
 
-### Example 5B: Trait Dependent Hybridization
+### Example 7B: Trait Dependent Hybridization
 We can model trait dependent hybridization by supplying a list for the argument `trait.model` in the `sim.bdh` functions. This list contains initial value(s) for the trait at the beginning of the process, functions describing how the trait evolves, and a function that dictates whether taxa can hybridize based on the trait values between taxa. Specifically the list contains these named elements:
 
 * **initial** The initial trait state on the phylogeny. **NOTE:** if the `MRCA` argument in the `sim.bdh` style funcitons is `TRUE`, 2 initial values will be needed since the process starts with 2 lineages.
