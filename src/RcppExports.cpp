@@ -7,7 +7,7 @@ using namespace Rcpp;
 
 // biconnectedComponents
 List biconnectedComponents(IntegerMatrix edges, int rt, int nNode);
-RcppExport SEXP _NetSim_biconnectedComponents(SEXP edgesSEXP, SEXP rtSEXP, SEXP nNodeSEXP) {
+RcppExport SEXP _SiPhyNetwork_biconnectedComponents(SEXP edgesSEXP, SEXP rtSEXP, SEXP nNodeSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
@@ -20,11 +20,11 @@ END_RCPP
 }
 
 static const R_CallMethodDef CallEntries[] = {
-    {"_NetSim_biconnectedComponents", (DL_FUNC) &_NetSim_biconnectedComponents, 3},
+    {"_SiPhyNetwork_biconnectedComponents", (DL_FUNC) &_SiPhyNetwork_biconnectedComponents, 3},
     {NULL, NULL, 0}
 };
 
-RcppExport void R_init_NetSim(DllInfo *dll) {
+RcppExport void R_init_SiPhyNetwork(DllInfo *dll) {
     R_registerRoutines(dll, NULL, CallEntries, NULL, NULL);
     R_useDynamicSymbols(dll, FALSE);
 }

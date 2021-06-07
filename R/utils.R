@@ -119,23 +119,15 @@ getNetworkLevel <- function(net){
 
   blobs <- biconnectedComponents(edges,rt,nNode) ##Get the biconnected components
 
-  nds<-c()
+  net_level<- 1 ##any network with reticulations is at least level 1
   for(blob in blobs){
     blob<-blob+1
     blob_nds<-unique(as.vector(edges[blob,])) ##get all nodes from the blob
     blob_nds<-blob_nds[blob_nds %in% hyb_nds]
-    nds<-c(nds,blob_nds)
+    net_level<-max(c(net_level,length(blob_nds)))
   }
 
-  if(is.null(nds)){ ##We don't find blobs if all non-trivial ones are blobs where the two edges have the same parent and go to the same child
-    return(-1) ##We want to return 1 in this case
-  }else{
-    lev<-max(table(nds))
-    return(lev)
-  }
-
-
-
+  return(net_level)
 }
 
 

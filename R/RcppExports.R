@@ -8,6 +8,6 @@
 NULL
 
 biconnectedComponents <- function(edges, rt, nNode) {
-    .Call(`_NetSim_biconnectedComponents`, edges, rt, nNode)
+    .Call(`_SiPhyNetwork_biconnectedComponents`, edges, rt, nNode)
 }
 

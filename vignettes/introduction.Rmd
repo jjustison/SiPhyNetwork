@@ -11,7 +11,7 @@ vignette: >
 ---
 
 # Overview
-The NetSim R package is a tool for simulating phylogenetic networks under birth-death-hybridization based models. It provides functions for creating complex hybridization models, functions for simulating phylogenies under these models, as well as utility functions for characterizing the types of phylogenetic networks, visualizing networks, and saving phylogenetic networks in the Extended Newick format. This allows users to simulate phylogenetic networks under a suite of more biologically realistic models. The Netsim package is released under the GPL-3 license and is available for download from [GitHub](https://github.com/jjustison/NetSim)
+The SiPhyNetwork R package is a tool for simulating phylogenetic networks under birth-death-hybridization based models. It provides functions for creating complex hybridization models, functions for simulating phylogenies under these models, as well as utility functions for characterizing the types of phylogenetic networks, visualizing networks, and saving phylogenetic networks in the Extended Newick format. This allows users to simulate phylogenetic networks under a suite of more biologically realistic models. The SiPhyNetwork package is released under the GPL-3 license and is available for download from [GitHub](https://github.com/jjustison/SiPhyNetwork)
 
 # Introduction 
 
@@ -19,9 +19,9 @@ Birth-death processes are commonly used to describe species diversification _[@N
 
 Gene flow and hybridization is found throughout the tree of life and has had a nontrivial role in shaping diversity _[@Mallet2016]_. Recently, an extension of the birth-death process that includes hybridization was developed as a prior for Bayesian phylogenetic inference _[@Zhang2018]_. This model assumes the waiting time between hybridizations is exponentially distributed with rate parameter ${ntaxa \choose 2}\nu$, where $\nu$ is the hybridization rate. A few tools exist that simulate phylogenetic networks under variants of this model _[@Morin2006; @Woodhams2016; @Davin2020]_, however they all have different conceptualizations on how hybridization events affect the number of lineages on the phylogeny. As process-based phylogenetic inference methods receive increased attention, it becomes imperative that we can simulate biologically relevant phylogenetic network for the testing of these methods and for creating hypotheses about empirical systems. 
 
-# The Netsim Package
+# The SiPhyNetwork Package
 
-The Netsim R package allows simulation of phylogenetic networks under a birth-death-hybridization process. This package extends the capabilities of other existing birth-death-hybridization based simulators by allowing:
+The SiPhyNetwork R package allows simulation of phylogenetic networks under a birth-death-hybridization process. This package extends the capabilities of other existing birth-death-hybridization based simulators by allowing:
 
 * Simulating to a fixed time or fixed number of species
 * Incomplete sampling sampling
@@ -31,7 +31,7 @@ The Netsim R package allows simulation of phylogenetic networks under a birth-de
 * Successful hybridization events to be dependent on a trait that evolves along the network
 * Functions for visualizing, writing, and reading phylogenetic networks in R
 
-Throughout this vignette we will cover how to use these features in NetSim. 
+Throughout this vignette we will cover how to use these features in SiPhyNetwork. 
 
 
 ## Simulating Networks
@@ -77,7 +77,7 @@ knitr::opts_chunk$set(
 
 ```{r,fig.show='hold',setup,out.width='\\textwidth', fig.height = 4}
 library(ape)
-library(NetSim)
+library(SiPhyNetwork)
 set.seed(82589933) ##set the seed for reproducibility. This is the exponent of the largest known Mersenne prime number
 
 ##First we need a function that describes how inheritance probabilities are drawn
@@ -124,7 +124,7 @@ age_net$inheritance ##This corresponds to the edges found in reticulation
 age_net$reticulation
 ```
 
-Further, we can use the `gsa.network()` function to sample phylogenies under the GSA. This allows us to properly sample $n$ taxa from any phylogenetic model, regardless if the phylogenetic networks were generated from the `NetSim` package or not. 
+Further, we can use the `gsa.network()` function to sample phylogenies under the GSA. This allows us to properly sample $n$ taxa from any phylogenetic model, regardless if the phylogenetic networks were generated from the `SiPhyNetwork` package or not. 
 
 ```{r}
 ##We can simulate to 30 extant tips under the SSA. In this case the 30 acts as the m parameter of the GSA
