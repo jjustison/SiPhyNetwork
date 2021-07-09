@@ -15,38 +15,18 @@
 #' @param append a logical, if TRUE the tree is appended to the file without erasing the data possibly existing in the file, otherwise the file (if it exists) is overwritten (`FALSE`` the default).
 #' @param digits a numeric giving the number of digits used for printing branch lengths.
 #' @param tree.names either a logical or a vector of mode character. If TRUE then any tree names will be written prior to the tree on each line. If character, specifies the name of "phylo" objects which can be written to the file.
+#' @param tol a numeric value giving the tolerance to consider a branch as length 0.
 #'
 #' @return a vector of mode character if file = "", none (invisible NULL) otherwise
 #' @export
 #'
 #' @examples
-write.net<-function(net,file="",append = FALSE, digits = 10, tree.names = FALSE){
+write.net<-function(net,file="",append = FALSE, digits = 10, tree.names = FALSE,tol=1e-8){
 
 
-  w.tree(phy=net,file=file,append=append,digits=digits,tree.names = tree.names)
+  w.tree(phy=net,file=file,append=append,digits=digits,tree.names = tree.names,tol)
 
   }
-
-
-
-
-##This function returns the node timings.
-##branching.times() and node.depth.edgelength() both call reorder() which causes memory errors in the RCPP calls
-##This function serves the same purpose as those without making that call - makes phytools a dependency
-node.times<-function(tree){
-  node_times<-node.depth.edgelength(tree)
-  ##Trying to remove dependency on 'phytools'
-  # nd_heights<-as.numeric(nodeHeights(tree))
-  # nd_nums<-as.integer(tree$edge)
-  #
-  # num_nds<-tree$Nnode+length(tree$tip.label)
-  # node_times<-rep(NA,length(num_nds))
-  # for(i in 1:length(nd_heights)){
-  #   node_times[nd_nums[i]] <- nd_heights[i]
-  # }
-  return(node_times)
-}
-
 
 
 e2p <-  function(x)
@@ -55,7 +35,7 @@ e2p <-  function(x)
   x$inheritance<-rep(NA,nrow(x$edge))
   nTips <- as.integer(length(x$tip.label))
   if (!is.null(x$edge.length)) {
-    nd <- node.times(x)
+    nd <- node.depth.edgelength(x)
     x$edge.length <- c(x$edge.length, nd[x$reticulation[, 2]] - nd[x$reticulation[, 1]])
   }
   if (!is.null(x$node.label)){
@@ -137,7 +117,7 @@ chckLbl <- function(phy, x, ...)
   x
 }
 
-w.tree <- function(phy, file = "", append = FALSE, digits = 10, tree.names = FALSE)
+w.tree <- function(phy, file = "", append = FALSE, digits = 10, tree.names = FALSE,tol)
   {
     if (!(inherits(phy, c("phylo", "multiPhylo"))))
       stop("object \"phy\" has no trees")
@@ -154,11 +134,14 @@ w.tree <- function(phy, file = "", append = FALSE, digits = 10, tree.names = FAL
       } else tree.names <- character(N)
     }
 
-    for (i in 1:N)
+    for (i in 1:N){
       p<-e2p(phy[[i]])
+      p$edge.length[p$edge.length<tol]<-0 ##correct small edges to be 0
 
       res[i] <- .w.tree2(p, digits = digits,
-                             tree.prefix = tree.names[i])
+                         tree.prefix = tree.names[i])
+    }
+
 
     if (file == "") return(res)
     else cat(res, file = file, append = append, sep = "\n")

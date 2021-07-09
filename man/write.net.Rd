@@ -4,7 +4,14 @@
 \alias{write.net}
 \title{Write a Network in Parenthetic Format}
 \usage{
-write.net(net, file = "", append = FALSE, digits = 10, tree.names = FALSE)
+write.net(
+  net,
+  file = "",
+  append = FALSE,
+  digits = 10,
+  tree.names = FALSE,
+  tol = 1e-08
+)
 }
 \arguments{
 \item{net}{A phylogenetic network of class \code{evonet}. The network may include an optional attribute `inheritance`` that represents the inheritance probbilities on the edges found in the 'reticulation' attribute}
@@ -16,6 +23,8 @@ write.net(net, file = "", append = FALSE, digits = 10, tree.names = FALSE)
 \item{digits}{a numeric giving the number of digits used for printing branch lengths.}
 
 \item{tree.names}{either a logical or a vector of mode character. If TRUE then any tree names will be written prior to the tree on each line. If character, specifies the name of "phylo" objects which can be written to the file.}
+
+\item{tol}{a numeric value giving the tolerance to consider a branch as length 0.}
 }
 \value{
 a vector of mode character if file = "", none (invisible NULL) otherwise

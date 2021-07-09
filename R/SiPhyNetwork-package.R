@@ -1,5 +1,5 @@
 ## usethis namespace: start
-#' @useDynLib NetSim, .registration = TRUE
+#' @useDynLib SipPhyNetwork, .registration = TRUE
 ## usethis namespace: end
 NULL
 

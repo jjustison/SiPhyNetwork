@@ -18,6 +18,8 @@ Imports:
     stats,
     ape,
     Rcpp
+Depends:
+	ape
 VignetteBuilder: knitr
 LinkingTo: 
     Rcpp
