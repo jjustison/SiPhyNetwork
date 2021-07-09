@@ -48,6 +48,7 @@ sim.bdh.age <-function(age,numbsim,
 	            frac=frac,mrca=mrca,
 	            complete=complete, stochsampling=stochsampling,
 	            trait.model=trait.model)
+	class(out)<-c('list','multiPhylo')
 	out
 }
 

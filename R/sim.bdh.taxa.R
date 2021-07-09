@@ -47,6 +47,7 @@ sim.bdh.taxa.ssa <- function(n,numbsim,
 	            frac=frac,mrca=mrca,
 	            complete=complete,stochsampling=stochsampling,
 	            trait.model=trait.model)
+	class(out)<-c('list','multiPhylo')
 
 	out
 }
@@ -106,6 +107,7 @@ sim.bdh.taxa.gsa <-function(m,n,numbsim,
               frac=frac,mrca=mrca,
               complete=complete,stochsampling=stochsampling,
               trait.model=trait.model)
+  class(out)<-c('list','multiPhylo')
 
   out
 }
