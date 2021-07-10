@@ -351,6 +351,12 @@ handleTipsTaxa<-function(phy,complete,target_ntaxa,current_n){
     phy$edge[phy$edge==large_left]<- -Inf
     phy$edge[phy$edge==large_right] <-large_left
     phy$edge[phy$edge== -Inf] <-large_right
+
+    phy$reticulation[phy$reticulation==large_left]<- -Inf
+    phy$reticulation[phy$reticulation==large_right] <-large_left
+    phy$reticulation[phy$reticulation== -Inf] <-large_right
+
+
   }
   ##################################
   ######## End hotfix Code #########

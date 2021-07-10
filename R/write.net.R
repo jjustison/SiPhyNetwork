@@ -173,7 +173,7 @@ w.tree <- function(phy, file = "", append = FALSE, digits = 10, tree.names = FAL
       cp(sprintf(f.d, phy$edge.length[ind[i]]))
       if(!is.na(phy$inheritance[ind[i]])){
         cp("::") ##TODO make a case when we have inheritance probabilities but no edge lengths (?)
-        cp( phy$inheritance[ind[i]] )
+        cp( sprintf(f.d,phy$inheritance[ind[i]] ))
       }
     }
   }
@@ -185,7 +185,7 @@ w.tree <- function(phy, file = "", append = FALSE, digits = 10, tree.names = FAL
       cp(sprintf(f.d, phy$edge.length[i]))
       if( tip_lab %in% phy$node.label && (!is.na(phy$inheritance[i])) ){
         cp("::") ##TODO make a case when we have inheritance probabilities but no edge lengths (?)
-        cp( phy$inheritance[i] )
+        cp( sprintf(f.d,phy$inheritance[i] ))
       }
 
     }
