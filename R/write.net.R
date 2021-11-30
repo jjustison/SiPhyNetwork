@@ -23,6 +23,22 @@
 #' @examples
 write.net<-function(net,file="",append = FALSE, digits = 10, tree.names = FALSE,tol=1e-8){
 
+  ###Code to make the minor hybrid edge drawn as the leaf
+  ###We need to swap edge such that the minors are all in net$reticulation as opposed to net$edge
+  bad_hybs <- which(net$inheritance > 0.5)
+  for(ret_ind in bad_hybs){
+    old_ret <- net$reticulation[hyb,]
+    hyb_nd<-old_ret[2]
+    e_ind <- net$edge[,2]==hyb_nd
+    old_e<-net$edge[e_ind,]
+
+    net$reticulation[ret_ind,]<-old_e
+    net$edge[e_ind,]<-old_ret
+    net$reticulation[ret_ind]<-1-net$reticulation[ret_ind]
+  }
+  ###end code to make minor edge the leaf
+
+
 
   w.tree(phy=net,file=file,append=append,digits=digits,tree.names = tree.names,tol)
 
@@ -48,7 +64,7 @@ e2p <-  function(x)
     x$node.label[x$reticulation[ind, 2] - nTips] <- newLabels[ind]
   }
 
-  if(!is.null(inh) ){
+  if(length(inh)!=0 ){
     for( i in 1:nrow(x$reticulation)){
       x$inheritance[which(x$edge[,2]==x$reticulation[i,2])]<- 1-inh[i]
     }

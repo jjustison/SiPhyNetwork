@@ -403,7 +403,7 @@ ltt.network<-function(phy,node_times=NULL){
 #' @export
 #'
 #' @examples
-plottable.net<-function(net){
+plottable.net<-function(net,tol=1e-8){
 
   node_times<-node.depth.edgelength(net)
 
@@ -416,7 +416,7 @@ plottable.net<-function(net){
     rw<-net$reticulation[i,]
     from_time<-node_times[rw[1]]
     to_time<-node_times[rw[2]]
-    if(from_time!=to_time){
+    if(abs(from_time-to_time)>tol){
       bad_hybs<-c(bad_hybs,i)
       new_elength<-c(new_elength,(to_time-from_time))
     }
