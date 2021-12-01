@@ -34,7 +34,7 @@ write.net<-function(net,file="",append = FALSE, digits = 10, tree.names = FALSE,
 
     net$reticulation[ret_ind,]<-old_e
     net$edge[e_ind,]<-old_ret
-    net$inheritance[ret_ind]<-1-net$reticulation[ret_ind]
+    net$inheritance[ret_ind]<-1-net$inheritance[ret_ind]
   }
   ###end code to make minor edge the leaf
 
