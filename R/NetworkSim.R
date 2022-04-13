@@ -43,9 +43,9 @@ getReconstructedTips<- function(tip.labels,extinct_labels){
 #'
 #' @examples
 #' set.seed(23) ##set seed with the smallest Pillai prime
-#' net<-sim.bdh.age(1,1,3,2,0.125,c(1/3,1/3,1/3),hyb.inher.fxn = make.uniform.draw(),complete = F)[[1]]
+#' net<-sim.bdh.age(1,1,3,2,0.125,c(1/3,1/3,1/3),hyb.inher.fxn = make.uniform.draw(),complete = FALSE)[[1]]
 #' net<-incompleteSampling(net,0.5,stochastic=F) ##randomly sample half of the extant taxa
-incompleteSampling<-function(net,rho,stochastic=F){
+incompleteSampling<-function(net,rho,stochastic=FALSE){
   extinct_tips <- getReconstructedTips(1:length(net$tip.label),get.extinct(net))
   if(length(extinct_tips)!=0){
     extant_tips <- (1:length(net$tip.label))[-extinct_tips]
@@ -101,7 +101,7 @@ getSamplingTips <- function(tips,rho,stochastic){
 #'
 #' @examples
 #' set.seed(17) ##Set seed with smallest Quartran Prime
-#' net<-sim.bdh.age(1,1,5,2,1,c(1/3,1/3,1/3),hyb.inher.fxn = make.uniform.draw(),complete=F)[[1]]
+#' net<-sim.bdh.age(1,1,5,2,1,c(1/3,1/3,1/3),hyb.inher.fxn = make.uniform.draw(),complete=FALSE)[[1]]
 #' net<- deleteTips(net,c(1,6)) ##drop tips 1 and 6
 #'
 #'

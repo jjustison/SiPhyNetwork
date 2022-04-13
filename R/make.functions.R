@@ -240,9 +240,9 @@ make.allopolyploid.event <-function(prob){
 make.states.incompatible <-function(){
   myfunc <- function(parent_states){
     if(parent_states[1]!=parent_states[2]){
-      return(F)
+      return(FALSE)
     }else{
-      return(T)
+      return(TRUE)
     }
   }
 }
