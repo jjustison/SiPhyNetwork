@@ -19,7 +19,7 @@ permissions:
 
 jobs:
   build:
-    runs-on: macos-latest windows-latest unbuntu-latest
+    runs-on: macos-latest windows-latest ubuntu-latest
     strategy:
       matrix:
         r-version: ['3.6.3', '4.1.1']
