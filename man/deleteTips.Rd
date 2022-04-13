@@ -17,3 +17,10 @@ net The network tips removed.
 \description{
 This function removes certain tips from a phylogenetic network, returning the pruned network.
 }
+\examples{
+set.seed(17) ##Set seed with smallest Quartran Prime
+net<-sim.bdh.age(1,1,5,2,1,c(1/3,1/3,1/3),hyb.inher.fxn = make.uniform.draw(),complete=F)[[1]]
+net<- deleteTips(net,c(1,6)) ##drop tips 1 and 6
+
+
+}

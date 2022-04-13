@@ -19,3 +19,8 @@ net A network with sampled tips
 \description{
 This function samples tips from a network. Only extant tips are downsampled from the network. Extinct tips, if they are present, will be unchanged.
 }
+\examples{
+set.seed(23) ##set seed with the smallest Pillai prime
+net<-sim.bdh.age(1,1,3,2,0.125,c(1/3,1/3,1/3),hyb.inher.fxn = make.uniform.draw(),complete = F)[[1]]
+net<-incompleteSampling(net,0.5,stochastic=F) ##randomly sample half of the extant taxa
+}
