@@ -23,7 +23,7 @@ Imports:
     ape,
     Rcpp,
 	rstackdeque
-VignetteBuilder: knitr
+VignetteBuilder: rmarkdown
 LinkingTo: 
     Rcpp,
 
