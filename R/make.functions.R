@@ -24,7 +24,7 @@ make.exp.decay<-function(t=1,s=1){
 #' Make a linear decay function
 #'
 #' @description Create a linear decay function for genetic distance of two taxa and the probability of success of a hybridization event
-#' @param t A numeric representing how quickly the hybridization success decays. Smaller values denote a quicker decay
+#' @param threshold A numeric representing how quickly the hybridization success decays. Smaller values denote a quicker decay
 #' @return A linear decay function
 #' @details The function computes: \deqn{1-\frac{d}{t} }
 #' where d is the genetic distance between taxa
@@ -48,8 +48,8 @@ make.linear.decay<-function(threshold){
 #' Make a stepwise decay function
 #'
 #' @description Create a stepwise decay function for genetic distance of two taxa and the probability of success of a hybridization event
-#' @param probs Vector of dimension k, where k is the number of different probabilities of success. An individual time between (distances[i-1],distances[i]] has probability of success prob[i]
-#' @param distances Vector of k, containing the end of each interval where success probabilities shift. The first interval where success is prob[1] is [0,distances[1]]. For all i>1, the probability of success is prob[i] over the interval (distances[i-1],distances[i]].
+#' @param probs Vector of dimension k, where k is the number of different probabilities of success. An individual time between (distances\[i-1],distances\[i]] has probability of success prob\[i]
+#' @param distances Vector of k, containing the end of each interval where success probabilities shift. The first interval where success is prob\[1] is [0,distances\[1]]. For all i>1, the probability of success is prob\[i] over the interval (distance\[i-1],distances\[i]].
 #' @return An stepwise decay function
 #' @export
 #'
@@ -144,7 +144,7 @@ make.beta.draw <-function(alpha,beta){
 #' @examples
 make.categorical.draw <- function(inheritances, weights){
   myfunc <-function(){
-    return( sample(x=inheritance_probs,size=1,prob = weights ))
+    return( sample(x=inheritances,size=1,prob = weights ))
   }
   return(myfunc)
 }

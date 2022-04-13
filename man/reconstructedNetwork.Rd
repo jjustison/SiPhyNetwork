@@ -15,3 +15,11 @@ net The reconstructed network with all extinct tips removed.
 \description{
 This function removes all extinct tips from a phylogenetic network, returning the reconstructed network.
 }
+\examples{
+set.seed(17) ##smallest Quartan prime as seed
+##Generate a tree with extinct leaves
+net<-sim.bdh.age(1,1,5,2,1,c(1/3,1/3,1/3),hyb.inher.fxn = make.uniform.draw(),complete=TRUE)[[1]]
+recon_net<-reconstructedNetwork(net)
+plot(net)
+plot(recon_net)
+}

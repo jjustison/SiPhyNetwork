@@ -14,14 +14,13 @@ read.net(file = "", text = NULL, comment.char = "", ...)
 \item{comment.char}{a single character, the remaining of the line after this character is ignored (this is passed directly to \code{scan()}).}
 
 \item{...}{further arguments to be passed to \code{scan()} and \code{read.tree}.}
-
-\item{tree.names}{if there are several trees to be read, a vector of mode character that gives names to the individual trees; if \code{NULL} (the default), the trees are named \code{"tree1"}, \code{"tree2"}, ...}
-
-\item{skip}{number of lines of the input file to skip before beginning to read data (this is passed directly to \code{scan()}).}
 }
 \description{
 This function reads a network from file using the Rich Newick format.
 }
 \details{
 If inheritance probabilities are included in the string, the returned \code{evonet} object will include an \code{inheritance} element. \code{inheritance[i]} corresponds to the inheritance probability of the hybrid edge denoted in \code{reticulation[i,]}
+
+This function also accepts the optional arguments \code{skip} and \code{tree.names}. \code{tree.names} is used  if there are several trees to be read and is a vector of mode character that gives names to the individual trees; if \code{NULL} (the default), the trees are named \code{"tree1"}, \code{"tree2"}, ...
+The optional argument \code{skip} denotes the number of lines of the input file to skip before beginning to read data (this is passed directly to \code{scan()}).
 }

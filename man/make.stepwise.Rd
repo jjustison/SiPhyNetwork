@@ -7,9 +7,9 @@
 make.stepwise(probs, distances)
 }
 \arguments{
-\item{probs}{Vector of dimension k, where k is the number of different probabilities of success. An individual time between (distances\link{i-1},distances\link{i}] has probability of success prob\link{i}}
+\item{probs}{Vector of dimension k, where k is the number of different probabilities of success. An individual time between (distances[i-1],distances[i]] has probability of success prob[i]}
 
-\item{distances}{Vector of k, containing the end of each interval where success probabilities shift. The first interval where success is prob\link{1} is [0,distances\link{1}]. For all i>1, the probability of success is prob\link{i} over the interval (distances\link{i-1},distances\link{i}].}
+\item{distances}{Vector of k, containing the end of each interval where success probabilities shift. The first interval where success is prob[1] is [0,distances[1]]. For all i>1, the probability of success is prob[i] over the interval (distance[i-1],distances[i]].}
 }
 \value{
 An stepwise decay function

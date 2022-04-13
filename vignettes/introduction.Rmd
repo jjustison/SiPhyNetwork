@@ -3,7 +3,7 @@ title: "Introduction"
 subtitle: "An R Package for Simulating Phylogenetic Networks"
 author: "Josh Justison"
 output: rmarkdown::html_vignette
-bibliography: ../refs.bib
+bibliography: ./refs.bib
 vignette: >
   %\VignetteIndexEntry{Introduction}
   %\VignetteEngine{knitr::rmarkdown}
@@ -219,14 +219,14 @@ Certain classes of phylogenetic networks have ideal properties. As such we may w
 
 * **Tree-Child:** We can use `isTreeChild` to determine if a phylogenetic network is tree-child. A networks belongs to the tree-child class if for all internal nodes there exists at least one child node that is a tree-node _[@Cardona2019]_. 
 * **Tree-Based:** We can use `isTreeBased` to determine if a phylogenetic network is tree-based. A phylogenetic network is said to be tree-based if it can be constructed with a base tree that has additional linking arcs added _[@Pons2019]_.
-* **FU-Stable:** `isFUStable` can be used to determine if a phylogenetic network is FU-stable. A phylogenetic network is considered FU-stable if the unfolding and refolding of the network is isomorphic to the original network $N = F(U(N))$ _[@Huber2016]_.
+* **FU-Stable:** `isFUstable` can be used to determine if a phylogenetic network is FU-stable. A phylogenetic network is considered FU-stable if the unfolding and refolding of the network is isomorphic to the original network $N = F(U(N))$ _[@Huber2016]_.
 * **Level-k:** `getNetworkLevel` can be used to determine the level of the network. A level-k network has at least one biconnected component with k reticulations _[@Gambette2009]_.
 
 We can see these functions in action below:
 ```{r, fig.show='hold',fig.height = 4}
 isTreeChild(gsa_net)
 isTreeBased(gsa_net)
-isFUStable(gsa_net)
+isFUstable(gsa_net)
 getNetworkLevel(gsa_net)
 ```
 

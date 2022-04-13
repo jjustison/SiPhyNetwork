@@ -1,15 +1,19 @@
 Package: SiPhyNetwork
 Title: This package simulates reticulate evolution
-Version: 0.0.0.9000
+Version: 1.0.0
 Authors@R: 
-    person("Joshua", "Justison", email = "justison@iastate.edu",
-                  role = c("aut", "cre"))
+    c(person("Joshua", "Justison", email = "justisnojo@gmail.com", role = c("aut", "cre")),
+		person(c("Tracy","A."), "Heath", role=c("aut")),
+		person("Klaus", "Schliep", role = c("cph"), comment = c("modified code from ape in 'write.net.R' and 'read.net.R'. Crediting original copyright holder")),
+		person("Emmanuel", "Paradis", role = c("cph"), comment = c("modified code from ape in 'write.net.R' and 'read.net.R'. Crediting original copyright holder")),
+		person("Daniel", "Lawson", role = c("cph"), comment = c("modified code from ape in 'write.net.R' and 'read.net.R'. Crediting original copyright holder"))
+	)
 Description: This package simulates reticulate evolution in a process-based manner.
 License: GPL-3
 Encoding: UTF-8
 LazyData: true
 Roxygen: list(markdown = TRUE)
-RoxygenNote: 7.1.1
+RoxygenNote: 7.1.2
 Suggests: 
     testthat,
     knitr,
@@ -17,9 +21,9 @@ Suggests:
 Imports: 
     stats,
     ape,
-    Rcpp
-Depends:
-	ape
+    Rcpp,
+	rstackdeque
 VignetteBuilder: knitr
 LinkingTo: 
-    Rcpp
+    Rcpp,
+

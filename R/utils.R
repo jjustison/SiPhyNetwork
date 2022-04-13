@@ -1,4 +1,8 @@
+
+
 #' Determine whether a network is tree-child
+#' @import ape
+#' @importFrom stats rbeta rbinom rexp rnbinom runif
 #'
 #' @description This function determines whether a network is tree-child
 #'
@@ -141,7 +145,7 @@ getNetworkLevel <- function(net){
 #' @export
 #'
 #' @examples
-isFUStable <- function(net){
+isFUstable <- function(net){
 
   hyb_nds<-net$reticulation[,2]
   edges<-rbind(net$edge,net$reticulation)
@@ -153,21 +157,93 @@ isFUStable <- function(net){
 
   ##Now check to see if any of the tree vertices have the same children
   internal_nds <- unique(as.vector(net$edge))
-  internal_nds <- internal_nds[internal_nds > length(net$tip.label)]
-  tree_nds <- internal_nds[!(internal_nds %in% hyb_nds)]
+  internal_nds <- internal_nds[internal_nds > length(net$tip.label)] ##internal nodes will have an index greater than the tips
+  tree_nds <- internal_nds[!(internal_nds %in% hyb_nds)] ##only worry about tree nodes.
   tree_children <- list() ##store the children of all the tree nodes
-  index_added<-0 ##Keep track of the index of the tree nodes we've added
   for(nd in tree_nds){
-    tree_children[[nd]] <- edges[edges[,1]==nd,2]
-
-    for(nd2 in tree_children[seq_along(rep(NA,index_added))]){
-      ##TODO compare the children of nd and nd2
-      if( length(nd)==length(nd2)){
-
+    nd_children<-edges[edges[,1]==nd,2]
+    for(nd2_children in tree_children){
+      if(identical(sort(nd_children),sort(nd2_children))){ ##nd and nd2 share the same children
+        return(FALSE)
       }
+    }
+    tree_children[[nd]] <- nd_children
+  }
+  return(TRUE) ##Network is both compressed and has no tree vertexes with the same set of children
+
+}
+
+#' @importFrom rstackdeque rpqueue empty insert_back peek_front without_front
+isNormal <-function(net){
+
+  if(!isTreeChild(net)){ ##The Network can only be normal if it is tree-child
+    return(FALSE)
+  }
+
+  hyb_nds<-net$reticulation[,2]
+  print(hyb_nds)
+  edges<-rbind(net$edge,net$reticulation) ##put all tree and reticulate edges in one place
+
+  tips<- 1:length(net$tip.label)
+
+  times_visited<-rep(0,length(unique(edges))) ##the number of times we have visited an internal node
+  num_children <- rep(2,length(unique(edges))) ## The number of children that each internal node has.
+  num_children[tips] <- 0 ## tips have no children
+  num_children[hyb_nds] <- 1 ## hybrid nodes only have 1 child
+  descs<-list() ##This is where we'll store all the 'left' and 'right' descendants of each node
+  for( nd in unique(edges)){
+    descs[[nd]]<-list()
+    descs[[nd]][[1]]<-integer(0) ##The descendants on the 'left' of the node
+    descs[[nd]][[2]]<-integer(0) ##The descendants on the 'right' of the node
+  }
+
+  nd_queue<-rpqueue() ##This is will dictate how we search the phylogeny to find descendents
+  for( nd in tips){ ##add the tips to the queue
+    nd_queue<-insert_back(nd_queue,nd)
+  }
+  print(num_children)
+  while(!empty(nd_queue)){
+    ##Pop from the queue
+    nd<-peek_front(nd_queue)
+    nd_queue<-without_front(nd_queue)
+
+    parents<-edges[edges[,2]==nd,1] ##get the parents of nd
+    ##Only add the parents to the queue if they've been visited by all their children
+    ## This ensures that we will be able to compute the descs of the parent as it ensures we have the descs of the children
+    times_visited[parents]<-times_visited[parents]+1
+    for( par_nd in parents){ ##only add the parent node if it has been visited by each child node
+      if(times_visited[par_nd]== num_children[par_nd]){
+        nd_queue<-insert_back(nd_queue,par_nd)
+      }
+    }
+
+    children<-edges[edges[,1]==nd,2] ##The children of nd
+    if(length(children) != num_children[nd]){
+      stop("the number of children don't match the assumed number of children")
+    }
+    counter<-1 ## index for whether which child we are at
+    for(child_nd in children){
+      descs[[nd]][[counter]]<- unique(c(unlist(descs[[child_nd]]),child_nd))
+      counter<-counter+1
     }
   }
 
+  shortcut_edges <- edges[edges[,2] %in% hyb_nds,] ##get potential 'shortcut' edges to a hybrid node
+  shortcut_edges <- shortcut_edges[!(shortcut_edges[,1] %in% hyb_nds),] ## we care about the parent nodes that aren't hybrids themselves
 
+  for(rw  in seq_len(nrow(shortcut_edges))){ ## we now check if there are multiple paths from the parent node to the hybrid child
+    par_nd <- shortcut_edges[rw,1]
+    hyb_nd <- shortcut_edges[rw,2]
+
+    if( sum(unlist(descs[[par_nd]])==hyb_nd)>1 ){
+      ##There are multiple paths if the hyb_nd appears more than once in the descs list
+      ##We also know that one of those paths is a 'shortcut' edge since we used the edge from par_nd to hyb_nd as reference
+      return(FALSE)
+    }
+  }
+  return(TRUE)
 }
+
+
+
 

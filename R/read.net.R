@@ -4,8 +4,8 @@
 
 ## Copyright 2002-2010 Emmanuel Paradis, Daniel Lawson and Klaus Schliep
 
-## This file is part of the R-package `ape'.
-## See the file ../COPYING for licensing issues.
+## This file is a modified part of the R-package `ape'.
+
 
 tree.build2 <- function(tp)
 {
@@ -199,14 +199,16 @@ read.tree2 <- function(file = "", text = NULL, tree.names = NULL, skip = 0,
 
   colon <- grep(":", STRING)
   if (!length(colon)) {
-    obj <- lapply(STRING, clado.build2)
+    stop("we need a network with branch lengths")
+    #obj <- lapply(STRING, clado.build2)
   } else if (length(colon) == Ntree) {
     obj <- lapply(STRING, tree.build2)
   } else {
-    obj <- vector("list", Ntree)
-    obj[colon] <- lapply(STRING[colon], tree.build2)
-    nocolon <- (1:Ntree)[!1:Ntree %in% colon]
-    obj[nocolon] <- lapply(STRING[nocolon], clado.build)
+    stop("we need a network with branch lengths")
+    # obj <- vector("list", Ntree)
+    # obj[colon] <- lapply(STRING[colon], tree.build2)
+    # nocolon <- (1:Ntree)[!1:Ntree %in% colon]
+    # obj[nocolon] <- lapply(STRING[nocolon], clado.build)
   }
 
   for (i in 1:Ntree) {
@@ -276,10 +278,11 @@ as.evonet.phylo2 <- function(x, ...)
 #' @details
 #'
 #' If inheritance probabilities are included in the string, the returned `evonet` object will include an `inheritance` element. `inheritance[i]` corresponds to the inheritance probability of the hybrid edge denoted in `reticulation[i,]`
+#'
+#' This function also accepts the optional arguments `skip` and `tree.names`. `tree.names` is used  if there are several trees to be read and is a vector of mode character that gives names to the individual trees; if `NULL` (the default), the trees are named `"tree1"`, `"tree2"`, ...
+#' The optional argument `skip` denotes the number of lines of the input file to skip before beginning to read data (this is passed directly to `scan()`).
 #' @param file a file name specified by either a variable of mode character, or a double-quoted string; if `file = ""` (the default) then the tree is input on the keyboard, the entry being terminated with a blank line.
 #' @param text 	alternatively, the name of a variable of mode character which contains the tree(s) in parenthetic format. By default, this is ignored (set to `NULL`, meaning that the tree is read in a file); if text is not `NULL`, then the argument file is ignored.
-#' @param tree.names if there are several trees to be read, a vector of mode character that gives names to the individual trees; if `NULL` (the default), the trees are named `"tree1"`, `"tree2"`, ...
-#' @param skip number of lines of the input file to skip before beginning to read data (this is passed directly to `scan()`).
 #' @param comment.char a single character, the remaining of the line after this character is ignored (this is passed directly to `scan()`).
 #' @param ... further arguments to be passed to `scan()` and `read.tree`.
 #' @export

@@ -1,3 +1,14 @@
+###########################################
+###functions below are modified from ape###
+###########################################
+##Code from write.tree.R (2010-12-07)
+## Copyright 2002-2010 Emmanuel Paradis, Daniel Lawson, and Klaus Schliep
+
+## This file is part of the R-package `ape'.
+## They use the same GPL-2 that SiPhyNetwork uses. Please refer that for any copying issues
+
+
+
 #' Write a Network in Parenthetic Format
 #'
 #' @description This function writes a network to file in the Extended Newick format.
@@ -84,19 +95,7 @@ e2p <-  function(x)
   x
 }
 
-###########################################
-###functions below are modified from ape###
-###########################################
-#TODO properly credit ape package
 
-## write.tree.R (2010-12-07)
-
-##   Write Tree File in Parenthetic Format
-
-## Copyright 2002-2010 Emmanuel Paradis, Daniel Lawson, and Klaus Schliep
-
-## This file is part of the R-package `ape'.
-## See the file ../COPYING for licensing issues.
 
 
 chckLbl <- function(phy, x, ...)

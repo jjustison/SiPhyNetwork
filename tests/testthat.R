@@ -1,5 +1,5 @@
 library(testthat)
-library(NetSim)
+library(SiPhyNetwork)
 
 
-test_check("NetSim")
+test_check("SiPhyNetwork")

@@ -8,6 +8,12 @@
 #' @export
 #'
 #' @examples
+#' set.seed(17) ##smallest Quartan prime as seed
+#' ##Generate a tree with extinct leaves
+#' net<-sim.bdh.age(1,1,5,2,1,c(1/3,1/3,1/3),hyb.inher.fxn = make.uniform.draw(),complete=TRUE)[[1]]
+#' recon_net<-reconstructedNetwork(net)
+#' plot(net)
+#' plot(recon_net)
 reconstructedNetwork<-function(net){
   extinct_tips<- getReconstructedTips(net$tip.label,get.extinct(net))
 
@@ -36,6 +42,9 @@ getReconstructedTips<- function(tip.labels,extinct_labels){
 #' @export
 #'
 #' @examples
+#' set.seed(23) ##set seed with the smallest Pillai prime
+#' net<-sim.bdh.age(1,1,3,2,0.125,c(1/3,1/3,1/3),hyb.inher.fxn = make.uniform.draw(),complete = F)[[1]]
+#' net<-incompleteSampling(net,0.5,stochastic=F) ##randomly sample half of the extant taxa
 incompleteSampling<-function(net,rho,stochastic=F){
   extinct_tips <- getReconstructedTips(1:length(net$tip.label),get.extinct(net))
   if(length(extinct_tips)!=0){
@@ -91,6 +100,11 @@ getSamplingTips <- function(tips,rho,stochastic){
 #' @export
 #'
 #' @examples
+#' set.seed(17) ##Set seed with smallest Quartran Prime
+#' net<-sim.bdh.age(1,1,5,2,1,c(1/3,1/3,1/3),hyb.inher.fxn = make.uniform.draw(),complete=F)[[1]]
+#' net<- deleteTips(net,c(1,6)) ##drop tips 1 and 6
+#'
+#'
 deleteTips<-function(net,tips){
 
   if( sum(tips>length(net$tip.label))>0 ){
@@ -224,6 +238,32 @@ deleteTips<-function(net,tips){
   }
   net$Nnode<-Nnode
   net$tip.label<-tip.labels
+
+  ##################################
+  ####Hotfix of Github Issue #1 ####
+  ##################################
+  large_left<-max(net$edge[,1])
+  large_right<-max(net$edge[,2])
+
+  if(large_right>large_left){ ##we only care if the largest node number only appears in the second column
+
+    ##do a switcheroo of the node numbering
+    net$edge[net$edge==large_left]<- -Inf
+    net$edge[net$edge==large_right] <-large_left
+    net$edge[net$edge== -Inf] <-large_right
+
+    net$reticulation[net$reticulation==large_left]<- -Inf
+    net$reticulation[net$reticulation==large_right] <-large_left
+    net$reticulation[net$reticulation== -Inf] <-large_right
+
+
+  }
+  ##################################
+  ######## End hotfix Code #########
+  ##################################
+
+
+
   return(net)
 }
 
@@ -339,34 +379,25 @@ handleTipsTaxa<-function(phy,complete,target_ntaxa,current_n){
   phy$hyb_tips <- NULL
   phy$extinct <- NULL
 
-  ##################################
-  ####Hotfix of Github Issue #1 ####
-  ##################################
-  large_left<-max(phy$edge[,1])
-  large_right<-max(phy$edge[,2])
-
-  if(large_right>large_left){ ##we only care if the largest node number only appears in the second column
-
-    ##do a switcheroo of the node numbering
-    phy$edge[phy$edge==large_left]<- -Inf
-    phy$edge[phy$edge==large_right] <-large_left
-    phy$edge[phy$edge== -Inf] <-large_right
-
-    phy$reticulation[phy$reticulation==large_left]<- -Inf
-    phy$reticulation[phy$reticulation==large_right] <-large_left
-    phy$reticulation[phy$reticulation== -Inf] <-large_right
-
-
-  }
-  ##################################
-  ######## End hotfix Code #########
-  ##################################
 
 
   return(phy)
 }
 
 
+
+#' Lineages thru time on a network
+#'
+#' @description This function Computes the number of lineages thru time on a network
+#'
+#' @param phy An object of class 'evonet.'
+#' @param node_times A numeric vector specifying times of each node. If left NULL then the function will use the output from node.depth.edgelength(phy)
+#'
+#' @return A dataframe that consists of intervals. The first column denotes the start time of the interval while the second column denotes the end time. The third column depicts the number of lineages present in that interval.
+#'  NOTE: due to computational precision, two nodes that appear to occur on the same time (as in the case of lineage neutral and generative hybridization) may be part of different intervals in the output data frame.
+#' @export
+#'
+#' @examples
 ltt.network<-function(phy,node_times=NULL){
   if(is.null(node_times)){
     node_times<-node.depth.edgelength(phy)
@@ -384,7 +415,7 @@ ltt.network<-function(phy,node_times=NULL){
   n_lineages<-rep(NA,n_intervals)
   for(i in 1:n_intervals){
     rw<-unlist(intervals[i,])
-    ave_time <- mean(rw) ##we get a time between the start and end of the interval. This garuantees we are between events
+    ave_time <- mean(rw) ##we get a time between the start and end of the interval. This guarantees we are between events
     x<- sum((node_times[edges[,1]] < ave_time) & (ave_time < node_times[edges[,2]]))
 
     n_lineages[i] <- x ##the number of lineages is the number of edges that start before the time and end after it
@@ -398,6 +429,7 @@ ltt.network<-function(phy,node_times=NULL){
 #' @description This function creates a more plotting-friendly `evonet` object to be used with the `plot()` function
 #'
 #' @param net An object of class `evonet`.
+#' @param tol a tolerance to account for floating point imprecision. any values smaller than `tol` are considered to be zero.
 
 #' @return a network to be used with the `plot()` function
 #' @export

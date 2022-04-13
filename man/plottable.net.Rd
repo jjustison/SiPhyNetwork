@@ -4,10 +4,12 @@
 \alias{plottable.net}
 \title{Create a more Plotting-Friendly phylogenetic Network}
 \usage{
-plottable.net(net)
+plottable.net(net, tol = 1e-08)
 }
 \arguments{
 \item{net}{An object of class \code{evonet}.}
+
+\item{tol}{a tolerance to account for floating point imprecision. any values smaller than \code{tol} are considered to be zero.}
 }
 \value{
 a network to be used with the \code{plot()} function

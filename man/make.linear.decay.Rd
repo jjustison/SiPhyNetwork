@@ -7,7 +7,7 @@
 make.linear.decay(threshold)
 }
 \arguments{
-\item{t}{A numeric representing how quickly the hybridization success decays. Smaller values denote a quicker decay}
+\item{threshold}{A numeric representing how quickly the hybridization success decays. Smaller values denote a quicker decay}
 }
 \value{
 A linear decay function
