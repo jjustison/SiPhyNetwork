@@ -12,3 +12,8 @@ A function that makes draws from a uniform distribution
 \description{
 Create a function that makes draws from a uniform distribution. Function calls \code{runif(1)}
 }
+\examples{
+set.seed(17)
+net<-sim.bdh.age(1,1,5,2,1,c(1/3,1/3,1/3),hyb.inher.fxn = make.uniform.draw(),
+complete=TRUE)[[1]]
+}

@@ -17,3 +17,9 @@ A function that makes draws from a categorical distribution.
 \description{
 Create a function that makes draws from a categorical distribution. Function calls \code{sample(x=inheritances,size=1,prob=weights)}
 }
+\examples{
+set.seed(17)
+inher_func<-make.categorical.draw(inheritances=c(0.25,0.50,0.75),weights=c(0.25,0.5,0.25))
+net<-sim.bdh.age(1,1,5,2,1,c(1/3,1/3,1/3),hyb.inher.fxn = inher_func,
+complete=TRUE)[[1]]
+}

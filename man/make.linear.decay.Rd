@@ -22,3 +22,9 @@ where d is the genetic distance between taxa
 \note{
 a distance \eqn{d} greater than \eqn{t} will return 0
 }
+\examples{
+set.seed(17)
+dist_func<- make.linear.decay(0.5)
+net<-sim.bdh.age(1,1,5,2,2,c(1/3,1/3,1/3),hyb.inher.fxn = make.uniform.draw(),
+hyb.rate.fxn=dist_func,complete=TRUE)[[1]]
+}

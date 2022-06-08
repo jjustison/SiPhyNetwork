@@ -66,5 +66,4 @@ Simulates a Phylogenetic Network under a birth-death-hybridization model. Simula
 \item{\code{time.fxn}}{ A function that describes how traits change over time. The function should have the arguments \code{poly_states} and \code{timestep} in that order. \code{poly_states} is a vector containing the ploidy of all taxa while \code{timestep} is the amount of time given for trait evolution. The function should return a vector with the updated ploidy states of all taxa.}
 \item{\code{spec.fxn}}{ A function that describes how the trait changes at speciation events.The function should have the argument \code{tip_state} which has the state of the lineage just before speciation. The function should return a vector with two values, one denoting the trait of each of the two new species after the event.}
 }
-\link{make.polyploid.model} can be used to create a trait model where the trait of intersest is ploidy.
 }

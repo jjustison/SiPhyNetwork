@@ -66,5 +66,4 @@ Simulates a Phylogenetic Network under a birth-death-hybridization model. Simula
 \item{\code{time.fxn}}{ A function that describes how traits change over time.}
 \item{\code{spec.fxn}}{ A function that describes how the trait changes at speciation events.}
 }
-See \link{make.polyploid.model} for more information about using and creating this list.
 }

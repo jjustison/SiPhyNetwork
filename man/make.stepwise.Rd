@@ -17,3 +17,9 @@ An stepwise decay function
 \description{
 Create a stepwise decay function for genetic distance of two taxa and the probability of success of a hybridization event
 }
+\examples{
+set.seed(17)
+dist_func<- make.stepwise(probs=c(1,0.5,0),distances=c(0.25,0.5,Inf))
+net<-sim.bdh.age(1,1,5,2,2,c(1/3,1/3,1/3),hyb.inher.fxn = make.uniform.draw(),
+hyb.rate.fxn=dist_func,complete=TRUE)[[1]]
+}

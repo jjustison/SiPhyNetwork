@@ -10,7 +10,8 @@ write.net(
   append = FALSE,
   digits = 10,
   tree.names = FALSE,
-  tol = 1e-08
+  tol = 1e-08,
+  swap.minor = TRUE
 )
 }
 \arguments{
@@ -25,6 +26,8 @@ write.net(
 \item{tree.names}{either a logical or a vector of mode character. If TRUE then any tree names will be written prior to the tree on each line. If character, specifies the name of "phylo" objects which can be written to the file.}
 
 \item{tol}{a numeric value giving the tolerance to consider a branch as length 0.}
+
+\item{swap.minor}{a logical, TRUE swaps hybrid edges around such that edges with inheritance <0.5 are always written as leaves}
 }
 \value{
 a vector of mode character if file = "", none (invisible NULL) otherwise

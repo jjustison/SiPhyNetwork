@@ -181,15 +181,16 @@ isNormal <-function(net){
   }
 
   hyb_nds<-net$reticulation[,2]
-  print(hyb_nds)
   edges<-rbind(net$edge,net$reticulation) ##put all tree and reticulate edges in one place
 
   tips<- 1:length(net$tip.label)
 
   times_visited<-rep(0,length(unique(edges))) ##the number of times we have visited an internal node
-  num_children <- rep(2,length(unique(edges))) ## The number of children that each internal node has.
-  num_children[tips] <- 0 ## tips have no children
-  num_children[hyb_nds] <- 1 ## hybrid nodes only have 1 child
+  num_children<-times_visited
+  for(nd in unique(edges)){
+    num_children[nd]<-sum(edges[,1]==nd)
+  }
+
   descs<-list() ##This is where we'll store all the 'left' and 'right' descendants of each node
   for( nd in unique(edges)){
     descs[[nd]]<-list()
@@ -244,6 +245,52 @@ isNormal <-function(net){
   return(TRUE)
 }
 
+
+vcv.net <- function(net,tol=1e-8){
+  hyb_nds<-net$reticulation[,2]
+  edges<-rbind(net$edge,net$reticulation)
+  rt<-as.integer(length(net$tip.label)+1)
+
+  ##TODO add hybrid edge branch lengths to bl vector
+
+
+  nnodes<-max(edges)
+
+  vcv_mat<-matrix(data = NA,nrow=nnodes,ncol = nnodes)
+
+  nd_queue<-rpqueue() ##This is will dictate how we search the phylogeny to build the vcv
+  rt_descs<-edges[edges[,1]==rt,2] ##Get the children of rt
+  for(desc in rt_descs){ ##add the descs to the nd queue
+    nd_queue<-insert_back(nd_queue,desc)
+  }
+  while(!empty(nd_queue)){
+    ##Pop from the queue
+    nd<-peek_front(nd_queue)
+    nd_queue<-without_front(nd_queue)
+
+    ##Check if the nd is a hybrid and deal with it accordingly
+    if(!(nd %in% hyb_nds)){ ##non-hybrid case
+      ##nd varies with itself and its children during the edge that leads to nd
+      children<-edges[edges[,1]==nd,2]
+      bran_len <- net$edge.length[edges[,2]==nd]
+      vcv_mat[c(children,nd),nd] <- vcv_mat[nd,nd] + bran_len
+
+      ##have the children 'inherit' the same covariances as the parent
+      vcv_mat[,children] <- vcv_mat[,nd]
+
+      ##add the children to the queue
+      for(child in children){
+        nd_queue <-insert_back(nd_queue,child)
+      }
+
+    }else{ ##hybrid case
+
+    }
+
+
+  }
+
+}
 
 
 

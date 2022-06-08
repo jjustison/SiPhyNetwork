@@ -28,7 +28,6 @@
 #'  \item{`time.fxn`}{ A function that describes how traits change over time. The function should have the arguments `poly_states` and `timestep` in that order. `poly_states` is a vector containing the ploidy of all taxa while `timestep` is the amount of time given for trait evolution. The function should return a vector with the updated ploidy states of all taxa.}
 #'  \item{`spec.fxn`}{ A function that describes how the trait changes at speciation events.The function should have the argument `tip_state` which has the state of the lineage just before speciation. The function should return a vector with two values, one denoting the trait of each of the two new species after the event.}
 #' }
-#' \link{make.polyploid.model} can be used to create a trait model where the trait of intersest is ploidy.
 #' @export
 #'
 #' @examples

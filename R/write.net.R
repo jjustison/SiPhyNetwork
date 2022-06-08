@@ -27,28 +27,41 @@
 #' @param digits a numeric giving the number of digits used for printing branch lengths.
 #' @param tree.names either a logical or a vector of mode character. If TRUE then any tree names will be written prior to the tree on each line. If character, specifies the name of "phylo" objects which can be written to the file.
 #' @param tol a numeric value giving the tolerance to consider a branch as length 0.
+#' @param swap.minor a logical, TRUE swaps hybrid edges around such that edges with inheritance <0.5 are always written as leaves
 #'
 #' @return a vector of mode character if file = "", none (invisible NULL) otherwise
 #' @export
 #'
 #' @examples
-write.net<-function(net,file="",append = FALSE, digits = 10, tree.names = FALSE,tol=1e-8){
+write.net<-function(net,file="",append = FALSE, digits = 10, tree.names = FALSE,tol=1e-8,swap.minor= TRUE){
 
-  ###Code to make the minor hybrid edge drawn as the leaf
-  ###We need to swap edge such that the minors are all in net$reticulation as opposed to net$edge
-  bad_hybs <- which(net$inheritance > 0.5)
-  for(ret_ind in bad_hybs){
-    old_ret <- net$reticulation[ret_ind,]
-    hyb_nd<-old_ret[2]
-    e_ind <- net$edge[,2]==hyb_nd
-    old_e<-net$edge[e_ind,]
+  if(swap.minor){
+    ###Code to make the minor hybrid edge drawn as the leaf
+    ###We need to swap edge such that the minors are all in net$reticulation as opposed to net$edge
+    if(!is.null(net$edge.length)){
+      nd_times<-node.depth.edgelength(net)
+    }
 
-    net$reticulation[ret_ind,]<-old_e
-    net$edge[e_ind,]<-old_ret
-    net$inheritance[ret_ind]<-1-net$inheritance[ret_ind]
+    bad_hybs <- which(net$inheritance > 0.5)
+    for(ret_ind in bad_hybs){
+      old_ret <- net$reticulation[ret_ind,]
+      hyb_nd<-old_ret[2]
+      e_ind <- net$edge[,2]==hyb_nd
+      old_e<-net$edge[e_ind,]
+
+      if(!is.null(net$edge.length)){
+        hyb_length <- nd_times[old_ret[2]]-nd_times[old_ret[1]]
+        net$edge.length[e_ind]<-hyb_length
+      }
+
+      net$reticulation[ret_ind,]<-old_e
+      net$edge[e_ind,]<-old_ret
+      net$inheritance[ret_ind]<-1-net$inheritance[ret_ind]
+
+    }
+    ###end code to make minor edge the leaf
 
   }
-  ###end code to make minor edge the leaf
 
 
 

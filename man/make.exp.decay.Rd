@@ -21,3 +21,9 @@ Create an exponential decay function for genetic distance of two taxa and the pr
 The function computes: \deqn{e^{- \frac{d^{s}}}{t} }
 where d is the genetic distance between taxa
 }
+\examples{
+set.seed(17)
+dist_func<- make.exp.decay(1,1)
+net<-sim.bdh.age(1,1,5,2,2,c(1/3,1/3,1/3),hyb.inher.fxn = make.uniform.draw(),
+hyb.rate.fxn=dist_func,complete=TRUE)[[1]]
+}

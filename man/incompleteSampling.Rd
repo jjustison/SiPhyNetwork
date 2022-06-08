@@ -21,6 +21,7 @@ This function samples tips from a network. Only extant tips are downsampled from
 }
 \examples{
 set.seed(23) ##set seed with the smallest Pillai prime
-net<-sim.bdh.age(1,1,3,2,0.125,c(1/3,1/3,1/3),hyb.inher.fxn = make.uniform.draw(),complete = FALSE)[[1]]
+net<-sim.bdh.age(1,1,3,2,0.125,c(1/3,1/3,1/3),
+hyb.inher.fxn = make.uniform.draw(),complete = FALSE)[[1]]
 net<-incompleteSampling(net,0.5,stochastic=FALSE) ##randomly sample half of the extant taxa
 }

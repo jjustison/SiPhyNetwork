@@ -17,3 +17,10 @@ A function that makes draws from a beta distribution.
 \description{
 Create a function that makes draws from a beta distribution. Function calls \code{rbeta(1,alpha,beta)}
 }
+\examples{
+set.seed(17)
+inher_func<-make.beta.draw(10,10)
+net<-sim.bdh.age(1,1,5,2,1,c(1/3,1/3,1/3),hyb.inher.fxn = inher_func,
+complete=TRUE)[[1]]
+
+}

@@ -28,7 +28,6 @@
 #'  \item{`time.fxn`}{ A function that describes how traits change over time.}
 #'  \item{`spec.fxn`}{ A function that describes how the trait changes at speciation events.}
 #' }
-#' See \link{make.polyploid.model} for more information about using and creating this list.
 #' @export
 #' @examples
 sim.bdh.taxa.ssa <- function(n,numbsim,
@@ -85,7 +84,6 @@ sim.bdh.taxa.ssa <- function(n,numbsim,
 #'  \item{`time.fxn`}{ A function that describes how traits change over time.}
 #'  \item{`spec.fxn`}{ A function that describes how the trait changes at speciation events.}
 #' }
-#' See \link{make.polyploid.model} for more information about using and creating this list.
 #' @export
 #'
 #' @examples
