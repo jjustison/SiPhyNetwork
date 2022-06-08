@@ -7,8 +7,8 @@
 <!-- badges: end -->
 
 The goal of SiPhyNetwork is to generate Phylogenetic networks in a
-process-based manner. NetSim considers a birth-death-hybridization
-proccess for simulating Networks. We consider allow for hybridization to
+process-based manner. SiPhyNetwork considers a birth-death-hybridization
+proccess for simulating Networks. We allow for hybridization to
 be lineage generative, lineage degenerative, and lineage neutral.
 
 ## Installation
