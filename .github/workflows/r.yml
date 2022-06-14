@@ -22,7 +22,7 @@ jobs:
     runs-on: ${{matrix.os}}
     strategy:
       matrix:
-        r-version: ['release']
+        r-version: ['release', 'devel']
         os: [macos-latest, windows-latest, ubuntu-latest ]
 
     steps:
