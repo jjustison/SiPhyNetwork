@@ -5,11 +5,11 @@
 #'
 #' @title Biconnected Components
 #' @description Find the biconnected components of a phylogeny
-#' @param x A single integer.
+#' @param edges The `edge` matrix of a `phylo` object.
+#' @param rt The root node of the phylogeney
+#' @param nNode The number of nodes in the tree
 #' @details biconnected components
 #' @export
-NULL
-
 biconnectedComponents <- function(edges, rt, nNode) {
     .Call(`_SiPhyNetwork_biconnectedComponents`, edges, rt, nNode)
 }
