@@ -288,11 +288,11 @@ as.evonet.phylo2 <- function(x, ...)
 #' @export
 #'
 #' @examples
+#' net<-read.net(text="((A:7,((B:2,C:2):3)#H1:2::0.6):3,(D:6,#H1:1::0.4):4);")
 
 read.net <- function(file = "", text = NULL, comment.char = "", ...)
 {
   x <- read.tree2(file = file, text = text, comment.char = comment.char, ...)
-  warning("Network is coerced to be time-consistent")
   as.evonet.phylo2(x)
 }
 

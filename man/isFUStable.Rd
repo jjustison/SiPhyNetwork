@@ -2,7 +2,7 @@
 % Please edit documentation in R/utils.R
 \name{isFUstable}
 \alias{isFUstable}
-\title{Get the level of a Network}
+\title{Determine whether a phylogeny is FU-stable}
 \usage{
 isFUstable(net)
 }
@@ -10,8 +10,12 @@ isFUstable(net)
 \item{net}{A phylogenetic network of class \code{evonet}.}
 }
 \value{
-A numeric with the level of the network
+A logical that is \code{TRUE} if the network is FU-stable
 }
 \description{
-This function gets the level of the network
+This function assesses whether a network is FU-stable
+}
+\examples{
+net<- read.net(text= "((A:7,((B:2,C:2):3)#H1:2::0.6):3,(D:6,#H1:1::0.4):4);")
+isFUstable(net) ##returns TRUE
 }

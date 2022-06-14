@@ -67,3 +67,8 @@ Simulates a Phylogenetic Network under a birth-death-hybridization model. Simula
 \item{\code{spec.fxn}}{ A function that describes how the trait changes at speciation events.The function should have the argument \code{tip_state} which has the state of the lineage just before speciation. The function should return a vector with two values, one denoting the trait of each of the two new species after the event.}
 }
 }
+\examples{
+set.seed(17) ##smallest Quartan prime as seed
+#Generate a tree with extinct leaves
+net<-sim.bdh.age(1,1,5,2,1,c(1/3,1/3,1/3),hyb.inher.fxn = make.uniform.draw(),complete=TRUE)[[1]]
+}

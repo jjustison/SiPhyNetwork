@@ -15,3 +15,7 @@ A numeric with the level of the network
 \description{
 This function gets the level of the network
 }
+\examples{
+net<- read.net(text= "((A:7,((B:2,C:2):3)#H1:2::0.6):3,(D:6,#H1:1::0.4):4);")
+getNetworkLevel(net) ##returns 1
+}

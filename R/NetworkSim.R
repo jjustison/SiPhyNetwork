@@ -399,6 +399,10 @@ handleTipsTaxa<-function(phy,complete,target_ntaxa,current_n){
 #' @export
 #'
 #' @examples
+#' set.seed(17) ##smallest Quartan prime as seed
+#' ##Generate a tree with extinct leaves
+#' net<-sim.bdh.age(1,1,5,2,1,c(1/3,1/3,1/3),hyb.inher.fxn = make.uniform.draw(),complete=TRUE)[[1]]
+#' ltt.network(net)
 ltt.network<-function(phy,node_times=NULL){
   if(is.null(node_times)){
     node_times<-node.depth.edgelength(phy)
@@ -436,6 +440,10 @@ ltt.network<-function(phy,node_times=NULL){
 #' @export
 #'
 #' @examples
+#' #' set.seed(17) ##smallest Quartan prime as seed
+#' ##Generate a tree with extinct leaves
+#' net<-sim.bdh.age(1,1,5,2,1,c(1/3,1/3,1/3),hyb.inher.fxn = make.uniform.draw(),complete=TRUE)[[1]]
+#' plot(plottable.net(net))
 plottable.net<-function(net,tol=1e-8){
 
   node_times<-node.depth.edgelength(net)

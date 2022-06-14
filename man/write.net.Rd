@@ -44,3 +44,8 @@ If tree.names == TRUE then a variant of the Newick format is written for which t
 
 The tip labels (and the node labels if present) are checked before being printed: the leading and trailing spaces, and the leading left and trailing right parentheses are deleted; the other spaces are replaced by underscores; the commas, colons, semicolons, and the other parentheses are replaced with dashes
 }
+\examples{
+net<-read.net(text="((A:7,((B:2,C:2):3)#H1:2::0.6):3,(D:6,#H1:1::0.4):4);")
+write.net(net)
+
+}

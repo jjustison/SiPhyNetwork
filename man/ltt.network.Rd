@@ -18,3 +18,9 @@ NOTE: due to computational precision, two nodes that appear to occur on the same
 \description{
 This function Computes the number of lineages thru time on a network
 }
+\examples{
+set.seed(17) ##smallest Quartan prime as seed
+##Generate a tree with extinct leaves
+net<-sim.bdh.age(1,1,5,2,1,c(1/3,1/3,1/3),hyb.inher.fxn = make.uniform.draw(),complete=TRUE)[[1]]
+ltt.network(net)
+}

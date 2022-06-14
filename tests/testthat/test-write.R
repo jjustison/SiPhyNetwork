@@ -6,6 +6,19 @@ test_that("tests that write.net creates the correct newick", {
   n$inheritance<-0.6
   expect_equal(write.net(n),"((A:7,#H1:2::0.4):3,(((B:2,C:2):3)#H1:1::0.6,D:6):4);") ## write.net makes the minor edge the hybrid leaf
 
+  ##Check Classes of networks
+
+  expect_true(isTreeChild(n))
+  expect_true(isTreeBased(n))
+  expect_true(isFUstable(n))
+  expect_equal(getNetworkLevel(n),1)
+
+  n2<-read.net(text="(((((t2:1,t3:1):1)#H10:1::0.5)#H9:1.5::0.5,#H7:0.5::0.5):0.5,((((t5:1,t1:1):2,#H10:1::0.5):0.5,#H9:0.5::0.5):0.5)#H7:1::0.5);")
+  expect_true(isTreeBased(n2))
+  expect_false((isFUstable(n2)))
+  expect_false(isTreeChild(n2))
+  expect_equal(getNetworkLevel(n2),3)
+
 
   ##Check that swap minor edges in write.net works properly
 
@@ -32,5 +45,9 @@ test_that("tests that write.net creates the correct newick", {
   )
   expect_true(is.ultrametric(read.net(text=write.net(ssa_nets[[100]],swap.minor=T))))
   expect_true(is.ultrametric(read.net(text=write.net(ssa_nets[[100]],swap.minor=F))))
+
+
+
+
 
 })

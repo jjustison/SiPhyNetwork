@@ -70,3 +70,9 @@ Simulates a Phylogenetic Network under a birth-death-hybridization model. Simula
 \item{\code{spec.fxn}}{ A function that describes how the trait changes at speciation events.}
 }
 }
+\examples{
+set.seed(17) ##smallest Quartan prime as seed
+##Generate a tree with extinct leaves
+net<-sim.bdh.taxa.gsa(m=21,n=5,1,3,2,0.5,c(1/3,1/3,1/3),
+hyb.inher.fxn = make.uniform.draw(),complete=TRUE)[[1]]
+}

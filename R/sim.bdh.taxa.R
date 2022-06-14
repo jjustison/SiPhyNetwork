@@ -30,6 +30,10 @@
 #' }
 #' @export
 #' @examples
+#' set.seed(17) ##smallest Quartan prime as seed
+#' ##Generate a tree with extinct leaves
+#' net<-sim.bdh.taxa.ssa(5,1,5,2,1.5,c(1/3,1/3,1/3),
+#' hyb.inher.fxn = make.uniform.draw(),complete=TRUE)[[1]]
 sim.bdh.taxa.ssa <- function(n,numbsim,
                         lambda,mu,
                         nu, hybprops,
@@ -87,6 +91,10 @@ sim.bdh.taxa.ssa <- function(n,numbsim,
 #' @export
 #'
 #' @examples
+#' set.seed(17) ##smallest Quartan prime as seed
+#' ##Generate a tree with extinct leaves
+#' net<-sim.bdh.taxa.gsa(m=21,n=5,1,3,2,0.5,c(1/3,1/3,1/3),
+#' hyb.inher.fxn = make.uniform.draw(),complete=TRUE)[[1]]
 
 sim.bdh.taxa.gsa <-function(m,n,numbsim,
                         lambda,mu,

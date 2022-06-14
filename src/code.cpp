@@ -50,9 +50,12 @@ void biconnectedHelper(const IntegerMatrix &edges,const int nd,int &index, Integ
   }
 }
 
-//' Multiply a number by two
+//' Find the biconnected components of a phylogeny
 //'
+//' @title Biconnected Components
+//' @description Find the biconnected components of a phylogeny
 //' @param x A single integer.
+//' @details biconnected components
 //' @export
 
 // [[Rcpp::export]]

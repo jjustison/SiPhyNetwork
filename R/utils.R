@@ -13,6 +13,8 @@
 #' @export
 #'
 #' @examples
+#' net<- read.net(text= "((A:7,((B:2,C:2):3)#H1:2::0.6):3,(D:6,#H1:1::0.4):4);")
+#' isTreeChild(net) ##returns TRUE
 
 isTreeChild <-function(net){
   parent_nds <- net$reticulation[,1]
@@ -41,6 +43,8 @@ isTreeChild <-function(net){
 #' @export
 #'
 #' @examples
+#' net<- read.net(text= "((A:7,((B:2,C:2):3)#H1:2::0.6):3,(D:6,#H1:1::0.4):4);")
+#' isTreeBased(net) ##returns TRUE
 
 isTreeBased <- function(net){
   ## Corollary 2.11 of Jetten & Iersel 2016
@@ -106,6 +110,8 @@ isTreeBased <- function(net){
 #' @export
 #'
 #' @examples
+#' net<- read.net(text= "((A:7,((B:2,C:2):3)#H1:2::0.6):3,(D:6,#H1:1::0.4):4);")
+#' getNetworkLevel(net) ##returns 1
 getNetworkLevel <- function(net){
   nrets<-nrow(net$reticulation)
   if(nrets==0){ ##if there are no reticulations then the network must be level 0
@@ -135,16 +141,18 @@ getNetworkLevel <- function(net){
 }
 
 
-#' Get the level of a Network
+#' Determine whether a phylogeny is FU-stable
 #'
-#' @description This function gets the level of the network
+#' @description This function assesses whether a network is FU-stable
 #'
 #' @param net A phylogenetic network of class `evonet`.
 
-#' @return A numeric with the level of the network
+#' @return A logical that is `TRUE` if the network is FU-stable
 #' @export
 #'
 #' @examples
+#' net<- read.net(text= "((A:7,((B:2,C:2):3)#H1:2::0.6):3,(D:6,#H1:1::0.4):4);")
+#' isFUstable(net) ##returns TRUE
 isFUstable <- function(net){
 
   hyb_nds<-net$reticulation[,2]

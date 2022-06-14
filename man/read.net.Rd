@@ -24,3 +24,6 @@ If inheritance probabilities are included in the string, the returned \code{evon
 This function also accepts the optional arguments \code{skip} and \code{tree.names}. \code{tree.names} is used  if there are several trees to be read and is a vector of mode character that gives names to the individual trees; if \code{NULL} (the default), the trees are named \code{"tree1"}, \code{"tree2"}, ...
 The optional argument \code{skip} denotes the number of lines of the input file to skip before beginning to read data (this is passed directly to \code{scan()}).
 }
+\examples{
+net<-read.net(text="((A:7,((B:2,C:2):3)#H1:2::0.6):3,(D:6,#H1:1::0.4):4);")
+}

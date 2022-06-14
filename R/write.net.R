@@ -33,6 +33,9 @@
 #' @export
 #'
 #' @examples
+#' net<-read.net(text="((A:7,((B:2,C:2):3)#H1:2::0.6):3,(D:6,#H1:1::0.4):4);")
+#' write.net(net)
+#'
 write.net<-function(net,file="",append = FALSE, digits = 10, tree.names = FALSE,tol=1e-8,swap.minor= TRUE){
 
   if(swap.minor){

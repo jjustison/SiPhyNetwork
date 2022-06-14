@@ -18,3 +18,7 @@ This function determines whether a network is tree-based
 \details{
 A phylogenetic network is said to be tree-based if it can be constructed with a base tree that has additional linking arcs added. See jetten 2016 Corollary 2.11 for the algorithm used to determine whether the network is tree-based
 }
+\examples{
+net<- read.net(text= "((A:7,((B:2,C:2):3)#H1:2::0.6):3,(D:6,#H1:1::0.4):4);")
+isTreeBased(net) ##returns TRUE
+}

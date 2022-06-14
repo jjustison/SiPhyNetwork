@@ -18,3 +18,7 @@ This function determines whether a network is tree-child
 \details{
 A phylogenetic network is said to be tree-child if all internal nodes have at least one tree-like or leaf node as children.
 }
+\examples{
+net<- read.net(text= "((A:7,((B:2,C:2):3)#H1:2::0.6):3,(D:6,#H1:1::0.4):4);")
+isTreeChild(net) ##returns TRUE
+}
