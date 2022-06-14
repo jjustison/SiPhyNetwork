@@ -2,8 +2,9 @@ Package: SiPhyNetwork
 Title: This package simulates reticulate evolution
 Version: 1.0.0
 Authors@R: 
-    c(person("Joshua", "Justison", email = "justisnojo@gmail.com", role = c("aut", "cre")),
-		person(c("Tracy","A."), "Heath", role=c("aut")),
+    c(person("Joshua", "Justison", email = "justisnojo@gmail.com", role = c("aut", "cre","cph")),
+    		person(c("Claudia","Solis-Lemus"), role=c("aut","cph")),
+		person(c("Tracy","A."), "Heath", role=c("aut","cph")),
 		person("Klaus", "Schliep", role = c("cph"), comment = c("modified code from ape in 'write.net.R' and 'read.net.R'. Crediting original copyright holder")),
 		person("Emmanuel", "Paradis", role = c("cph"), comment = c("modified code from ape in 'write.net.R' and 'read.net.R'. Crediting original copyright holder")),
 		person("Daniel", "Lawson", role = c("cph"), comment = c("modified code from ape in 'write.net.R' and 'read.net.R'. Crediting original copyright holder"))
