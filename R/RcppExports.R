@@ -6,7 +6,7 @@
 #' @title Biconnected Components
 #' @description Find the biconnected components of a phylogeny
 #' @param edges The `edge` matrix of a `phylo` object.
-#' @param rt The root node of the phylogeney
+#' @param rt The root node of the phylogeny
 #' @param nNode The number of nodes in the tree
 #' @details biconnected components
 #' @export

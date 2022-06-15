@@ -11,7 +11,7 @@ incompleteSampling(net, rho, stochastic = FALSE)
 
 \item{rho}{The sampling probability.}
 
-\item{stochastic}{If stochastic=FALSE then for a network with n tips we sample n*rho tips. If stochastic=TRUE then each tip porbability rho of being sampled.}
+\item{stochastic}{If stochastic=FALSE then for a network with n tips we sample n*rho tips. If stochastic=TRUE then each tip probability rho of being sampled.}
 }
 \value{
 net A network with sampled tips

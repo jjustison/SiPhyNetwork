@@ -21,7 +21,7 @@
 #'
 #' The tip labels (and the node labels if present) are checked before being printed: the leading and trailing spaces, and the leading left and trailing right parentheses are deleted; the other spaces are replaced by underscores; the commas, colons, semicolons, and the other parentheses are replaced with dashes
 #'
-#' @param net A phylogenetic network of class `evonet`. The network may include an optional attribute `inheritance`` that represents the inheritance probbilities on the edges found in the 'reticulation' attribute
+#' @param net A phylogenetic network of class `evonet`. The network may include an optional attribute `inheritance`` that represents the inheritance probilities on the edges found in the 'reticulation' attribute
 #' @param file a file name specified by either a variable of mode character, or a double-quoted string; if `file = ""`` (the default) then the tree is written on the standard output connection (i.e. the console).
 #' @param append a logical, if TRUE the tree is appended to the file without erasing the data possibly existing in the file, otherwise the file (if it exists) is overwritten (`FALSE`` the default).
 #' @param digits a numeric giving the number of digits used for printing branch lengths.

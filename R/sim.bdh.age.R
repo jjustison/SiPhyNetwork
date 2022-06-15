@@ -1,4 +1,4 @@
-#' Simulate a Phylogenetic Network to a Specififed Number of Taxa
+#' Simulate a Phylogenetic Network to a Specified Number of Taxa
 #'
 #' @description Simulates a Phylogenetic Network under a birth-death-hybridization model. Simulates to a specified ages.
 #'
@@ -13,9 +13,9 @@
 #' @param mrca If `mrca=FALSE`: age is the time since origin. If `mrca=TRUE`: age is the time since most recent common ancestor of the extant tips.
 #' @param complete If complete = TRUE, the tree with the extinct lineages is returned. If complete = FALSE, the extinct lineages are suppressed.
 #' @param stochsampling When `stochsampling=TRUE`: Each extant tip is included into the final tree with probability frac.
-#' @param hyb.rate.fxn The probability of a successful hybridization as a function of genetic distance between taxa. The default value of `NULL`` assumes that hybridizaion success is independent of genetic distance between taxa.
+#' @param hyb.rate.fxn The probability of a successful hybridization as a function of genetic distance between taxa. The default value of `NULL`` assumes that hybridization success is independent of genetic distance between taxa.
 #' @param trait.model A list that dictates how a trait affects the hybridization process. The default value of `NULL` doesn't take a trait into account for simulation. See Details for more information.
-#' @return out Returns a list of numbsim networks with the time since origin / most recent common ancestor being 'age.' If tree goes extinct or no tips are sampled, return value is '0'. If only one extant and no extinct tips are sampled, return value is '1'. Each network has an additional attirbute "inheritance" that represents the inheritance probabilities on the edges in the "reticulation" attribute.
+#' @return out Returns a list of numbsim networks with the time since origin / most recent common ancestor being 'age.' If tree goes extinct or no tips are sampled, return value is '0'. If only one extant and no extinct tips are sampled, return value is '1'. Each network has an additional attribute "inheritance" that represents the inheritance probabilities on the edges in the "reticulation" attribute.
 #' @details `hyb.inher.fxn` should return values between 0 and 1 and shouldn't require any arguments. E.g. \link{make.beta.draw} and \link{make.uniform.draw} create functions that fit these specifications
 #'
 #' `hyb.rate.fxn` should take one argument for the genetic distance. The function should be defined on the range \eqn{[0,Inf)} and return values between \eqn{[0,1]}

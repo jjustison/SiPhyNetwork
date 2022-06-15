@@ -36,7 +36,7 @@ getReconstructedTips<- function(tip.labels,extinct_labels){
 #'
 #' @param net An object of class 'evonet.'
 #' @param rho The sampling probability.
-#' @param stochastic If stochastic=FALSE then for a network with n tips we sample n*rho tips. If stochastic=TRUE then each tip porbability rho of being sampled.
+#' @param stochastic If stochastic=FALSE then for a network with n tips we sample n*rho tips. If stochastic=TRUE then each tip probability rho of being sampled.
 #'
 #' @return net A network with sampled tips
 #' @export

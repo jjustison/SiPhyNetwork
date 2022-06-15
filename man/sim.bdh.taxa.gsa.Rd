@@ -2,7 +2,7 @@
 % Please edit documentation in R/sim.bdh.taxa.R
 \name{sim.bdh.taxa.gsa}
 \alias{sim.bdh.taxa.gsa}
-\title{Simulate a Phylogenetic Network to a Specififed Number of Taxa}
+\title{Simulate a Phylogenetic Network to a Specified Number of Taxa}
 \usage{
 sim.bdh.taxa.gsa(
   m,
@@ -46,12 +46,12 @@ sim.bdh.taxa.gsa(
 
 \item{stochsampling}{When \code{stochsampling=TRUE}: Each extant tip is included into the final tree with probability frac.}
 
-\item{hyb.rate.fxn}{The probability of a successful hybridization as a function of genetic distance between taxa. The default value of `NULL`` assumes that hybridizaion success is independent of genetic distance between taxa.}
+\item{hyb.rate.fxn}{The probability of a successful hybridization as a function of genetic distance between taxa. The default value of `NULL`` assumes that hybridization success is independent of genetic distance between taxa.}
 
 \item{trait.model}{A list that dictates how a trait affects the hybridization process. The default value of \code{NULL} doesn't take a trait into account for simulation. See Details for more information.}
 }
 \value{
-out Returns a list of numbsim networks with the time since origin / most recent common ancestor being 'age.' If tree goes extinct or no tips are sampled, return value is '0'. If only one extant and no extinct tips are sampled, return value is '1'. Each network has an additional attirbute "inheritance" that represents the inheritance probabilities on the edges in the "reticulation" attribute.
+out Returns a list of numbsim networks with the time since origin / most recent common ancestor being 'age.' If tree goes extinct or no tips are sampled, return value is '0'. If only one extant and no extinct tips are sampled, return value is '1'. Each network has an additional attribute "inheritance" that represents the inheritance probabilities on the edges in the "reticulation" attribute.
 }
 \description{
 Simulates a Phylogenetic Network under a birth-death-hybridization model. Simulates to a specified number of extant tips under the General Sampling Approach.

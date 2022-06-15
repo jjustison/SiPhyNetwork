@@ -15,7 +15,7 @@ The SiPhyNetwork R package is a tool for simulating phylogenetic networks under 
 
 # Introduction 
 
-Birth-death processes are commonly used to describe species diversification _[@Nee2006]_. There exist several phylogenetic simulation tools that generate trees under the birth-death process _[See @Stadler2011]_ as well as extentions for density-dependent diversification , time-dependent rates _[@Hoehna2013; @Hoehna2015]_, lineage age dependent rates _[@Hagen2018]_, and fossilisation _[@BaridoSottani2019]_. 
+Birth-death processes are commonly used to describe species diversification _[@Nee2006]_. There exist several phylogenetic simulation tools that generate trees under the birth-death process _[See @Stadler2011]_ as well as extensions for density-dependent diversification , time-dependent rates _[@Hoehna2013; @Hoehna2015]_, lineage age dependent rates _[@Hagen2018]_, and fossilization _[@BaridoSottani2019]_. 
 
 Gene flow and hybridization is found throughout the tree of life and has had a nontrivial role in shaping diversity _[@Mallet2016]_. Recently, an extension of the birth-death process that includes hybridization was developed as a prior for Bayesian phylogenetic inference _[@Zhang2018]_. This model assumes the waiting time between hybridizations is exponentially distributed with rate parameter ${ntaxa \choose 2}\nu$, where $\nu$ is the hybridization rate. A few tools exist that simulate phylogenetic networks under variants of this model _[@Morin2006; @Woodhams2016; @Davin2020]_, however they all have different conceptualizations on how hybridization events affect the number of lineages on the phylogeny. As process-based phylogenetic inference methods receive increased attention, it becomes imperative that we can simulate biologically relevant phylogenetic network for the testing of these methods and for creating hypotheses about empirical systems. 
 
@@ -36,7 +36,7 @@ Throughout this vignette we will cover how to use these features in SiPhyNetwork
 
 ## Simulating Networks
 
-There are three core functions for simulating phylogenetic networks: `sim.bdh.age`, `sim.bdh.taxa.ssa`, and `sim.bdh.taxa.gsa` (collectively refered to as `sim.bdh` style functions). These functions all use the same birth-death-hybridization models but differ in their stopping conditions. 
+There are three core functions for simulating phylogenetic networks: `sim.bdh.age`, `sim.bdh.taxa.ssa`, and `sim.bdh.taxa.gsa` (collectively referred to as `sim.bdh` style functions). These functions all use the same birth-death-hybridization models but differ in their stopping conditions. 
 
 * The `sim.bdh.age` function simulates until a specified `age`.
 * The `sim.bdh.taxa.ssa` function uses the Simple Sampling Approach (SSA) to simulate to a specified number of taxa `n`, that is, the simulation will stop once the phylogeny has `n` tips.
@@ -145,13 +145,13 @@ We will explore how to appropriately make arguments for `hyb.rate.fxn` and `trai
 
 ### Types of Hybridization
 
-We often think of hybridization as a species forming event, a new hybrid species gets created. Although a new hybrid species gets created, the net number of lineages doesn't need to strictly increase. We should also consider cases where one or both of the parental lineages go extinct as a result of the hybridization. The hybrid species could either outcompete one or both of the parental lineages and displace them or the hybrid species could continually backcross with the parental lineages until one homoogenous lineage remains, a process known as genetic assimilation. If one parental lineage goes extinct we have zero change in the number of lineages while if both parental lineages go extinct we have a net loss of one lineage even with the creation of the hybrid species. We call these different outcomes lineage generative, lineage neutral, and lineage degenerative hybridization.
+We often think of hybridization as a species forming event, a new hybrid species gets created. Although a new hybrid species gets created, the net number of lineages doesn't need to strictly increase. We should also consider cases where one or both of the parental lineages go extinct as a result of the hybridization. The hybrid species could either outcompete one or both of the parental lineages and displace them or the hybrid species could continually backcross with the parental lineages until one homogenous lineage remains, a process known as genetic assimilation. If one parental lineage goes extinct we have zero change in the number of lineages while if both parental lineages go extinct we have a net loss of one lineage even with the creation of the hybrid species. We call these different outcomes lineage generative, lineage neutral, and lineage degenerative hybridization.
 
 ![](./figures/hybridization_types.png){width=100%}
 
 ### Example 2 Types of Hybridization in SiPhyNetwork
 
-Modeling the different types of hybridization in SiPhyNetwork is relatively straighforward with use of the `hybprops` argument in the `sim.bdh` functions. `hybprops` is a vector of length three that denotes the relative probability that a hybridization event is lineage generative, lineage degenerative, or lineage neutral respectively.
+Modeling the different types of hybridization in SiPhyNetwork is relatively straightforward with use of the `hybprops` argument in the `sim.bdh` functions. `hybprops` is a vector of length three that denotes the relative probability that a hybridization event is lineage generative, lineage degenerative, or lineage neutral respectively.
 
 ```{r}
 
@@ -198,7 +198,7 @@ A few odd things happened here when we tried plotting the networks we simulated.
 
 * The **SSA network**  only shows one hybridization event although we can see from the `reticulation` element that there are two events. This occurs when there is a hybridization where the two donor lineages have the same parental node.
 * From the **GSA network** figure we can notice two issues. Firstly, it looks cut off or was plotting incorrectly. While the edge and reticulation matrix would confirm that the network is properly conformed, the plotting function of `ape` doesn't always render networks correctly. Secondly, the GSA network has a diagonal hybrid edge, and while this isn't improper, it does muddle the interpretation of the phylogeny. The diagonal line would seem to imply that there was gene flow from a lineage in the past to a more recent lineage. This clearly isn't the case as no lineages that we know of can time travel. These diagonal hybrid edges can result from incomplete lineage sampling, gene flow from a now extinct species, or lineage degenerative hybridization but it can still be hard to interpret diagonal edges. 
-* In the **Age network** we can see the same issue with one of the hybrid edges not appearing as in the **SSA netowrk** and the diagonal edges as in the **GSA network**.
+* In the **Age network** we can see the same issue with one of the hybrid edges not appearing as in the **SSA network** and the diagonal edges as in the **GSA network**.
 
 We correct these issues by using the `plottable.net()` function to modify the phylogeny to a more plotting-friendly network where gene flow always occurs between contemporary lineages. We aren't changing anything fundamental about the network, just how the edges get drawn. 
 
@@ -232,7 +232,7 @@ getNetworkLevel(gsa_net)
 
 ### Example 5 Network Input And Output
 
-Now that we've gotten a look at the networks we may wish to save these networks to file. We will be using the rich Newick Format for saving the phylogenies *[@Cardona2008; but see @Wen2018]*. Notaby, the `ape` function `write.evonet` does not save inheritance probabilities to file so we defined `write.net` for this purpose
+Now that we've gotten a look at the networks we may wish to save these networks to file. We will be using the rich Newick Format for saving the phylogenies *[@Cardona2008; but see @Wen2018]*. Notably, the `ape` function `write.evonet` does not save inheritance probabilities to file so we defined `write.net` for this purpose
 ```{r}
 
 write.evonet(ssa_net,file='') ##we can see that inheritance probabilities aren't included here
@@ -307,9 +307,9 @@ plot(x,f4(x),xlim = c(0,1.2),ylim = c(0,1),type = 'l',main = 'f4 Polynomial Deca
 ### Example 7B: Trait Dependent Hybridization
 We can model trait dependent hybridization by supplying a list for the argument `trait.model` in the `sim.bdh` functions. This list contains initial value(s) for the trait at the beginning of the process, functions describing how the trait evolves, and a function that dictates whether taxa can hybridize based on the trait values between taxa. Specifically the list contains these named elements:
 
-* **initial** The initial trait state on the phylogeny. **NOTE:** if the `MRCA` argument in the `sim.bdh` style funcitons is `TRUE`, 2 initial values will be needed since the process starts with 2 lineages.
+* **initial** The initial trait state on the phylogeny. **NOTE:** if the `MRCA` argument in the `sim.bdh` style functions is `TRUE`, 2 initial values will be needed since the process starts with 2 lineages.
 * **hyb.event.fxn** A function that denotes the trait of a hybrid child after a hybridization event. The function should have the arguments `parent_states` and `inheritance`. `parent_states` is vector with the ploidy states of the hybrid parents while `inheritance` is the inheritance probability of the first lineage denoted in `parent_states`.
-* **hyb.compatability.fxn** A function that describes when hybridization events can occur between two taxa based on their traits. The function should have the argument `parent_states`, a vector with the trait states of the two parents to the hybrid child. The function should return `TRUE` for when a hybridization event is allowed to proceed and `FALSE` otherwise.
+* **hyb.compatibility.fxn** A function that describes when hybridization events can occur between two taxa based on their traits. The function should have the argument `parent_states`, a vector with the trait states of the two parents to the hybrid child. The function should return `TRUE` for when a hybridization event is allowed to proceed and `FALSE` otherwise.
 * **time.fxn** A function that describes how traits change over time. The function should have the arguments `poly_states` and `timestep` in that order. `poly_states` is a vector containing the ploidy of all taxa while `timestep` is the amount of time given for trait evolution. The function should return a vector with the updated ploidy states of all taxa.
 * **spec.fxn** A function that describes how the trait changes at speciation events.The function should have the argument `tip_state` which has the state of the lineage just before speciation. The function should return a vector with two values, one denoting the trait of each of the two new species after the event.
 

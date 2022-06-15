@@ -9,7 +9,7 @@ biconnectedComponents(edges, rt, nNode)
 \arguments{
 \item{edges}{The \code{edge} matrix of a \code{phylo} object.}
 
-\item{rt}{The root node of the phylogeney}
+\item{rt}{The root node of the phylogeny}
 
 \item{nNode}{The number of nodes in the tree}
 }
