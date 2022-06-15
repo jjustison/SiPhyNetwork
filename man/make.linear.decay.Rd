@@ -16,7 +16,7 @@ A linear decay function
 Create a linear decay function for genetic distance of two taxa and the probability of success of a hybridization event
 }
 \details{
-The function computes: \deqn{1-\frac{d}{t} }
+The function computes: \deqn{1-\frac{d}{t} }{1-(d/t)}
 where d is the genetic distance between taxa
 }
 \note{

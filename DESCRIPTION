@@ -1,5 +1,5 @@
 Package: SiPhyNetwork
-Title: This package simulates reticulate evolution
+Title: A Phylogenetic Simulator for Reticulate Evolution 
 Version: 1.0.0
 Authors@R: 
     c(person("Joshua", "Justison", email = "justisnojo@gmail.com", role = c("aut", "cre","cph")),
@@ -9,7 +9,7 @@ Authors@R:
 		person("Emmanuel", "Paradis", role = c("cph"), comment = c("modified code from ape in 'write.net.R' and 'read.net.R'. Crediting original copyright holder")),
 		person("Daniel", "Lawson", role = c("cph"), comment = c("modified code from ape in 'write.net.R' and 'read.net.R'. Crediting original copyright holder"))
 	)
-Description: This package simulates reticulate evolution in a process-based manner.
+Description: A simulator for reticulate evolution under a birth-death-hybridization process.
 License: GPL-3
 Encoding: UTF-8
 LazyData: true

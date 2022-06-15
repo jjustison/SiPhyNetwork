@@ -18,7 +18,7 @@ An exponential decay function
 Create an exponential decay function for genetic distance of two taxa and the probability of success of a hybridization event
 }
 \details{
-The function computes: \deqn{e^{- \frac{d^{s}}}{t} }
+The function computes: \deqn{e^{- \frac{d^{s}}{t}}}{ exp(-(d^s)/t) }
 where d is the genetic distance between taxa
 }
 \examples{

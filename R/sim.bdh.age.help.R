@@ -187,7 +187,7 @@ sim2.bdh.origin <- function(m=0,n=0,age,lambda,mu,nu,hyb.inher.fxn,hybprops,hyb.
             hyb_occurs<-T
 
             if (!is_null_trait){ ##use this for hybridization of similar ploidy
-              hyb_occurs<-trait.model[['hyb.compatability.fxn']](trait_state[del])
+              hyb_occurs<-trait.model[['hyb.compatibility.fxn']](trait_state[del])
             }
 
             if (hyb_occurs && !is.null(hyb.rate.fxn)){ ##Use this to restrict hybridizations based on genetic distance

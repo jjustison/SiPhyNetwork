@@ -24,7 +24,7 @@
 #' \itemize{
 #'  \item{`initial`}{ The initial trait state on the phylogeny}
 #'  \item{`hyb.event.fxn`}{ A function that denotes the trait of a hybrid child after a hybridization event.}
-#'  \item{`hyb.compatability.fxn`}{ A function that describes when hybridization events can occur between two taxa based on their traits.}
+#'  \item{`hyb.compatibility.fxn`}{ A function that describes when hybridization events can occur between two taxa based on their traits.}
 #'  \item{`time.fxn`}{ A function that describes how traits change over time.}
 #'  \item{`spec.fxn`}{ A function that describes how the trait changes at speciation events.}
 #' }
@@ -84,7 +84,7 @@ sim.bdh.taxa.ssa <- function(n,numbsim,
 #' \itemize{
 #'  \item{`initial`}{ The initial trait state on the phylogeny}
 #'  \item{`hyb.event.fxn`}{ A function that denotes the trait of a hybrid child after a hybridization event.}
-#'  \item{`hyb.compatability.fxn`}{ A function that describes when hybridization events can occur between two taxa based on their traits.}
+#'  \item{`hyb.compatibility.fxn`}{ A function that describes when hybridization events can occur between two taxa based on their traits.}
 #'  \item{`time.fxn`}{ A function that describes how traits change over time.}
 #'  \item{`spec.fxn`}{ A function that describes how the trait changes at speciation events.}
 #' }

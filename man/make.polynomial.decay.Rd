@@ -18,7 +18,7 @@ An polynomial decay function
 Create a polynomial decay function for genetic distance of two taxa and the probability of success of a hybridization event
 }
 \details{
-The function computes: \deqn{1- {\frac{d}{t}}^degree}
+The function computes: \deqn{1- {\frac{d}{t}}^degree}{1-((d/t)^degree)}
 Where d is the distance and t is the threshold
 }
 \examples{

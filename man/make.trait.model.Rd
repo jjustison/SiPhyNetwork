@@ -7,7 +7,7 @@
 make.trait.model(
   initial_states,
   hyb.event.fxn,
-  hyb.compatability.fxn,
+  hyb.compatibility.fxn,
   time.fxn = NULL,
   spec.fxn = NULL
 )
@@ -17,7 +17,7 @@ make.trait.model(
 
 \item{hyb.event.fxn}{A function that describes how the trait changes after hybridization events. See Details for more information}
 
-\item{hyb.compatability.fxn}{A function that describes whether hybridization events can occur between taxa based on their trait values. See Details for more information}
+\item{hyb.compatibility.fxn}{A function that describes whether hybridization events can occur between taxa based on their trait values. See Details for more information}
 
 \item{time.fxn}{A function that describes how trait values changes over time. See Details for more information}
 
@@ -32,7 +32,7 @@ Create a model that dictates how a discrete or continuous trait evolves and affe
 \details{
 \code{hyb.event.fxn} is a function that denotes the trait value of a hybrid child after a hybridization event. The function should have the argument \code{parent_states}, a vector with the trait states of the two parents to the hybrid child and \code{inheritance}. \code{parent_states} is vector with the states of the hybrid parents while \code{inheritance} is the inheritance probability of the first lineage denoted in \code{parent_states}. The function should return a single value for the trait state of the hybrid child.
 
-\code{hyb.compatability.fxn} describes when hybridization events can occur between two taxa based on their trait values. The function should have the arguments \code{parent_states}.  The function should return \code{TRUE} for when a hybridization event is allowed to proceed and \code{FALSE} otherwise.
+\code{hyb.compatibility.fxn} describes when hybridization events can occur between two taxa based on their trait values. The function should have the arguments \code{parent_states}.  The function should return \code{TRUE} for when a hybridization event is allowed to proceed and \code{FALSE} otherwise.
 
 \code{time.fxn} is a function that describes how trait values change over time. The function should have the arguments \code{trait_states} and \code{timestep} in that order. \code{poly_states} is a vector containing the ploidy of all taxa while \code{timestep} is the amount of time given for ploidy evolution. The function should return a vector with the updated ploidy states of all taxa.
 The default value of \code{NULL} indicates that trait values will not evolve within a lineage over time. \strong{NOTE:} Values can still change at speciation or hybridization events if allowed.

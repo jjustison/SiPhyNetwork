@@ -4,7 +4,7 @@
 #' @param t A numeric representing how quickly the hybridization success decays. Samaller values denote a quicker decay
 #' @param s A numeric for the power that the genetic distance is raised.
 #' @return An exponential decay function
-#' @details The function computes: \deqn{e^{- \frac{d^{s}}}{t} }
+#' @details The function computes: \deqn{e^{- \frac{d^{s}}{t}}}{ exp(-(d^s)/t) }
 #' where d is the genetic distance between taxa
 #' @export
 #'
@@ -31,7 +31,7 @@ make.exp.decay<-function(t=1,s=1){
 #' @description Create a linear decay function for genetic distance of two taxa and the probability of success of a hybridization event
 #' @param threshold A numeric representing how quickly the hybridization success decays. Smaller values denote a quicker decay
 #' @return A linear decay function
-#' @details The function computes: \deqn{1-\frac{d}{t} }
+#' @details The function computes: \deqn{1-\frac{d}{t} }{1-(d/t)}
 #' where d is the genetic distance between taxa
 #' @note a distance \eqn{d} greater than \eqn{t} will return 0
 #' @export
@@ -99,7 +99,7 @@ make.stepwise<-function(probs,distances){
 #' @param degree The degree of the polynomial
 #' @return An polynomial decay function
 #' @export
-#' @details The function computes: \deqn{1- {\frac{d}{t}}^degree}
+#' @details The function computes: \deqn{1- {\frac{d}{t}}^degree}{1-((d/t)^degree)}
 #' Where d is the distance and t is the threshold
 #' @examples
 #' set.seed(17)
@@ -185,13 +185,13 @@ make.categorical.draw <- function(inheritances, weights){
 #' @return A model for trait evolution to be used as the `trait.model` argument in a `sim.bdh function``
 #' @param initial_states the initial state on the phylogeny. if simulating networks with `MRCA=TRUE` then a vector of length two will be required.
 #' @param hyb.event.fxn A function that describes how the trait changes after hybridization events. See Details for more information
-#' @param hyb.compatability.fxn A function that describes whether hybridization events can occur between taxa based on their trait values. See Details for more information
+#' @param hyb.compatibility.fxn A function that describes whether hybridization events can occur between taxa based on their trait values. See Details for more information
 #' @param time.fxn A function that describes how trait values changes over time. See Details for more information
 #' @param spec.fxn A function that describes how trait values change at speciation events. See Details for more information
 #' @details
 #' `hyb.event.fxn` is a function that denotes the trait value of a hybrid child after a hybridization event. The function should have the argument `parent_states`, a vector with the trait states of the two parents to the hybrid child and `inheritance`. `parent_states` is vector with the states of the hybrid parents while `inheritance` is the inheritance probability of the first lineage denoted in `parent_states`. The function should return a single value for the trait state of the hybrid child.
 #'
-#' `hyb.compatability.fxn` describes when hybridization events can occur between two taxa based on their trait values. The function should have the arguments `parent_states`.  The function should return `TRUE` for when a hybridization event is allowed to proceed and `FALSE` otherwise.
+#' `hyb.compatibility.fxn` describes when hybridization events can occur between two taxa based on their trait values. The function should have the arguments `parent_states`.  The function should return `TRUE` for when a hybridization event is allowed to proceed and `FALSE` otherwise.
 #'
 #' `time.fxn` is a function that describes how trait values change over time. The function should have the arguments `trait_states` and `timestep` in that order. `poly_states` is a vector containing the ploidy of all taxa while `timestep` is the amount of time given for ploidy evolution. The function should return a vector with the updated ploidy states of all taxa.
 #' The default value of `NULL` indicates that trait values will not evolve within a lineage over time. **NOTE:** Values can still change at speciation or hybridization events if allowed.
@@ -210,7 +210,7 @@ make.categorical.draw <- function(inheritances, weights){
 #'
 make.trait.model <-function(initial_states,
                                 hyb.event.fxn,
-                                hyb.compatability.fxn,
+                                hyb.compatibility.fxn,
                                 time.fxn=NULL,
                                 spec.fxn=NULL){
 
@@ -228,12 +228,12 @@ make.trait.model <-function(initial_states,
 
   x<-list(initial=initial_states,
           hyb.event.fxn=hyb.event.fxn,
-          hyb.compatability.fxn=hyb.compatability.fxn,
+          hyb.compatability.fxn=hyb.compatibility.fxn,
           time.fxn=time.fxn,
           spec.fxn=spec.fxn)
   x[['initial']]<-initial_states
   x[['hyb.event.fxn']]<-hyb.event.fxn
-  x[['hyb.compatability.fxn']]<-hyb.compatability.fxn
+  x[['hyb.compatibility.fxn']]<-hyb.compatibility.fxn
   x[['time.fxn']]<-time.fxn
   x[['spec.fxn']]<-spec.fxn
   return(x)

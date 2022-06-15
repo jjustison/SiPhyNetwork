@@ -15,7 +15,7 @@ write.net(
 )
 }
 \arguments{
-\item{net}{A phylogenetic network of class \code{evonet}. The network may include an optional attribute `inheritance`` that represents the inheritance probilities on the edges found in the 'reticulation' attribute}
+\item{net}{A phylogenetic network of class \code{evonet}. The network may include an optional attribute `inheritance`` that represents the inheritance probabilities on the edges found in the 'reticulation' attribute}
 
 \item{file}{a file name specified by either a variable of mode character, or a double-quoted string; if `file = ""`` (the default) then the tree is written on the standard output connection (i.e. the console).}
 

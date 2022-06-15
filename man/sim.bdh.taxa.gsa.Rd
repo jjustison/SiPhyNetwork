@@ -65,7 +65,7 @@ Simulates a Phylogenetic Network under a birth-death-hybridization model. Simula
 \itemize{
 \item{\code{initial}}{ The initial trait state on the phylogeny}
 \item{\code{hyb.event.fxn}}{ A function that denotes the trait of a hybrid child after a hybridization event.}
-\item{\code{hyb.compatability.fxn}}{ A function that describes when hybridization events can occur between two taxa based on their traits.}
+\item{\code{hyb.compatibility.fxn}}{ A function that describes when hybridization events can occur between two taxa based on their traits.}
 \item{\code{time.fxn}}{ A function that describes how traits change over time.}
 \item{\code{spec.fxn}}{ A function that describes how the trait changes at speciation events.}
 }
