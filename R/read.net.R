@@ -4,7 +4,7 @@
 
 ## Copyright 2002-2010 Emmanuel Paradis, Daniel Lawson and Klaus Schliep
 
-## This file is a modified part of the R-package `ape'.
+## This file is a modified part of the R-package 'ape'.
 
 
 tree.build2 <- function(tp)

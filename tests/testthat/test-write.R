@@ -47,6 +47,42 @@ test_that("tests that write.net creates the correct newick", {
   expect_true(is.ultrametric(read.net(text=write.net(ssa_nets[[100]],swap.minor=F))))
 
 
+  ##Test whether network classes work properly
+
+  set.seed(1234)
+  nreps<-1000
+  count<-1
+  phys<-list()
+
+  while(count<=nreps){
+    phy<-sim.bdh.age(age=1,numbsim=1,
+                     lambda=3,mu=2,
+                     nu=0.25,hybprops=c(0,0.5,0.5),
+                     hyb.inher.fxn = make.beta.draw(10,10))[[1]]
+    if('phylo' %in% class(phy)){
+      phys[[count]]<-phy
+      count<-count+1
+    }
+
+  }
+
+  tc_nets<-unlist(lapply(phys, isTreeChild)) ##Phylogenies that are Tree Child
+  tb_nets<-unlist(lapply(phys, isTreeBased)) ##Phylogenies that are Tree Based
+  fu_nets<-unlist(lapply(phys, isFUstable))  ##Phylogenies that are FU Stable
+
+  expect_true(all( !tc_nets | tb_nets)) ##Tree Child networks should also be Tree Based
+  expect_true(all( !tc_nets | fu_nets)) ##Tree Child networks should also be FU Stable
+
+  expect_true(all(tb_nets | !tc_nets)) ##Not Tree Based implies not Tree Child i.e. !(!tb & tc) with De Morgans law
+  expect_true(all(tb_nets | !tc_nets)) ##Not Tree Based implies not FU Stable
+
+  expect_true(all( !fu_nets | tb_nets)) ##FU Stable implies Tree Based
+
+  expect_true(all(fu_nets | !tc_nets)) ## Not FU Stable implies not Tree Child
+
+
+
+
 
 
 

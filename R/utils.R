@@ -17,11 +17,14 @@
 #' isTreeChild(net) ##returns TRUE
 
 isTreeChild <-function(net){
-  parent_nds <- net$reticulation[,1]
+
   hyb_nds <- net$reticulation[,2]
+  edges<-rbind(net$edge,net$reticulation)
+  parent_nds <- edges[,1]
+
 
   for(nd in parent_nds){##Make sure all parent nodes have at least one tree node child
-    children <- net$edge[nd==net$edge[,1],2]
+    children <- edges[nd==edges[,1],2]
     if( sum(!(children %in% hyb_nds))==0){ ##all children are hybrid nodes
       return(F)
     }
@@ -156,6 +159,9 @@ getNetworkLevel <- function(net){
 isFUstable <- function(net){
 
   hyb_nds<-net$reticulation[,2]
+  if(length(hyb_nds)==0){##No hybridizations
+    return(TRUE)
+  }
   edges<-rbind(net$edge,net$reticulation)
   ## First check to see if compressed
   children<- edges[edges[,1] %in% hyb_nds,2] ##children of the hyb_nodes
