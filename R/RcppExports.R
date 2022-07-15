@@ -9,6 +9,7 @@
 #' @param rt The root node of the phylogeny
 #' @param nNode The number of nodes in the tree
 #' @details biconnected components
+#' @return A list with containing a vector of nodes for each biconnected component
 #' @export
 biconnectedComponents <- function(edges, rt, nNode) {
     .Call(`_SiPhyNetwork_biconnectedComponents`, edges, rt, nNode)

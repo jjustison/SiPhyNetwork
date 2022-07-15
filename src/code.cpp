@@ -58,6 +58,7 @@ void biconnectedHelper(const IntegerMatrix &edges,const int nd,int &index, Integ
 //' @param rt The root node of the phylogeny
 //' @param nNode The number of nodes in the tree
 //' @details biconnected components
+//' @return A list with containing a vector of nodes for each biconnected component
 //' @export
 // [[Rcpp::export]]
 List biconnectedComponents(IntegerMatrix edges,int rt,int nNode){

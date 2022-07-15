@@ -285,6 +285,7 @@ as.evonet.phylo2 <- function(x, ...)
 #' @param text 	alternatively, the name of a variable of mode character which contains the tree(s) in parenthetic format. By default, this is ignored (set to `NULL`, meaning that the tree is read in a file); if text is not `NULL`, then the argument file is ignored.
 #' @param comment.char a single character, the remaining of the line after this character is ignored (this is passed directly to `scan()`).
 #' @param ... further arguments to be passed to `scan()` and `read.tree`.
+#' @return A phylogenetic network of class `evonet`.
 #' @export
 #'
 #' @examples

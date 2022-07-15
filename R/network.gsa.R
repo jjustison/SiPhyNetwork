@@ -10,7 +10,7 @@
 #' @return A network with n extant taxa
 #'
 #' @export
-network.gsa <- function(net,ntaxa,complete=T,frac=1,stochsampling=F){
+network.gsa <- function(net,ntaxa,complete=TRUE,frac=1,stochsampling=FALSE){
   effective_n<-getEffectiveN(n=ntaxa,frac = frac,stochsampling = stochsampling)
 
   node_times<-node.depth.edgelength(net)

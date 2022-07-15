@@ -15,6 +15,9 @@ read.net(file = "", text = NULL, comment.char = "", ...)
 
 \item{...}{further arguments to be passed to \code{scan()} and \code{read.tree}.}
 }
+\value{
+A phylogenetic network of class \code{evonet}.
+}
 \description{
 This function reads a network from file using the Rich Newick format.
 }

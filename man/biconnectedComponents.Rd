@@ -13,6 +13,9 @@ biconnectedComponents(edges, rt, nNode)
 
 \item{nNode}{The number of nodes in the tree}
 }
+\value{
+A list with containing a vector of nodes for each biconnected component
+}
 \description{
 Find the biconnected components of a phylogeny
 }
