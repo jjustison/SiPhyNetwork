@@ -80,8 +80,9 @@ As noted in [R-hub issue #503](https://github.com/r-hub/rhub/issues/503), this c
 
 ```
 Possibly misspelled words in DESCRIPTION:
-  Reticulate (2:37)
-  reticulate (12:37)
+    Reticulate (2:37)
+    phylogenies (12:805)
+    reticulate (12:30, 12:147, 12:280)
 ```
 These words are correctly spelled but just uncommon
 
