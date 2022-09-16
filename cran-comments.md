@@ -19,7 +19,7 @@ with no space after 'doi:', 'arXiv:', 'https:' and angle brackets for
 auto-linking.
 (If you want to add a title as well please put it in quotes: "Title")
 
-* I am in the process of submitting a manuscript for this package but was hoping to get it CRAN approved first. I can update these fields when I submit the paper
+* There are no references in the description
 
 Please add \value to .Rd files regarding exported methods and explain
 the functions results in the documentation. Please write about the
@@ -40,7 +40,7 @@ man/network.gsa.Rd:
 
 Warning: Unexecutable code in man/make.trait.model.Rd:
 
-* That code was used in an older version. I got rid of this code.
+* That code was used in an older version. I updated the code
 
 Please always make sure to reset to user's options(), working directory
 or par() after you changed it in examples and vignettes and demos.
@@ -56,7 +56,7 @@ par(oldpar)
 Please do not modify the global environment (e.g. by using <<-) in your
 functions. This is not allowed by the CRAN policies.
 
-** The place where I used "<<-" is a function within a function, so it should only be modifying the first functions environment. Also, the place where I see "<<-" are in 'read.net.R' is code copied from the "ape" package that is already on CRAN. 
+** The place where I used "<<-" is a function within a function, so it should only be modifying the first functions environment. Also, the place where I see "<<-" are in 'read.net.R' and 'write.net.R' is code copied from the "ape" package that is already on CRAN. 
 
 
 
