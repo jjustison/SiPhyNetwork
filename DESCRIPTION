@@ -9,12 +9,12 @@ Authors@R:
 		person("Emmanuel", "Paradis", role = c("cph"), comment = c("modified code from ape in 'write.net.R' and 'read.net.R'. Crediting original copyright holder")),
 		person("Daniel", "Lawson", role = c("cph"), comment = c("modified code from ape in 'write.net.R' and 'read.net.R'. Crediting original copyright holder"))
 	)
-Description: A simulator for reticulate evolution under a birth-death-hybridization process.
+Description: A simulator for reticulate evolution under a birth-death-hybridization process. Here the birth-death process is extended to consider reticulate Evolution by allowing hybridization events to occur. The general purpose simulator allows the modeling of three different reticulate patterns: lineage generative hybridization, lineage neutral hybridization, and lineage degenerative hybridization. Users can also specify hybridization events to be dependent on a trait value or genetic distance. We also extend some phylogenetic tree utility and plotting functions for networks. We allow two different stopping conditions: simulated to a fixed time or number of taxa. When simulating to a fixed number of taxa, the user can simulate under the Generalized Sampling Approach that properly simulates phylogenies when assuming a uniform prior on the root age. 
 License: GPL-3
 Encoding: UTF-8
 LazyData: true
 Roxygen: list(markdown = TRUE)
-RoxygenNote: 7.1.2
+RoxygenNote: 7.2.1
 Suggests: 
     testthat,
     knitr,
@@ -28,4 +28,3 @@ Imports:
 VignetteBuilder: knitr
 LinkingTo: 
     Rcpp,
-

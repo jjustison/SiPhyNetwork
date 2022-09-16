@@ -34,18 +34,9 @@ Create a model that dictates how a discrete or continuous trait evolves and affe
 
 \code{hyb.compatibility.fxn} describes when hybridization events can occur between two taxa based on their trait values. The function should have the arguments \code{parent_states}.  The function should return \code{TRUE} for when a hybridization event is allowed to proceed and \code{FALSE} otherwise.
 
-\code{time.fxn} is a function that describes how trait values change over time. The function should have the arguments \code{trait_states} and \code{timestep} in that order. \code{poly_states} is a vector containing the ploidy of all taxa while \code{timestep} is the amount of time given for ploidy evolution. The function should return a vector with the updated ploidy states of all taxa.
+\code{time.fxn} is a function that describes how trait values change over time. The function should have the arguments \code{trait_states} and \code{timestep} in that order. \code{trait_states} is a vector containing the ploidy of all taxa while \code{timestep} is the amount of time given for ploidy evolution. The function should return a vector with the updated ploidy states of all taxa.
 The default value of \code{NULL} indicates that trait values will not evolve within a lineage over time. \strong{NOTE:} Values can still change at speciation or hybridization events if allowed.
 
 \code{spec.fxn} is a function that describes how trait values change at speciation events. The function should have the argument \code{tip_state} which has the state of the lineage just before speciation. The function should return a vector with two values, one denoting the trait of each of the two new species after the event.
 The default value of \code{NULL} causes the two children lineage to inherit the same trait value as the parental lineage
-}
-\examples{
-
-##Make a simple polyploidy trait model
-initial_state<-2 #start out with ploidy 2
-hybrid_func <- function()
-
-
-
 }

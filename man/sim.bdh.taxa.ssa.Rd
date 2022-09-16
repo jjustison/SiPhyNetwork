@@ -61,10 +61,10 @@ Simulates a Phylogenetic Network under a birth-death-hybridization model. Simula
 \code{trait.model} is a list with the following named elements:
 \itemize{
 \item{\code{initial}}{ The initial trait state on the phylogeny}
-\item{\code{hyb.event.fxn}}{ A function that denotes the trait of a hybrid child after a hybridization event.}
-\item{\code{hyb.compatibility.fxn}}{ A function that describes when hybridization events can occur between two taxa based on their traits.}
-\item{\code{time.fxn}}{ A function that describes how traits change over time.}
-\item{\code{spec.fxn}}{ A function that describes how the trait changes at speciation events.}
+\item{\code{hyb.event.fxn}}{ A function that denotes the trait of a hybrid child after a hybridization event. The function should have the arguments \code{parent_states} and \code{inheritance}. \code{parent_states} is vector with the ploidy states of the hybrid parents while \code{inheritance} is the inheritance probability of the first lineage denoted in \code{parent_states}.}
+\item{\code{hyb.compatibility.fxn}}{ A function that describes when hybridization events can occur between two taxa based on their traits. The function should have the argument \code{parent_states}, a vector with the trait states of the two parents to the hybrid child. The function should return \code{TRUE} for when a hybridization event is allowed to proceed and \code{FALSE} otherwise.}
+\item{\code{time.fxn}}{ A function that describes how traits change over time. The function should have the arguments \code{trait_states} and \code{timestep} in that order. \code{trait_states} is a vector containing the ploidy of all taxa while \code{timestep} is the amount of time given for trait evolution. The function should return a vector with the updated ploidy states of all taxa.}
+\item{\code{spec.fxn}}{ A function that describes how the trait changes at speciation events.The function should have the argument \code{tip_state} which has the state of the lineage just before speciation. The function should return a vector with two values, one denoting the trait of each of the two new species after the event.}
 }
 }
 \examples{

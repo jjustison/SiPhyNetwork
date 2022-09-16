@@ -61,6 +61,13 @@ sim2.bdh.origin <- function(m=0,n=0,age,lambda,mu,nu,hyb.inher.fxn,hybprops,hyb.
 
     is_null_trait<- is.null(trait.model)
     if(!is_null_trait){
+
+      if( !all(c("initial","hyb.event.fxn","time.fxn","spec.fxn","hyb.compatibility.fxn") %in% names(trait.model))){
+        stop('the trait model does not have all the needed named components')
+      }
+
+
+
       trait_state <- trait.model[['initial']]
       if(length(trait_state)!= (mrca+1)){
         stop(paste('there are ',(mrca+1),' starting species. There were ',length(trait_state),' initial polyploid states',sep = ''))
@@ -187,7 +194,8 @@ sim2.bdh.origin <- function(m=0,n=0,age,lambda,mu,nu,hyb.inher.fxn,hybprops,hyb.
             hyb_occurs<-T
 
             if (!is_null_trait){ ##use this for hybridization of similar ploidy
-              hyb_occurs<-trait.model[['hyb.compatibility.fxn']](trait_state[del])
+              hyb_trait <-trait.model[['hyb.event.fxn']](trait_state[del],inher)
+              hyb_occurs<-trait.model[['hyb.compatibility.fxn']](trait_state[del],hyb_trait)
             }
 
             if (hyb_occurs && !is.null(hyb.rate.fxn)){ ##Use this to restrict hybridizations based on genetic distance
@@ -247,7 +255,7 @@ sim2.bdh.origin <- function(m=0,n=0,age,lambda,mu,nu,hyb.inher.fxn,hybprops,hyb.
                   }
                 }
                 if(!is_null_trait){
-                  trait_state<-c( trait_state,trait_state[del], trait.model[['hyb.event.fxn']](trait_state[del],inher))
+                  trait_state<-c( trait_state,trait_state[del],hyb_trait)
                   trait_state<-trait_state[-del]
                 }
 
@@ -288,7 +296,7 @@ sim2.bdh.origin <- function(m=0,n=0,age,lambda,mu,nu,hyb.inher.fxn,hybprops,hyb.
                   }
                 }
                 if(!is_null_trait){
-                  trait_state<-c( trait_state, trait.model[['hyb.event.fxn']](trait_state[del],inher))
+                  trait_state<-c( trait_state, hyb_trait)
                   trait_state<-trait_state[-del]
                 }
 
@@ -332,7 +340,7 @@ sim2.bdh.origin <- function(m=0,n=0,age,lambda,mu,nu,hyb.inher.fxn,hybprops,hyb.
                   genetic_dists[[maxspecies1]][[maxspecies1]]<-0.0
                 }
                 if(!is_null_trait){
-                  trait_state<-c( trait_state, trait.model[['hyb.event.fxn']](trait_state[del],inher), trait_state[del[2]] )
+                  trait_state<-c( trait_state, hyb_trait, trait_state[del[2]] )
                   trait_state<-trait_state[-del]
                 }
 

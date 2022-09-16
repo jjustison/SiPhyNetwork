@@ -4,7 +4,7 @@
 \alias{network.gsa}
 \title{Sample under the Generalized Sampling Approach}
 \usage{
-network.gsa(net, ntaxa, complete = T, frac = 1, stochsampling = F)
+network.gsa(net, ntaxa, complete = TRUE, frac = 1, stochsampling = FALSE)
 }
 \arguments{
 \item{net}{A network to sample phylogenies.}

@@ -45,8 +45,11 @@ make.linear.decay<-function(threshold){
   if( !is.numeric(threshold) ){
     stop("threshold must be a number")
   }
-  if(threshold<=0){
+  if(threshold<0){
     stop("threshold must be positive")
+  }
+  if(threshold==0){
+    return(NULL)
   }
   myfunction<-function(distance){
     mult<-(distance<threshold)
@@ -193,18 +196,13 @@ make.categorical.draw <- function(inheritances, weights){
 #'
 #' `hyb.compatibility.fxn` describes when hybridization events can occur between two taxa based on their trait values. The function should have the arguments `parent_states`.  The function should return `TRUE` for when a hybridization event is allowed to proceed and `FALSE` otherwise.
 #'
-#' `time.fxn` is a function that describes how trait values change over time. The function should have the arguments `trait_states` and `timestep` in that order. `poly_states` is a vector containing the ploidy of all taxa while `timestep` is the amount of time given for ploidy evolution. The function should return a vector with the updated ploidy states of all taxa.
+#' `time.fxn` is a function that describes how trait values change over time. The function should have the arguments `trait_states` and `timestep` in that order. `trait_states` is a vector containing the ploidy of all taxa while `timestep` is the amount of time given for ploidy evolution. The function should return a vector with the updated ploidy states of all taxa.
 #' The default value of `NULL` indicates that trait values will not evolve within a lineage over time. **NOTE:** Values can still change at speciation or hybridization events if allowed.
 #'
 #' `spec.fxn` is a function that describes how trait values change at speciation events. The function should have the argument `tip_state` which has the state of the lineage just before speciation. The function should return a vector with two values, one denoting the trait of each of the two new species after the event.
 #' The default value of `NULL` causes the two children lineage to inherit the same trait value as the parental lineage
 #'
 #' @export
-#' @examples
-#'
-#' ##Make a simple polyploidy trait model
-#' initial_state<-2 #start out with ploidy 2
-#' hybrid_func <- function()
 #'
 #'
 #'
@@ -228,7 +226,7 @@ make.trait.model <-function(initial_states,
 
   x<-list(initial=initial_states,
           hyb.event.fxn=hyb.event.fxn,
-          hyb.compatability.fxn=hyb.compatibility.fxn,
+          hyb.compatibility.fxn=hyb.compatibility.fxn,
           time.fxn=time.fxn,
           spec.fxn=spec.fxn)
   x[['initial']]<-initial_states

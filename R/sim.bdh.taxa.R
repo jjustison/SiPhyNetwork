@@ -23,10 +23,10 @@
 #' `trait.model` is a list with the following named elements:
 #' \itemize{
 #'  \item{`initial`}{ The initial trait state on the phylogeny}
-#'  \item{`hyb.event.fxn`}{ A function that denotes the trait of a hybrid child after a hybridization event.}
-#'  \item{`hyb.compatibility.fxn`}{ A function that describes when hybridization events can occur between two taxa based on their traits.}
-#'  \item{`time.fxn`}{ A function that describes how traits change over time.}
-#'  \item{`spec.fxn`}{ A function that describes how the trait changes at speciation events.}
+#'  \item{`hyb.event.fxn`}{ A function that denotes the trait of a hybrid child after a hybridization event. The function should have the arguments `parent_states` and `inheritance`. `parent_states` is vector with the ploidy states of the hybrid parents while `inheritance` is the inheritance probability of the first lineage denoted in `parent_states`.}
+#'  \item{`hyb.compatibility.fxn`}{ A function that describes when hybridization events can occur between two taxa based on their traits. The function should have the argument `parent_states`, a vector with the trait states of the two parents to the hybrid child. The function should return `TRUE` for when a hybridization event is allowed to proceed and `FALSE` otherwise.}
+#'  \item{`time.fxn`}{ A function that describes how traits change over time. The function should have the arguments `trait_states` and `timestep` in that order. `trait_states` is a vector containing the ploidy of all taxa while `timestep` is the amount of time given for trait evolution. The function should return a vector with the updated ploidy states of all taxa.}
+#'  \item{`spec.fxn`}{ A function that describes how the trait changes at speciation events.The function should have the argument `tip_state` which has the state of the lineage just before speciation. The function should return a vector with two values, one denoting the trait of each of the two new species after the event.}
 #' }
 #' @export
 #' @examples
@@ -83,10 +83,10 @@ sim.bdh.taxa.ssa <- function(n,numbsim,
 #' `trait.model` is a list with the following named elements:
 #' \itemize{
 #'  \item{`initial`}{ The initial trait state on the phylogeny}
-#'  \item{`hyb.event.fxn`}{ A function that denotes the trait of a hybrid child after a hybridization event.}
-#'  \item{`hyb.compatibility.fxn`}{ A function that describes when hybridization events can occur between two taxa based on their traits.}
-#'  \item{`time.fxn`}{ A function that describes how traits change over time.}
-#'  \item{`spec.fxn`}{ A function that describes how the trait changes at speciation events.}
+#'  \item{`hyb.event.fxn`}{ A function that denotes the trait of a hybrid child after a hybridization event. The function should have the arguments `parent_states` and `inheritance`. `parent_states` is vector with the ploidy states of the hybrid parents while `inheritance` is the inheritance probability of the first lineage denoted in `parent_states`.}
+#'  \item{`hyb.compatibility.fxn`}{ A function that describes when hybridization events can occur between two taxa based on their traits. The function should have the argument `parent_states`, a vector with the trait states of the two parents to the hybrid child. The function should return `TRUE` for when a hybridization event is allowed to proceed and `FALSE` otherwise.}
+#'  \item{`time.fxn`}{ A function that describes how traits change over time. The function should have the arguments `trait_states` and `timestep` in that order. `trait_states` is a vector containing the ploidy of all taxa while `timestep` is the amount of time given for trait evolution. The function should return a vector with the updated ploidy states of all taxa.}
+#'  \item{`spec.fxn`}{ A function that describes how the trait changes at speciation events.The function should have the argument `tip_state` which has the state of the lineage just before speciation. The function should return a vector with two values, one denoting the trait of each of the two new species after the event.}
 #' }
 #' @export
 #'

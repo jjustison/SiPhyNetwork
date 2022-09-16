@@ -187,7 +187,21 @@ isFUstable <- function(net){
 
 }
 
+
+#' #' Determine whether a phylogeny is Normal
+#'
 #' @importFrom rstackdeque rpqueue empty insert_back peek_front without_front
+#'
+#' @description This function assesses whether a network is Normal
+#'
+#' @param net A phylogenetic network of class `evonet`.
+
+#' @return A logical that is `TRUE` if the network is Normal
+#' @export
+#'
+#' @examples
+#' net<- read.net(text= "((A:7,((B:2,C:2):3)#H1:2::0.6):3,(D:6,#H1:1::0.4):4);")
+#' isNormal(net) ##returns TRUE
 isNormal <-function(net){
 
   if(!isTreeChild(net)){ ##The Network can only be normal if it is tree-child
@@ -216,7 +230,6 @@ isNormal <-function(net){
   for( nd in tips){ ##add the tips to the queue
     nd_queue<-insert_back(nd_queue,nd)
   }
-  print(num_children)
   while(!empty(nd_queue)){
     ##Pop from the queue
     nd<-peek_front(nd_queue)
