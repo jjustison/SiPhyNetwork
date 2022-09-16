@@ -1,4 +1,6 @@
 
+## Resubmission Notes
+
 Thank you Victoria for initially looking over the package. Here are the comments and my attempts to address them. My notes are bulleted points after each comment.
 
 
