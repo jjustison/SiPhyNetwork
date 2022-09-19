@@ -1,4 +1,57 @@
 
+## ReResubmission Notes
+
+Thanks Benjamin for the Feedback. My notes are in bulleted points after each comment:
+
+If there are references describing the methods in your package, please
+add these in the description field of your DESCRIPTION file in the form
+authors (year) <doi:...>
+authors (year) <arXiv:...>
+authors (year, ISBN:...)
+or if those are not available: <https:...>
+with no space after 'doi:', 'arXiv:', 'https:' and angle brackets for
+auto-linking. (If you want to add a title as well please put it in
+quotes: "Title")
+
+* There are currently no references for my package. I am currently writing a manuscript but am holding off on submission until after I can get it hosted on CRAN. I will add the refrence upon submission
+
+You have in inst/doc/introduction.R
+
+old_pars <- par()
+...
+par(old_pars)
+
+but this will produce warnings
+
+You need:
+
+old_pars <- par(no.readonly = TRUE)
+...
+par(old_pars)
+
+* Changed this 
+
+Please do not modify the global environment (e.g. by using <<-) in your
+functions. This is not allowed by the CRAN policies.
+
+* I do not modify the global environment by using <<-. Since the <<- is inside a function within another function, it only ever modifies the environment of the first function (foo in this case). The places where I use <<- (write.net.R and read.net.R) is essentially copy and pasted code from the 'ape' package on CRAN. My usage of the superassignment looks something like this:
+```
+foo<-function(){
+	x<-1
+	foo2<-function(y){
+		x<<-x+y
+	}
+	
+	###Do Stuff including call foo2
+	foo2(3)
+	foo2(4)
+	###etc.
+	return(x)
+}
+```
+
+
+
 ## Resubmission Notes
 
 Thank you Victoria for initially looking over the package. Here are the comments and my attempts to address them. My notes are bulleted points after each comment.

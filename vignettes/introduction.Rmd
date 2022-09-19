@@ -290,7 +290,7 @@ age_nets <-sim.bdh.age(age=2,numbsim=10,
 
 ```{r,echo=F,fig.width=7,fig.height=7}
 {
-old_pars<-par()
+old_pars <- par(no.readonly = TRUE)
 par(mfrow=c(2,2))
 x<-seq(0,1.2,by=0.001)
 plot(x,f1(x),xlim = c(0,1.2),ylim = c(0,1),type = 'l',main = 'f1 Exponential Decay',xlab = 'Genetic Distance',ylab = 'Pr(Successful Hybridization)')
