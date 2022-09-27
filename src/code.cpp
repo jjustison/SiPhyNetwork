@@ -34,7 +34,7 @@ void biconnectedHelper(const IntegerMatrix &edges,const int nd,int &index, Integ
 
       lowpoint[nd-1]= min(as<IntegerVector>(lowpoint[nd_edge-1]));
 
-      if(( (prev[nd-1]==-1) & (children >1) ) | ((prev[nd-1] != -1) & (lowpoint[w-1] >= depth[nd-1]) )) { //The node is an articulation point or the root
+      if(( (prev[nd-1]==-1) && (children >1) ) || ((prev[nd-1] != -1) && (lowpoint[w-1] >= depth[nd-1]) )) { //The node is an articulation point or the root
         //We make a new blob
         IntegerVector indices = seq(0, edgeS.size()-1);
         int start_ind = which1(edgeS == e); //The blob are all edges including and past this one
@@ -43,7 +43,7 @@ void biconnectedHelper(const IntegerMatrix &edges,const int nd,int &index, Integ
         }
         edgeS = edgeS[indices<start_ind]; //Remove the blob edges from edgeS
       }
-    } else if( (prev[nd-1]!=w) & (depth[nd-1]>depth[w-1]) ){ //e is a back edge
+    } else if( (prev[nd-1]!=w) && (depth[nd-1]>depth[w-1]) ){ //e is a back edge
         lowpoint[nd-1] = std::min(lowpoint[nd-1],depth[w-1]);
         edgeS.push_back(e);
     }
