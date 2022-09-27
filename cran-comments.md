@@ -1,5 +1,46 @@
+## Submission Notes
 
-## ReResubmission Notes
+There was one warning from the web checks:
+
+Version: 1.0.0
+Check: whether package can be installed
+Result: WARN
+    Found the following significant warnings:
+     code.cpp:37:10: warning: use of bitwise '|' with boolean operands [-Wbitwise-instead-of-logical]
+     code.cpp:37:50: warning: use of bitwise '&' with boolean operands [-Wbitwise-instead-of-logical]
+     code.cpp:46:16: warning: use of bitwise '&' with boolean operands [-Wbitwise-instead-of-logical]
+Flavors: r-devel-linux-x86_64-debian-clang, r-devel-linux-x86_64-fedora-clang
+
+I made the following operands boolean instead of bitwise
+
+
+## R CMD check results
+The package was checked on both release and development versions of R on the latest versions of Windows, Mac, and Linux
+There were no ERRORs or WARNINGs
+
+There were two NOTEs when using `check_rhub()` to build on Windows:
+
+```
+checking for detritus in the temp directory ... NOTE
+  Found the following files/directories:
+    'lastMiKTeXException'
+```
+As noted in [R-hub issue #503](https://github.com/r-hub/rhub/issues/503), this could be due to a bug/crash in MiKTeX and can likely be ignored.
+
+```
+Possibly misspelled words in DESCRIPTION:
+    Reticulate (2:37)
+    phylogenies (12:805)
+    reticulate (12:30, 12:147, 12:280)
+```
+These words are correctly spelled but just uncommon
+
+## Downstream dependencies
+This is a new package and there are no downstream dependencies that I am aware of
+
+
+
+## Old ReResubmission Notes
 
 Thanks Benjamin for the Feedback. My notes are in bulleted points after each comment:
 
@@ -52,7 +93,7 @@ foo<-function(){
 
 
 
-## Resubmission Notes
+## Old Resubmission Notes
 
 Thank you Victoria for initially looking over the package. Here are the comments and my attempts to address them. My notes are bulleted points after each comment.
 
@@ -114,30 +155,3 @@ functions. This is not allowed by the CRAN policies.
 ** The place where I used "<<-" is a function within a function, so it should only be modifying the first functions environment. Also, the place where I see "<<-" are in 'read.net.R' and 'write.net.R' is code copied from the "ape" package that is already on CRAN. 
 
 
-
-
-
-
-## R CMD check results
-The package was checked on both release and development versions of R on the latest versions of Windows, Mac, and Linux
-There were no ERRORs or WARNINGs
-
-There were two NOTEs when using `check_rhub()` to build on Windows:
-
-```
-checking for detritus in the temp directory ... NOTE
-  Found the following files/directories:
-    'lastMiKTeXException'
-```
-As noted in [R-hub issue #503](https://github.com/r-hub/rhub/issues/503), this could be due to a bug/crash in MiKTeX and can likely be ignored.
-
-```
-Possibly misspelled words in DESCRIPTION:
-    Reticulate (2:37)
-    phylogenies (12:805)
-    reticulate (12:30, 12:147, 12:280)
-```
-These words are correctly spelled but just uncommon
-
-## Downstream dependencies
-This is a new package and there are no downstream dependencies that I am aware of
