@@ -33,7 +33,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">SiPhyNetwork</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">1.0.0</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">1.0.1</span>
       </span>
     </div>
 
@@ -86,7 +86,7 @@
 <div class="section level2">
 <h2 id="overview">Overview<a class="anchor" aria-label="anchor" href="#overview"></a>
 </h2>
-<p>The SiPhyNetwork R package is a tool for simulating phylogenetic networks under birth-death-hybridization based models. It provides functions for creating complex hybridization models, functions for simulating phylogenies under these models, as well as utility functions for characterizing the types of phylogenetic networks, visualizing networks, and saving phylogenetic networks in the Extended Newick format. This allows users to simulate phylogenetic networks under a suite of more biologically realistic models. The SiPhyNetwork package is released under the GPL-3 license and is available for download from <a href="https://github.com/jjustison/SiPhyNetwork" class="external-link">GitHub</a></p>
+<p>The SiPhyNetwork R package is a tool for simulating phylogenetic networks under birth-death-hybridization based models. It provides functions for creating complex hybridization models, functions for simulating phylogenies under these models, as well as utility functions for characterizing the types of phylogenetic networks, visualizing networks, and saving phylogenetic networks in the Extended Newick format. This allows users to simulate phylogenetic networks under a suite of more biologically realistic models. The SiPhyNetwork package is released under the GPL-3 license and can be downloaded from CRAN or the source code is avaliable on <a href="https://github.com/jjustison/SiPhyNetwork" class="external-link">GitHub</a></p>
 </div>
 <div class="section level2">
 <h2 id="introduction">Introduction<a class="anchor" aria-label="anchor" href="#introduction"></a>
@@ -383,7 +383,7 @@
 <p>We can extend our model of hybridization in two main ways:</p>
 <ol style="list-style-type: decimal">
 <li><p><strong>Make the probability of a successful hybridization a function of genetic distance.</strong> We can do this to model the belief that it is less likely for more distantly related taxa to hybridize. This function will take in the genetic distance between two taxa and return the probability that the hybridization is successful. We use the same matrix of genetic distances that is defined in <em><span class="citation">Woodhams, Lockhart, and Holland (2016)</span></em>. Briefly, the genetic distance between two non hybrid taxa <span class="math inline">\(X\)</span> and <span class="math inline">\(Y\)</span> is defined as the summation of all edge lengths on the path from <span class="math inline">\(X\)</span> to <span class="math inline">\(Y\)</span>. Genetic distances involving hybridized taxa is similar but hybridizations lead to multiple paths from <span class="math inline">\(X\)</span> to <span class="math inline">\(Y\)</span>; in this case we use a weighted summation across all different paths where the weight for each path depends on the inheritance probabilities.</p></li>
-<li><p><strong>Make successful hybridizations depend on some trait that also evolves along the tree.</strong> This extension was made to model the belief that typically only lineages with the same ploidy and chromosome number can hybridize, although this can be generalized to model any discrete or continuous trait and rules for restricting hybridization.</p></li>
+<li><p><strong>Make successful hybridizations depend on some trait that also evolves along the tree.</strong> This extension was made to model the belief that typically only lineages with the same ploidy and chromosome number can hybridize, although this can be generalized to model any discrete or continuous trait and have arbitrary rules for restricting hybridization.</p></li>
 </ol>
 <div class="section level4">
 <h4 id="example-7a-hybridizations-dependent-on-genetic-distance">Example 7A: Hybridizations Dependent On Genetic Distance<a class="anchor" aria-label="anchor" href="#example-7a-hybridizations-dependent-on-genetic-distance"></a>
@@ -407,6 +407,7 @@
 <div class="section level4">
 <h4 id="example-7b-trait-dependent-hybridization">Example 7B: Trait Dependent Hybridization<a class="anchor" aria-label="anchor" href="#example-7b-trait-dependent-hybridization"></a>
 </h4>
+<p>A vast array of traits (both discrete and continuous) and mechanisms can control whether hybridization can occur between two species. We provide a general framework that gives the flexability to model many of these interactions. Later we give examples to showcase the some of the flavors of trait-dependent hybridization scenarios.</p>
 <p>We can model trait dependent hybridization by supplying a list for the argument <code>trait.model</code> in the <code>sim.bdh</code> functions. This list contains initial value(s) for the trait at the beginning of the process, functions describing how the trait evolves, and a function that dictates whether taxa can hybridize based on the trait values between taxa. Specifically the list contains these named elements:</p>
 <ul>
 <li>
@@ -426,7 +427,7 @@
 <span></span>
 <span><span class="va">initial_val</span><span class="op">&lt;-</span><span class="fl">2</span> <span class="co">## The root starts off at 2N</span></span>
 <span></span>
-<span><span class="co">###function for what happens at hybridization even</span></span>
+<span><span class="co">###function for what happens at hybridization event</span></span>
 <span><span class="va">hyb_e_fxn</span> <span class="op">&lt;-</span> <span class="kw">function</span><span class="op">(</span><span class="va">parent_states</span>,<span class="va">inheritance</span><span class="op">)</span><span class="op">{</span></span>
 <span>  <span class="co">##For allopolyploidy we add the ploidy of both parents</span></span>
 <span>  <span class="kw"><a href="https://rdrr.io/r/base/function.html" class="external-link">return</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/sum.html" class="external-link">sum</a></span><span class="op">(</span><span class="va">parent_states</span><span class="op">)</span><span class="op">)</span> </span>
@@ -456,6 +457,123 @@
 <span><span class="va">s_fxn</span> <span class="op">&lt;-</span><span class="kw">function</span><span class="op">(</span><span class="va">tip_state</span><span class="op">)</span><span class="op">{</span></span>
 <span>  <span class="co">##Ploidy doesn't change at speciation events. </span></span>
 <span>  <span class="co">##Both daughter lineages have the same ploidy as the parent</span></span>
+<span>  <span class="kw"><a href="https://rdrr.io/r/base/function.html" class="external-link">return</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="va">tip_state</span>,<span class="va">tip_state</span><span class="op">)</span><span class="op">)</span></span>
+<span><span class="op">}</span></span>
+<span></span>
+<span><span class="va">trait_model</span><span class="op">&lt;-</span><span class="fu"><a href="../reference/make.trait.model.html">make.trait.model</a></span><span class="op">(</span>initial_states <span class="op">=</span> <span class="va">initial_val</span>,</span>
+<span>                              hyb.event.fxn <span class="op">=</span> <span class="va">hyb_e_fxn</span>,</span>
+<span>                              hyb.compatibility.fxn <span class="op">=</span> <span class="va">hyb_c_fxn</span>,</span>
+<span>                              time.fxn <span class="op">=</span> <span class="va">t_fxn</span>,</span>
+<span>                              spec.fxn <span class="op">=</span> <span class="va">s_fxn</span><span class="op">)</span></span>
+<span></span>
+<span></span>
+<span><span class="va">trait_nets</span> <span class="op">&lt;-</span><span class="fu"><a href="../reference/sim.bdh.age.html">sim.bdh.age</a></span><span class="op">(</span>age<span class="op">=</span><span class="fl">2</span>,numbsim<span class="op">=</span><span class="fl">10</span>,</span>
+<span>                    lambda<span class="op">=</span><span class="fl">1</span>,mu<span class="op">=</span><span class="fl">0.2</span>,</span>
+<span>                    nu<span class="op">=</span><span class="fl">0.25</span>, hybprops <span class="op">=</span> <span class="va">hybrid_proportions</span>,</span>
+<span>                    hyb.inher.fxn <span class="op">=</span> <span class="va">inheritance.fxn</span>,</span>
+<span>                    trait.model <span class="op">=</span> <span class="va">trait_model</span><span class="op">)</span></span></code></pre></div>
+<p>Next we give an example of a continuous trait evolution where the trait dissimilarity determines hybrid compatibility between two species. This might reflect something like differences in body size mechanically isolating the two species or the time of the mating seasons creating temporal isolation. We choose to take a probabilistic approach by saying, much like the genetic-distance dependent hybridization, that there is some decay function that relates hybridization success to trait dissimilarity.</p>
+<div class="sourceCode" id="cb12"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">initial_val</span><span class="op">&lt;-</span><span class="fl">0</span> <span class="co">## The root starts off at 0</span></span>
+<span></span>
+<span><span class="co">###function for what happens at hybridization event</span></span>
+<span><span class="va">hyb_e_fxn</span> <span class="op">&lt;-</span> <span class="kw">function</span><span class="op">(</span><span class="va">parent_states</span>,<span class="va">inheritance</span><span class="op">)</span><span class="op">{</span></span>
+<span>  <span class="co">## Take a weighted average of the two traits</span></span>
+<span>  <span class="kw"><a href="https://rdrr.io/r/base/function.html" class="external-link">return</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/sum.html" class="external-link">sum</a></span><span class="op">(</span><span class="va">parent_states</span><span class="op">*</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="va">inheritance</span>,<span class="fl">1</span><span class="op">-</span><span class="va">inheritance</span><span class="op">)</span><span class="op">)</span><span class="op">)</span> </span>
+<span><span class="op">}</span></span>
+<span></span>
+<span><span class="co">##Function for determining whether hybridization occurs</span></span>
+<span><span class="va">hyb_c_fxn</span> <span class="op">&lt;-</span><span class="kw">function</span><span class="op">(</span><span class="va">parent_states</span>,<span class="va">hybrid_state</span><span class="op">)</span><span class="op">{</span></span>
+<span>  <span class="co">#Make linear decay function that decreases hybrid success probability linearly</span></span>
+<span>  <span class="co">#Hybridization cannot occur when the traits differ by more than 4</span></span>
+<span>  <span class="va">decay.fxn</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/make.linear.decay.html">make.linear.decay</a></span><span class="op">(</span><span class="fl">4</span><span class="op">)</span></span>
+<span>  </span>
+<span>  <span class="co">#Trait dissimilarity</span></span>
+<span>  <span class="va">diss</span><span class="op">&lt;-</span><span class="fu"><a href="https://rdrr.io/r/base/MathFun.html" class="external-link">abs</a></span><span class="op">(</span><span class="va">parent_states</span><span class="op">[</span><span class="fl">1</span><span class="op">]</span><span class="op">-</span><span class="va">parent_states</span><span class="op">[</span><span class="fl">2</span><span class="op">]</span><span class="op">)</span></span>
+<span>  </span>
+<span>  <span class="va">success_prob</span><span class="op">&lt;-</span><span class="fu">decay.fxn</span><span class="op">(</span><span class="va">diss</span><span class="op">)</span> </span>
+<span>  <span class="kw"><a href="https://rdrr.io/r/base/function.html" class="external-link">return</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/stats/Uniform.html" class="external-link">runif</a></span><span class="op">(</span><span class="fl">1</span>,<span class="fl">0</span>,<span class="fl">1</span><span class="op">)</span><span class="op">&lt;=</span><span class="va">success_prob</span><span class="op">)</span></span>
+<span><span class="op">}</span></span>
+<span></span>
+<span></span>
+<span><span class="co">##Function for how the trait changes over time</span></span>
+<span><span class="va">t_fxn</span> <span class="op">&lt;-</span> <span class="kw">function</span><span class="op">(</span><span class="va">trait_states</span>,<span class="va">timestep</span><span class="op">)</span><span class="op">{</span></span>
+<span>  <span class="co">##We assume brownian motion on the continuous trait</span></span>
+<span>  <span class="va">sigma</span><span class="op">&lt;-</span> <span class="fl">2</span> <span class="co">##sqrt(Rate of evolution)</span></span>
+<span>  </span>
+<span>  <span class="co">##Make brownian motion draws for each lineage</span></span>
+<span>  <span class="va">delta_x</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/Normal.html" class="external-link">rnorm</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/length.html" class="external-link">length</a></span><span class="op">(</span><span class="va">trait_states</span><span class="op">)</span>,mean<span class="op">=</span><span class="fl">0</span>,sd<span class="op">=</span><span class="va">sigma</span><span class="op">*</span><span class="fu"><a href="https://rdrr.io/r/base/MathFun.html" class="external-link">sqrt</a></span><span class="op">(</span><span class="va">timestep</span><span class="op">)</span><span class="op">)</span></span>
+<span>  </span>
+<span>  <span class="kw"><a href="https://rdrr.io/r/base/function.html" class="external-link">return</a></span><span class="op">(</span><span class="va">delta_x</span><span class="op">+</span><span class="va">trait_states</span><span class="op">)</span></span>
+<span><span class="op">}</span></span>
+<span></span>
+<span><span class="co">##Function for how the trait changes at speciation events</span></span>
+<span><span class="va">s_fxn</span> <span class="op">&lt;-</span><span class="kw">function</span><span class="op">(</span><span class="va">tip_state</span><span class="op">)</span><span class="op">{</span></span>
+<span>  <span class="co">##No change at speciation</span></span>
+<span>  <span class="kw"><a href="https://rdrr.io/r/base/function.html" class="external-link">return</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="va">tip_state</span>,<span class="va">tip_state</span><span class="op">)</span><span class="op">)</span></span>
+<span><span class="op">}</span></span>
+<span></span>
+<span><span class="va">trait_model</span><span class="op">&lt;-</span><span class="fu"><a href="../reference/make.trait.model.html">make.trait.model</a></span><span class="op">(</span>initial_states <span class="op">=</span> <span class="va">initial_val</span>,</span>
+<span>                              hyb.event.fxn <span class="op">=</span> <span class="va">hyb_e_fxn</span>,</span>
+<span>                              hyb.compatibility.fxn <span class="op">=</span> <span class="va">hyb_c_fxn</span>,</span>
+<span>                              time.fxn <span class="op">=</span> <span class="va">t_fxn</span>,</span>
+<span>                              spec.fxn <span class="op">=</span> <span class="va">s_fxn</span><span class="op">)</span></span>
+<span></span>
+<span></span>
+<span><span class="va">trait_nets</span> <span class="op">&lt;-</span><span class="fu"><a href="../reference/sim.bdh.age.html">sim.bdh.age</a></span><span class="op">(</span>age<span class="op">=</span><span class="fl">2</span>,numbsim<span class="op">=</span><span class="fl">10</span>,</span>
+<span>                    lambda<span class="op">=</span><span class="fl">1</span>,mu<span class="op">=</span><span class="fl">0.2</span>,</span>
+<span>                    nu<span class="op">=</span><span class="fl">0.25</span>, hybprops <span class="op">=</span> <span class="va">hybrid_proportions</span>,</span>
+<span>                    hyb.inher.fxn <span class="op">=</span> <span class="va">inheritance.fxn</span>,</span>
+<span>                    trait.model <span class="op">=</span> <span class="va">trait_model</span><span class="op">)</span></span></code></pre></div>
+<p>Lastly, we model a case where hybridization can only occur if the hybrid species is sufficiently different enough from the parental ones. This might be used to model hybrid breakdown and the hybrid lineage needing to exploit a different niche than the parental lineages due to a lower fitness. We also decide to allow transgressive trait evolution in the hybrid lineages. The trait in the hybrid lineage is not always an intermediate value between the two lineages but sometimes something else entirely, we model that here.</p>
+<div class="sourceCode" id="cb13"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">initial_val</span><span class="op">&lt;-</span><span class="fl">0</span> <span class="co">## The root starts off at 0</span></span>
+<span></span>
+<span><span class="co">###function for what happens at hybridization event</span></span>
+<span><span class="va">hyb_e_fxn</span> <span class="op">&lt;-</span> <span class="kw">function</span><span class="op">(</span><span class="va">parent_states</span>,<span class="va">inheritance</span><span class="op">)</span><span class="op">{</span></span>
+<span>  <span class="co">## Take a weighted average of the two traits</span></span>
+<span>  <span class="va">hyb_val</span><span class="op">&lt;-</span><span class="fu"><a href="https://rdrr.io/r/base/sum.html" class="external-link">sum</a></span><span class="op">(</span><span class="va">parent_states</span><span class="op">*</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="va">inheritance</span>,<span class="fl">1</span><span class="op">-</span><span class="va">inheritance</span><span class="op">)</span><span class="op">)</span></span>
+<span>  </span>
+<span>  <span class="co">##Now allow transgressive evolution by making a random draw from a normal distribution</span></span>
+<span>  <span class="va">transgression</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/Normal.html" class="external-link">rnorm</a></span><span class="op">(</span><span class="fl">1</span>,<span class="fl">0</span>,<span class="fl">4</span><span class="op">)</span></span>
+<span>  </span>
+<span>  <span class="kw"><a href="https://rdrr.io/r/base/function.html" class="external-link">return</a></span><span class="op">(</span><span class="va">hyb_val</span><span class="op">+</span><span class="va">transgression</span><span class="op">)</span> </span>
+<span><span class="op">}</span></span>
+<span></span>
+<span><span class="co">##Function for determining whether hybridization occurs</span></span>
+<span><span class="va">hyb_c_fxn</span> <span class="op">&lt;-</span><span class="kw">function</span><span class="op">(</span><span class="va">parent_states</span>,<span class="va">hybrid_state</span><span class="op">)</span><span class="op">{</span></span>
+<span>  <span class="co">##Lets say that anything outside 10% of the hybrid lineage trait value is a different nich</span></span>
+<span>  <span class="va">niche_bound</span> <span class="op">&lt;-</span><span class="va">hybrid_state</span><span class="op">*</span><span class="fl">0.1</span></span>
+<span>  </span>
+<span>  <span class="va">lower_bound</span> <span class="op">&lt;-</span><span class="va">hybrid_state</span><span class="op">-</span><span class="va">niche_bound</span></span>
+<span>  <span class="va">upper_bound</span> <span class="op">&lt;-</span><span class="va">hybrid_state</span><span class="op">+</span><span class="va">niche_bound</span></span>
+<span>  </span>
+<span>  <span class="co">##Check if the parental lienages are within the niche boundary</span></span>
+<span>  <span class="kw">if</span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/all.html" class="external-link">all</a></span><span class="op">(</span> <span class="op">(</span><span class="va">parent_states</span> <span class="op">&lt;</span> <span class="va">lower_bound</span><span class="op">)</span> <span class="op">|</span> <span class="op">(</span><span class="va">parent_states</span> <span class="op">&gt;</span> <span class="va">upper_bound</span><span class="op">)</span> <span class="op">)</span><span class="op">)</span><span class="op">{</span></span>
+<span>    <span class="co">##Parent lineages are outside the hybrid niche. Hybrid survives</span></span>
+<span>    <span class="kw"><a href="https://rdrr.io/r/base/function.html" class="external-link">return</a></span><span class="op">(</span><span class="cn">TRUE</span><span class="op">)</span></span>
+<span>  <span class="op">}</span><span class="kw">else</span><span class="op">{</span></span>
+<span>    <span class="co">##Parent lineage inside the hybrid niche. Hybrid breakdown</span></span>
+<span>    <span class="kw"><a href="https://rdrr.io/r/base/function.html" class="external-link">return</a></span><span class="op">(</span><span class="cn">FALSE</span><span class="op">)</span></span>
+<span>  <span class="op">}</span></span>
+<span>  </span>
+<span><span class="op">}</span></span>
+<span></span>
+<span></span>
+<span><span class="co">##Function for how the trait changes over time</span></span>
+<span><span class="va">t_fxn</span> <span class="op">&lt;-</span> <span class="kw">function</span><span class="op">(</span><span class="va">trait_states</span>,<span class="va">timestep</span><span class="op">)</span><span class="op">{</span></span>
+<span>  <span class="co">##We assume brownian motion on the continuous trait</span></span>
+<span>  <span class="va">sigma</span><span class="op">&lt;-</span> <span class="fl">2</span> <span class="co">##sqrt(Rate of evolution)</span></span>
+<span>  </span>
+<span>  <span class="co">##Make brownian motion draws for each lineage</span></span>
+<span>  <span class="va">delta_x</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/Normal.html" class="external-link">rnorm</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/length.html" class="external-link">length</a></span><span class="op">(</span><span class="va">trait_states</span><span class="op">)</span>,mean<span class="op">=</span><span class="fl">0</span>,sd<span class="op">=</span><span class="va">sigma</span><span class="op">*</span><span class="fu"><a href="https://rdrr.io/r/base/MathFun.html" class="external-link">sqrt</a></span><span class="op">(</span><span class="va">timestep</span><span class="op">)</span><span class="op">)</span></span>
+<span>  </span>
+<span>  <span class="kw"><a href="https://rdrr.io/r/base/function.html" class="external-link">return</a></span><span class="op">(</span><span class="va">delta_x</span><span class="op">+</span><span class="va">trait_states</span><span class="op">)</span></span>
+<span><span class="op">}</span></span>
+<span></span>
+<span><span class="co">##Function for how the trait changes at speciation events</span></span>
+<span><span class="va">s_fxn</span> <span class="op">&lt;-</span><span class="kw">function</span><span class="op">(</span><span class="va">tip_state</span><span class="op">)</span><span class="op">{</span></span>
+<span>  <span class="co">##No change at speciation</span></span>
 <span>  <span class="kw"><a href="https://rdrr.io/r/base/function.html" class="external-link">return</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="va">tip_state</span>,<span class="va">tip_state</span><span class="op">)</span><span class="op">)</span></span>
 <span><span class="op">}</span></span>
 <span></span>
