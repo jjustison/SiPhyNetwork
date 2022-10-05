@@ -176,7 +176,7 @@ div.csl-indent {
 
 <div id="overview" class="section level1">
 <h1>Overview</h1>
-<p>The SiPhyNetwork R package is a tool for simulating phylogenetic networks under birth-death-hybridization based models. It provides functions for creating complex hybridization models, functions for simulating phylogenies under these models, as well as utility functions for characterizing the types of phylogenetic networks, visualizing networks, and saving phylogenetic networks in the Extended Newick format. This allows users to simulate phylogenetic networks under a suite of more biologically realistic models. The SiPhyNetwork package is released under the GPL-3 license and is available for download from <a href="https://github.com/jjustison/SiPhyNetwork">GitHub</a></p>
+<p>The SiPhyNetwork R package is a tool for simulating phylogenetic networks under birth-death-hybridization based models. It provides functions for creating complex hybridization models, functions for simulating phylogenies under these models, as well as utility functions for characterizing the types of phylogenetic networks, visualizing networks, and saving phylogenetic networks in the Extended Newick format. This allows users to simulate phylogenetic networks under a suite of more biologically realistic models. The SiPhyNetwork package is released under the GPL-3 license and can be downloaded from CRAN or the source code is avaliable on <a href="https://github.com/jjustison/SiPhyNetwork">GitHub</a></p>
 </div>
 <div id="introduction" class="section level1">
 <h1>Introduction</h1>
@@ -435,7 +435,7 @@ div.csl-indent {
 <p>We can extend our model of hybridization in two main ways:</p>
 <ol style="list-style-type: decimal">
 <li><p><strong>Make the probability of a successful hybridization a function of genetic distance.</strong> We can do this to model the belief that it is less likely for more distantly related taxa to hybridize. This function will take in the genetic distance between two taxa and return the probability that the hybridization is successful. We use the same matrix of genetic distances that is defined in <em><span class="citation">Woodhams, Lockhart, and Holland (2016)</span></em>. Briefly, the genetic distance between two non hybrid taxa <span class="math inline">\(X\)</span> and <span class="math inline">\(Y\)</span> is defined as the summation of all edge lengths on the path from <span class="math inline">\(X\)</span> to <span class="math inline">\(Y\)</span>. Genetic distances involving hybridized taxa is similar but hybridizations lead to multiple paths from <span class="math inline">\(X\)</span> to <span class="math inline">\(Y\)</span>; in this case we use a weighted summation across all different paths where the weight for each path depends on the inheritance probabilities.</p></li>
-<li><p><strong>Make successful hybridizations depend on some trait that also evolves along the tree.</strong> This extension was made to model the belief that typically only lineages with the same ploidy and chromosome number can hybridize, although this can be generalized to model any discrete or continuous trait and rules for restricting hybridization.</p></li>
+<li><p><strong>Make successful hybridizations depend on some trait that also evolves along the tree.</strong> This extension was made to model the belief that typically only lineages with the same ploidy and chromosome number can hybridize, although this can be generalized to model any discrete or continuous trait and have arbitrary rules for restricting hybridization.</p></li>
 </ol>
 <div id="example-7a-hybridizations-dependent-on-genetic-distance" class="section level3">
 <h3>Example 7A: Hybridizations Dependent On Genetic Distance</h3>
@@ -456,6 +456,7 @@ div.csl-indent {
 </div>
 <div id="example-7b-trait-dependent-hybridization" class="section level3">
 <h3>Example 7B: Trait Dependent Hybridization</h3>
+<p>A vast array of traits (both discrete and continuous) and mechanisms can control whether hybridization can occur between two species. We provide a general framework that gives the flexability to model many of these interactions. Later we give examples to showcase the some of the flavors of trait-dependent hybridization scenarios.</p>
 <p>We can model trait dependent hybridization by supplying a list for the argument <code>trait.model</code> in the <code>sim.bdh</code> functions. This list contains initial value(s) for the trait at the beginning of the process, functions describing how the trait evolves, and a function that dictates whether taxa can hybridize based on the trait values between taxa. Specifically the list contains these named elements:</p>
 <ul>
 <li><strong>initial</strong> The initial trait state on the phylogeny. <strong>NOTE:</strong> if the <code>MRCA</code> argument in the <code>sim.bdh</code> style functions is <code>TRUE</code>, 2 initial values will be needed since the process starts with 2 lineages.</li>
@@ -469,7 +470,7 @@ div.csl-indent {
 <span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb11-3"><a href="#cb11-3" aria-hidden="true" tabindex="-1"></a>initial_val<span class="ot">&lt;-</span><span class="dv">2</span> <span class="do">## The root starts off at 2N</span></span>
 <span id="cb11-4"><a href="#cb11-4" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb11-5"><a href="#cb11-5" aria-hidden="true" tabindex="-1"></a><span class="do">###function for what happens at hybridization even</span></span>
+<span id="cb11-5"><a href="#cb11-5" aria-hidden="true" tabindex="-1"></a><span class="do">###function for what happens at hybridization event</span></span>
 <span id="cb11-6"><a href="#cb11-6" aria-hidden="true" tabindex="-1"></a>hyb_e_fxn <span class="ot">&lt;-</span> <span class="cf">function</span>(parent_states,inheritance){</span>
 <span id="cb11-7"><a href="#cb11-7" aria-hidden="true" tabindex="-1"></a>  <span class="do">##For allopolyploidy we add the ploidy of both parents</span></span>
 <span id="cb11-8"><a href="#cb11-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">return</span>(<span class="fu">sum</span>(parent_states)) </span>
@@ -514,6 +515,121 @@ div.csl-indent {
 <span id="cb11-47"><a href="#cb11-47" aria-hidden="true" tabindex="-1"></a>                    <span class="at">nu=</span><span class="fl">0.25</span>, <span class="at">hybprops =</span> hybrid_proportions,</span>
 <span id="cb11-48"><a href="#cb11-48" aria-hidden="true" tabindex="-1"></a>                    <span class="at">hyb.inher.fxn =</span> inheritance.fxn,</span>
 <span id="cb11-49"><a href="#cb11-49" aria-hidden="true" tabindex="-1"></a>                    <span class="at">trait.model =</span> trait_model)</span></code></pre></div>
+<p>Next we give an example of a continuous trait evolution where the trait dissimilarity determines hybrid compatibility between two species. This might reflect something like differences in body size mechanically isolating the two species or the time of the mating seasons creating temporal isolation. We choose to take a probabilistic approach by saying, much like the genetic-distance dependent hybridization, that there is some decay function that relates hybridization success to trait dissimilarity.</p>
+<div class="sourceCode" id="cb12"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a>initial_val<span class="ot">&lt;-</span><span class="dv">0</span> <span class="do">## The root starts off at 0</span></span>
+<span id="cb12-2"><a href="#cb12-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb12-3"><a href="#cb12-3" aria-hidden="true" tabindex="-1"></a><span class="do">###function for what happens at hybridization event</span></span>
+<span id="cb12-4"><a href="#cb12-4" aria-hidden="true" tabindex="-1"></a>hyb_e_fxn <span class="ot">&lt;-</span> <span class="cf">function</span>(parent_states,inheritance){</span>
+<span id="cb12-5"><a href="#cb12-5" aria-hidden="true" tabindex="-1"></a>  <span class="do">## Take a weighted average of the two traits</span></span>
+<span id="cb12-6"><a href="#cb12-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">return</span>(<span class="fu">sum</span>(parent_states<span class="sc">*</span><span class="fu">c</span>(inheritance,<span class="dv">1</span><span class="sc">-</span>inheritance))) </span>
+<span id="cb12-7"><a href="#cb12-7" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb12-8"><a href="#cb12-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb12-9"><a href="#cb12-9" aria-hidden="true" tabindex="-1"></a><span class="do">##Function for determining whether hybridization occurs</span></span>
+<span id="cb12-10"><a href="#cb12-10" aria-hidden="true" tabindex="-1"></a>hyb_c_fxn <span class="ot">&lt;-</span><span class="cf">function</span>(parent_states,hybrid_state){</span>
+<span id="cb12-11"><a href="#cb12-11" aria-hidden="true" tabindex="-1"></a>  <span class="co">#Make linear decay function that decreases hybrid success probability linearly</span></span>
+<span id="cb12-12"><a href="#cb12-12" aria-hidden="true" tabindex="-1"></a>  <span class="co">#Hybridization cannot occur when the traits differ by more than 4</span></span>
+<span id="cb12-13"><a href="#cb12-13" aria-hidden="true" tabindex="-1"></a>  decay.fxn <span class="ot">&lt;-</span> <span class="fu">make.linear.decay</span>(<span class="dv">4</span>)</span>
+<span id="cb12-14"><a href="#cb12-14" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb12-15"><a href="#cb12-15" aria-hidden="true" tabindex="-1"></a>  <span class="co">#Trait dissimilarity</span></span>
+<span id="cb12-16"><a href="#cb12-16" aria-hidden="true" tabindex="-1"></a>  diss<span class="ot">&lt;-</span><span class="fu">abs</span>(parent_states[<span class="dv">1</span>]<span class="sc">-</span>parent_states[<span class="dv">2</span>])</span>
+<span id="cb12-17"><a href="#cb12-17" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb12-18"><a href="#cb12-18" aria-hidden="true" tabindex="-1"></a>  success_prob<span class="ot">&lt;-</span><span class="fu">decay.fxn</span>(diss) </span>
+<span id="cb12-19"><a href="#cb12-19" aria-hidden="true" tabindex="-1"></a>  <span class="fu">return</span>(<span class="fu">runif</span>(<span class="dv">1</span>,<span class="dv">0</span>,<span class="dv">1</span>)<span class="sc">&lt;=</span>success_prob)</span>
+<span id="cb12-20"><a href="#cb12-20" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb12-21"><a href="#cb12-21" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb12-22"><a href="#cb12-22" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb12-23"><a href="#cb12-23" aria-hidden="true" tabindex="-1"></a><span class="do">##Function for how the trait changes over time</span></span>
+<span id="cb12-24"><a href="#cb12-24" aria-hidden="true" tabindex="-1"></a>t_fxn <span class="ot">&lt;-</span> <span class="cf">function</span>(trait_states,timestep){</span>
+<span id="cb12-25"><a href="#cb12-25" aria-hidden="true" tabindex="-1"></a>  <span class="do">##We assume brownian motion on the continuous trait</span></span>
+<span id="cb12-26"><a href="#cb12-26" aria-hidden="true" tabindex="-1"></a>  sigma<span class="ot">&lt;-</span> <span class="dv">2</span> <span class="do">##sqrt(Rate of evolution)</span></span>
+<span id="cb12-27"><a href="#cb12-27" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb12-28"><a href="#cb12-28" aria-hidden="true" tabindex="-1"></a>  <span class="do">##Make brownian motion draws for each lineage</span></span>
+<span id="cb12-29"><a href="#cb12-29" aria-hidden="true" tabindex="-1"></a>  delta_x <span class="ot">&lt;-</span> <span class="fu">rnorm</span>(<span class="fu">length</span>(trait_states),<span class="at">mean=</span><span class="dv">0</span>,<span class="at">sd=</span>sigma<span class="sc">*</span><span class="fu">sqrt</span>(timestep))</span>
+<span id="cb12-30"><a href="#cb12-30" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb12-31"><a href="#cb12-31" aria-hidden="true" tabindex="-1"></a>  <span class="fu">return</span>(delta_x<span class="sc">+</span>trait_states)</span>
+<span id="cb12-32"><a href="#cb12-32" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb12-33"><a href="#cb12-33" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb12-34"><a href="#cb12-34" aria-hidden="true" tabindex="-1"></a><span class="do">##Function for how the trait changes at speciation events</span></span>
+<span id="cb12-35"><a href="#cb12-35" aria-hidden="true" tabindex="-1"></a>s_fxn <span class="ot">&lt;-</span><span class="cf">function</span>(tip_state){</span>
+<span id="cb12-36"><a href="#cb12-36" aria-hidden="true" tabindex="-1"></a>  <span class="do">##No change at speciation</span></span>
+<span id="cb12-37"><a href="#cb12-37" aria-hidden="true" tabindex="-1"></a>  <span class="fu">return</span>(<span class="fu">c</span>(tip_state,tip_state))</span>
+<span id="cb12-38"><a href="#cb12-38" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb12-39"><a href="#cb12-39" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb12-40"><a href="#cb12-40" aria-hidden="true" tabindex="-1"></a>trait_model<span class="ot">&lt;-</span><span class="fu">make.trait.model</span>(<span class="at">initial_states =</span> initial_val,</span>
+<span id="cb12-41"><a href="#cb12-41" aria-hidden="true" tabindex="-1"></a>                              <span class="at">hyb.event.fxn =</span> hyb_e_fxn,</span>
+<span id="cb12-42"><a href="#cb12-42" aria-hidden="true" tabindex="-1"></a>                              <span class="at">hyb.compatibility.fxn =</span> hyb_c_fxn,</span>
+<span id="cb12-43"><a href="#cb12-43" aria-hidden="true" tabindex="-1"></a>                              <span class="at">time.fxn =</span> t_fxn,</span>
+<span id="cb12-44"><a href="#cb12-44" aria-hidden="true" tabindex="-1"></a>                              <span class="at">spec.fxn =</span> s_fxn)</span>
+<span id="cb12-45"><a href="#cb12-45" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb12-46"><a href="#cb12-46" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb12-47"><a href="#cb12-47" aria-hidden="true" tabindex="-1"></a>trait_nets <span class="ot">&lt;-</span><span class="fu">sim.bdh.age</span>(<span class="at">age=</span><span class="dv">2</span>,<span class="at">numbsim=</span><span class="dv">10</span>,</span>
+<span id="cb12-48"><a href="#cb12-48" aria-hidden="true" tabindex="-1"></a>                    <span class="at">lambda=</span><span class="dv">1</span>,<span class="at">mu=</span><span class="fl">0.2</span>,</span>
+<span id="cb12-49"><a href="#cb12-49" aria-hidden="true" tabindex="-1"></a>                    <span class="at">nu=</span><span class="fl">0.25</span>, <span class="at">hybprops =</span> hybrid_proportions,</span>
+<span id="cb12-50"><a href="#cb12-50" aria-hidden="true" tabindex="-1"></a>                    <span class="at">hyb.inher.fxn =</span> inheritance.fxn,</span>
+<span id="cb12-51"><a href="#cb12-51" aria-hidden="true" tabindex="-1"></a>                    <span class="at">trait.model =</span> trait_model)</span></code></pre></div>
+<p>Lastly, we model a case where hybridization can only occur if the hybrid species is sufficiently different enough from the parental ones. This might be used to model hybrid breakdown and the hybrid lineage needing to exploit a different niche than the parental lineages due to a lower fitness. We also decide to allow transgressive trait evolution in the hybrid lineages. The trait in the hybrid lineage is not always an intermediate value between the two lineages but sometimes something else entirely, we model that here.</p>
+<div class="sourceCode" id="cb13"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a>initial_val<span class="ot">&lt;-</span><span class="dv">0</span> <span class="do">## The root starts off at 0</span></span>
+<span id="cb13-2"><a href="#cb13-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb13-3"><a href="#cb13-3" aria-hidden="true" tabindex="-1"></a><span class="do">###function for what happens at hybridization event</span></span>
+<span id="cb13-4"><a href="#cb13-4" aria-hidden="true" tabindex="-1"></a>hyb_e_fxn <span class="ot">&lt;-</span> <span class="cf">function</span>(parent_states,inheritance){</span>
+<span id="cb13-5"><a href="#cb13-5" aria-hidden="true" tabindex="-1"></a>  <span class="do">## Take a weighted average of the two traits</span></span>
+<span id="cb13-6"><a href="#cb13-6" aria-hidden="true" tabindex="-1"></a>  hyb_val<span class="ot">&lt;-</span><span class="fu">sum</span>(parent_states<span class="sc">*</span><span class="fu">c</span>(inheritance,<span class="dv">1</span><span class="sc">-</span>inheritance))</span>
+<span id="cb13-7"><a href="#cb13-7" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb13-8"><a href="#cb13-8" aria-hidden="true" tabindex="-1"></a>  <span class="do">##Now allow transgressive evolution by making a random draw from a normal distribution</span></span>
+<span id="cb13-9"><a href="#cb13-9" aria-hidden="true" tabindex="-1"></a>  transgression <span class="ot">&lt;-</span> <span class="fu">rnorm</span>(<span class="dv">1</span>,<span class="dv">0</span>,<span class="dv">4</span>)</span>
+<span id="cb13-10"><a href="#cb13-10" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb13-11"><a href="#cb13-11" aria-hidden="true" tabindex="-1"></a>  <span class="fu">return</span>(hyb_val<span class="sc">+</span>transgression) </span>
+<span id="cb13-12"><a href="#cb13-12" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb13-13"><a href="#cb13-13" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb13-14"><a href="#cb13-14" aria-hidden="true" tabindex="-1"></a><span class="do">##Function for determining whether hybridization occurs</span></span>
+<span id="cb13-15"><a href="#cb13-15" aria-hidden="true" tabindex="-1"></a>hyb_c_fxn <span class="ot">&lt;-</span><span class="cf">function</span>(parent_states,hybrid_state){</span>
+<span id="cb13-16"><a href="#cb13-16" aria-hidden="true" tabindex="-1"></a>  <span class="do">##Lets say that anything outside 10% of the hybrid lineage trait value is a different nich</span></span>
+<span id="cb13-17"><a href="#cb13-17" aria-hidden="true" tabindex="-1"></a>  niche_bound <span class="ot">&lt;-</span>hybrid_state<span class="sc">*</span><span class="fl">0.1</span></span>
+<span id="cb13-18"><a href="#cb13-18" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb13-19"><a href="#cb13-19" aria-hidden="true" tabindex="-1"></a>  lower_bound <span class="ot">&lt;-</span>hybrid_state<span class="sc">-</span>niche_bound</span>
+<span id="cb13-20"><a href="#cb13-20" aria-hidden="true" tabindex="-1"></a>  upper_bound <span class="ot">&lt;-</span>hybrid_state<span class="sc">+</span>niche_bound</span>
+<span id="cb13-21"><a href="#cb13-21" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb13-22"><a href="#cb13-22" aria-hidden="true" tabindex="-1"></a>  <span class="do">##Check if the parental lienages are within the niche boundary</span></span>
+<span id="cb13-23"><a href="#cb13-23" aria-hidden="true" tabindex="-1"></a>  <span class="cf">if</span>(<span class="fu">all</span>( (parent_states <span class="sc">&lt;</span> lower_bound) <span class="sc">|</span> (parent_states <span class="sc">&gt;</span> upper_bound) )){</span>
+<span id="cb13-24"><a href="#cb13-24" aria-hidden="true" tabindex="-1"></a>    <span class="do">##Parent lineages are outside the hybrid niche. Hybrid survives</span></span>
+<span id="cb13-25"><a href="#cb13-25" aria-hidden="true" tabindex="-1"></a>    <span class="fu">return</span>(<span class="cn">TRUE</span>)</span>
+<span id="cb13-26"><a href="#cb13-26" aria-hidden="true" tabindex="-1"></a>  }<span class="cf">else</span>{</span>
+<span id="cb13-27"><a href="#cb13-27" aria-hidden="true" tabindex="-1"></a>    <span class="do">##Parent lineage inside the hybrid niche. Hybrid breakdown</span></span>
+<span id="cb13-28"><a href="#cb13-28" aria-hidden="true" tabindex="-1"></a>    <span class="fu">return</span>(<span class="cn">FALSE</span>)</span>
+<span id="cb13-29"><a href="#cb13-29" aria-hidden="true" tabindex="-1"></a>  }</span>
+<span id="cb13-30"><a href="#cb13-30" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb13-31"><a href="#cb13-31" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb13-32"><a href="#cb13-32" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb13-33"><a href="#cb13-33" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb13-34"><a href="#cb13-34" aria-hidden="true" tabindex="-1"></a><span class="do">##Function for how the trait changes over time</span></span>
+<span id="cb13-35"><a href="#cb13-35" aria-hidden="true" tabindex="-1"></a>t_fxn <span class="ot">&lt;-</span> <span class="cf">function</span>(trait_states,timestep){</span>
+<span id="cb13-36"><a href="#cb13-36" aria-hidden="true" tabindex="-1"></a>  <span class="do">##We assume brownian motion on the continuous trait</span></span>
+<span id="cb13-37"><a href="#cb13-37" aria-hidden="true" tabindex="-1"></a>  sigma<span class="ot">&lt;-</span> <span class="dv">2</span> <span class="do">##sqrt(Rate of evolution)</span></span>
+<span id="cb13-38"><a href="#cb13-38" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb13-39"><a href="#cb13-39" aria-hidden="true" tabindex="-1"></a>  <span class="do">##Make brownian motion draws for each lineage</span></span>
+<span id="cb13-40"><a href="#cb13-40" aria-hidden="true" tabindex="-1"></a>  delta_x <span class="ot">&lt;-</span> <span class="fu">rnorm</span>(<span class="fu">length</span>(trait_states),<span class="at">mean=</span><span class="dv">0</span>,<span class="at">sd=</span>sigma<span class="sc">*</span><span class="fu">sqrt</span>(timestep))</span>
+<span id="cb13-41"><a href="#cb13-41" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb13-42"><a href="#cb13-42" aria-hidden="true" tabindex="-1"></a>  <span class="fu">return</span>(delta_x<span class="sc">+</span>trait_states)</span>
+<span id="cb13-43"><a href="#cb13-43" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb13-44"><a href="#cb13-44" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb13-45"><a href="#cb13-45" aria-hidden="true" tabindex="-1"></a><span class="do">##Function for how the trait changes at speciation events</span></span>
+<span id="cb13-46"><a href="#cb13-46" aria-hidden="true" tabindex="-1"></a>s_fxn <span class="ot">&lt;-</span><span class="cf">function</span>(tip_state){</span>
+<span id="cb13-47"><a href="#cb13-47" aria-hidden="true" tabindex="-1"></a>  <span class="do">##No change at speciation</span></span>
+<span id="cb13-48"><a href="#cb13-48" aria-hidden="true" tabindex="-1"></a>  <span class="fu">return</span>(<span class="fu">c</span>(tip_state,tip_state))</span>
+<span id="cb13-49"><a href="#cb13-49" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb13-50"><a href="#cb13-50" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb13-51"><a href="#cb13-51" aria-hidden="true" tabindex="-1"></a>trait_model<span class="ot">&lt;-</span><span class="fu">make.trait.model</span>(<span class="at">initial_states =</span> initial_val,</span>
+<span id="cb13-52"><a href="#cb13-52" aria-hidden="true" tabindex="-1"></a>                              <span class="at">hyb.event.fxn =</span> hyb_e_fxn,</span>
+<span id="cb13-53"><a href="#cb13-53" aria-hidden="true" tabindex="-1"></a>                              <span class="at">hyb.compatibility.fxn =</span> hyb_c_fxn,</span>
+<span id="cb13-54"><a href="#cb13-54" aria-hidden="true" tabindex="-1"></a>                              <span class="at">time.fxn =</span> t_fxn,</span>
+<span id="cb13-55"><a href="#cb13-55" aria-hidden="true" tabindex="-1"></a>                              <span class="at">spec.fxn =</span> s_fxn)</span>
+<span id="cb13-56"><a href="#cb13-56" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb13-57"><a href="#cb13-57" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb13-58"><a href="#cb13-58" aria-hidden="true" tabindex="-1"></a>trait_nets <span class="ot">&lt;-</span><span class="fu">sim.bdh.age</span>(<span class="at">age=</span><span class="dv">2</span>,<span class="at">numbsim=</span><span class="dv">10</span>,</span>
+<span id="cb13-59"><a href="#cb13-59" aria-hidden="true" tabindex="-1"></a>                    <span class="at">lambda=</span><span class="dv">1</span>,<span class="at">mu=</span><span class="fl">0.2</span>,</span>
+<span id="cb13-60"><a href="#cb13-60" aria-hidden="true" tabindex="-1"></a>                    <span class="at">nu=</span><span class="fl">0.25</span>, <span class="at">hybprops =</span> hybrid_proportions,</span>
+<span id="cb13-61"><a href="#cb13-61" aria-hidden="true" tabindex="-1"></a>                    <span class="at">hyb.inher.fxn =</span> inheritance.fxn,</span>
+<span id="cb13-62"><a href="#cb13-62" aria-hidden="true" tabindex="-1"></a>                    <span class="at">trait.model =</span> trait_model)</span></code></pre></div>
 </div>
 </div>
 </div>

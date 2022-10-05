@@ -11,7 +11,7 @@ vignette: >
 ---
 
 # Overview
-The SiPhyNetwork R package is a tool for simulating phylogenetic networks under birth-death-hybridization based models. It provides functions for creating complex hybridization models, functions for simulating phylogenies under these models, as well as utility functions for characterizing the types of phylogenetic networks, visualizing networks, and saving phylogenetic networks in the Extended Newick format. This allows users to simulate phylogenetic networks under a suite of more biologically realistic models. The SiPhyNetwork package is released under the GPL-3 license and is available for download from [GitHub](https://github.com/jjustison/SiPhyNetwork)
+The SiPhyNetwork R package is a tool for simulating phylogenetic networks under birth-death-hybridization based models. It provides functions for creating complex hybridization models, functions for simulating phylogenies under these models, as well as utility functions for characterizing the types of phylogenetic networks, visualizing networks, and saving phylogenetic networks in the Extended Newick format. This allows users to simulate phylogenetic networks under a suite of more biologically realistic models. The SiPhyNetwork package is released under the GPL-3 license and can be downloaded from CRAN or the source code is avaliable on [GitHub](https://github.com/jjustison/SiPhyNetwork)
 
 # Introduction 
 
@@ -268,7 +268,7 @@ We can extend our model of hybridization in two main ways:
 
 1. **Make the probability of a successful hybridization a function of genetic distance.** We can do this to model the belief that it is less likely for more distantly related taxa to hybridize. This function will take in the genetic distance between two taxa and return the probability that the hybridization is successful. We use the same matrix of genetic distances that is defined in *@Woodhams2016*. Briefly, the genetic distance between two non hybrid taxa $X$ and $Y$ is defined as the summation of all edge lengths on the path from $X$ to $Y$. Genetic distances involving hybridized taxa is similar but hybridizations lead to multiple paths from $X$ to $Y$; in this case we use a weighted summation across all different paths where the weight for each path depends on the inheritance probabilities. 
 
-2. **Make successful hybridizations depend on some trait that also evolves along the tree.** This extension was made to model the belief that typically only lineages with the same ploidy and chromosome number can hybridize, although this can be generalized to model any discrete or continuous trait and rules for restricting hybridization.
+2. **Make successful hybridizations depend on some trait that also evolves along the tree.** This extension was made to model the belief that typically only lineages with the same ploidy and chromosome number can hybridize, although this can be generalized to model any discrete or continuous trait and have arbitrary rules for restricting hybridization.
 
 ### Example 7A: Hybridizations Dependent On Genetic Distance
 We can make the probability that a hybridization is successful by providing a function that is defined on the range $[0,\infty)$ for genetic distances and returns values from $0$ to $1$ for the probability of a successful hybridization. We have implemented several `make` functions for creating functions that fit these criteria. These functions are then used as the `hyb.rate.fxn` argument in the `sim.bdh` style functions.
@@ -309,6 +309,9 @@ par(old_pars)
 ```
 
 ### Example 7B: Trait Dependent Hybridization
+A vast array of traits (both discrete and continuous) and mechanisms can control whether hybridization can occur between two species. We provide a general framework that gives the flexability to model many of these interactions. Later we give examples to showcase the some of the flavors of trait-dependent hybridization scenarios.
+
+
 We can model trait dependent hybridization by supplying a list for the argument `trait.model` in the `sim.bdh` functions. This list contains initial value(s) for the trait at the beginning of the process, functions describing how the trait evolves, and a function that dictates whether taxa can hybridize based on the trait values between taxa. Specifically the list contains these named elements:
 
 * **initial** The initial trait state on the phylogeny. **NOTE:** if the `MRCA` argument in the `sim.bdh` style functions is `TRUE`, 2 initial values will be needed since the process starts with 2 lineages.
@@ -324,7 +327,7 @@ Here we give an example of simple ploidy evolution that considers autopolyploidy
 
 initial_val<-2 ## The root starts off at 2N
 
-###function for what happens at hybridization even
+###function for what happens at hybridization event
 hyb_e_fxn <- function(parent_states,inheritance){
   ##For allopolyploidy we add the ploidy of both parents
   return(sum(parent_states)) 
@@ -372,6 +375,131 @@ trait_nets <-sim.bdh.age(age=2,numbsim=10,
 
 ```
 
+Next we give an example of a continuous trait evolution where the trait dissimilarity determines hybrid compatibility between two species. This might reflect something like differences in body size mechanically isolating the two species or the time of the mating seasons creating temporal isolation. We choose to take a probabilistic approach by saying, much like the genetic-distance dependent hybridization, that there is some decay function that relates hybridization success to trait dissimilarity. 
+
+
+```{r}
+initial_val<-0 ## The root starts off at 0
+
+###function for what happens at hybridization event
+hyb_e_fxn <- function(parent_states,inheritance){
+  ## Take a weighted average of the two traits
+  return(sum(parent_states*c(inheritance,1-inheritance))) 
+}
+
+##Function for determining whether hybridization occurs
+hyb_c_fxn <-function(parent_states,hybrid_state){
+  #Make linear decay function that decreases hybrid success probability linearly
+  #Hybridization cannot occur when the traits differ by more than 4
+  decay.fxn <- make.linear.decay(4)
+  
+  #Trait dissimilarity
+  diss<-abs(parent_states[1]-parent_states[2])
+  
+  success_prob<-decay.fxn(diss) 
+  return(runif(1,0,1)<=success_prob)
+}
+
+
+##Function for how the trait changes over time
+t_fxn <- function(trait_states,timestep){
+  ##We assume brownian motion on the continuous trait
+  sigma<- 2 ##sqrt(Rate of evolution)
+  
+  ##Make brownian motion draws for each lineage
+  delta_x <- rnorm(length(trait_states),mean=0,sd=sigma*sqrt(timestep))
+  
+  return(delta_x+trait_states)
+}
+
+##Function for how the trait changes at speciation events
+s_fxn <-function(tip_state){
+  ##No change at speciation
+  return(c(tip_state,tip_state))
+}
+
+trait_model<-make.trait.model(initial_states = initial_val,
+                              hyb.event.fxn = hyb_e_fxn,
+                              hyb.compatibility.fxn = hyb_c_fxn,
+                              time.fxn = t_fxn,
+                              spec.fxn = s_fxn)
+
+
+trait_nets <-sim.bdh.age(age=2,numbsim=10,
+                    lambda=1,mu=0.2,
+                    nu=0.25, hybprops = hybrid_proportions,
+                    hyb.inher.fxn = inheritance.fxn,
+                    trait.model = trait_model)
+
+```
+
+Lastly, we model a case where hybridization can only occur if the hybrid species is sufficiently different enough from the parental ones. This might be used to model hybrid breakdown and the hybrid lineage needing to exploit a different niche than the parental lineages due to a lower fitness. We also decide to allow transgressive trait evolution in the hybrid lineages. The trait in the hybrid lineage is not always an intermediate value between the two lineages but sometimes something else entirely, we model that here.
+
+```{r}
+initial_val<-0 ## The root starts off at 0
+
+###function for what happens at hybridization event
+hyb_e_fxn <- function(parent_states,inheritance){
+  ## Take a weighted average of the two traits
+  hyb_val<-sum(parent_states*c(inheritance,1-inheritance))
+  
+  ##Now allow transgressive evolution by making a random draw from a normal distribution
+  transgression <- rnorm(1,0,4)
+  
+  return(hyb_val+transgression) 
+}
+
+##Function for determining whether hybridization occurs
+hyb_c_fxn <-function(parent_states,hybrid_state){
+  ##Lets say that anything outside 10% of the hybrid lineage trait value is a different nich
+  niche_bound <-hybrid_state*0.1
+  
+  lower_bound <-hybrid_state-niche_bound
+  upper_bound <-hybrid_state+niche_bound
+  
+  ##Check if the parental lienages are within the niche boundary
+  if(all( (parent_states < lower_bound) | (parent_states > upper_bound) )){
+    ##Parent lineages are outside the hybrid niche. Hybrid survives
+    return(TRUE)
+  }else{
+    ##Parent lineage inside the hybrid niche. Hybrid breakdown
+    return(FALSE)
+  }
+  
+}
+
+
+##Function for how the trait changes over time
+t_fxn <- function(trait_states,timestep){
+  ##We assume brownian motion on the continuous trait
+  sigma<- 2 ##sqrt(Rate of evolution)
+  
+  ##Make brownian motion draws for each lineage
+  delta_x <- rnorm(length(trait_states),mean=0,sd=sigma*sqrt(timestep))
+  
+  return(delta_x+trait_states)
+}
+
+##Function for how the trait changes at speciation events
+s_fxn <-function(tip_state){
+  ##No change at speciation
+  return(c(tip_state,tip_state))
+}
+
+trait_model<-make.trait.model(initial_states = initial_val,
+                              hyb.event.fxn = hyb_e_fxn,
+                              hyb.compatibility.fxn = hyb_c_fxn,
+                              time.fxn = t_fxn,
+                              spec.fxn = s_fxn)
+
+
+trait_nets <-sim.bdh.age(age=2,numbsim=10,
+                    lambda=1,mu=0.2,
+                    nu=0.25, hybprops = hybrid_proportions,
+                    hyb.inher.fxn = inheritance.fxn,
+                    trait.model = trait_model)
+
+```
 
 
 # Works Cited 

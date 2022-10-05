@@ -192,6 +192,7 @@ sim2.bdh.origin <- function(m=0,n=0,age,lambda,mu,nu,hyb.inher.fxn,hybprops,hyb.
             nleaves<-nleaves-1
           } else{ ##Hybridization Event
             hyb_occurs<-T
+            inher<-hyb.inher.fxn()
 
             if (!is_null_trait){ ##use this for hybridization of similar ploidy
               hyb_trait <-trait.model[['hyb.event.fxn']](trait_state[del],inher)
@@ -207,7 +208,6 @@ sim2.bdh.origin <- function(m=0,n=0,age,lambda,mu,nu,hyb.inher.fxn,hybprops,hyb.
             if(hyb_occurs){
               ##Update things that are constant between all hybridization types
               num_hybs<-num_hybs+1
-              inher<-hyb.inher.fxn()
               inheritance[num_hybs]<- inher
 
               randevent <- runif(1,0,1)
