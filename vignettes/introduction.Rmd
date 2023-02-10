@@ -49,7 +49,7 @@ Both the SSA and GSA are described with greater detail in *@Hartmann2010* and *@
 The `sim.bdh` style functions have many optional arguments with default values. For this first set of simulations we won't adjust any optional arguments, we'll be playing with these arguments in later sections. However, it is important to know the assumptions we are making with our model by using default parameters. Specifically, we assume:
 
 * `frac = 1` and `stochsampling = FALSE` assumes that all extant taxa are sampled in the phylogeny.
-* `mrca=TRUE` means that we start with a single lineage rather than the MRCA of two lineages 
+* `twolineages=FALSE` means that we start with a one lineage rather than two lineages that share a common ancestor
 * `complete = TRUE` leaves extinct species on the phylogeny.
 * `hyb.rate.fxn = NULL` assumes that successful hybridization events are not a function of the genetic distance between taxa.
 * `trait.model = NULL` assumes that successful hybridization events do not depend on a trait value between taxa.

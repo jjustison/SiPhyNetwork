@@ -23,3 +23,14 @@ A network with n extant taxa
 \description{
 Takes a phylogeny and samples a period where n lineages exist. This method properly samples n taxa under the GSA
 }
+\examples{
+set.seed(10)
+ssa_net <-sim.bdh.taxa.ssa(n=20,numbsim=1,
+lambda=1,mu=0.2,
+nu=0.25, hybprops = c(1/3,1/3,1/3),
+hyb.inher.fxn = make.beta.draw(1,1),
+)[[1]]
+gsa_net<-network.gsa(ssa_net,5)
+
+
+}

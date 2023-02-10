@@ -186,7 +186,7 @@ make.categorical.draw <- function(inheritances, weights){
 #'
 #' @description Create a model that dictates how a discrete or continuous trait evolves and affects the diversification of the phylogeny. This function creates a list that dictates how the trait affects hybridizations, how the trait is changes over time, and how the trait is inherited across speciation and hybridization events.
 #' @return A model for trait evolution to be used as the `trait.model` argument in a `sim.bdh function``
-#' @param initial_states the initial state on the phylogeny. if simulating networks with `MRCA=TRUE` then a vector of length two will be required.
+#' @param initial_states the initial state on the phylogeny. if simulating networks with `twolineages=TRUE` then a vector of length two will be required.
 #' @param hyb.event.fxn A function that describes how the trait changes after hybridization events. See Details for more information
 #' @param hyb.compatibility.fxn A function that describes whether hybridization events can occur between taxa based on their trait values. See Details for more information
 #' @param time.fxn A function that describes how trait values changes over time. See Details for more information
@@ -203,9 +203,49 @@ make.categorical.draw <- function(inheritances, weights){
 #' The default value of `NULL` causes the two children lineage to inherit the same trait value as the parental lineage
 #'
 #' @export
+#' @examples
+#' initial_val<-2 ## The root starts off at 2N
+#'
+#' ###function for what happens at hybridization event
+#' hyb_e_fxn <- function(parent_states,inheritance){
+#'  ##For allopolyploidy we add the ploidy of both parents
+#'  return(sum(parent_states))
+#'}
+#'
+#' ##Function for determining whether hybridization occurs
+#'hyb_c_fxn <-function(parent_states,hybrid_state){
+#'  ##Hybridization occurs only when the ploidy is the same
+#'  return(parent_states[1]==parent_states[2])
+#'}
 #'
 #'
+#'##Function for how the trait changes over time
+#'t_fxn <- function(trait_states,timestep){
+#'  ##We assume that autopolyploidy occur exponentially with rate lambda
+#'  lambda<- 2 ##Rate of autopolyploidy
 #'
+#'  ##The number of autopolyploidy events that occur on each lineage over the timestep
+#'  nevents<-rpois(length(trait_states),timestep)
+#'
+#'  ##each event doubles the ploidy
+#'  new_states<- trait_states * (2^nevents)
+#'  return(new_states)
+#'}
+#'
+#'##Function for how the trait changes at speciation events
+#'s_fxn <-function(tip_state){
+#'  ##Ploidy doesn't change at speciation events.
+#'  ##Both daughter lineages have the same ploidy as the parent
+#'  return(c(tip_state,tip_state))
+#'}
+#'
+#'trait_model<-make.trait.model(initial_states = initial_val,
+#'                              hyb.event.fxn = hyb_e_fxn,
+#'                              hyb.compatibility.fxn = hyb_c_fxn,
+#'                              time.fxn = t_fxn,
+#'                              spec.fxn = s_fxn)
+#'
+
 make.trait.model <-function(initial_states,
                                 hyb.event.fxn,
                                 hyb.compatibility.fxn,

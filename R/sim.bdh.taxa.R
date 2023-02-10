@@ -10,7 +10,7 @@
 #' @param hybprops Vector that represents the proportion of Hybridizations that are lineage generative, lineage degenerative, and lineage neutral respectively.
 #' @param hyb.inher.fxn A function for drawing the hybrid inheritance probabilities.
 #' @param frac Sampling fraction: The proportion of extant tips included in the phylogeny (incomplete sampling).
-#' @param mrca If `mrca=FALSE`: age is the time since origin. If `mrca=TRUE`: age is the time since most recent common ancestor of the extant tips.
+#' @param twolineages If `twolineages=TRUE`: The process originates with two lineages that share a common ancestor. If `twolineages=FALSE`: The process originates with two lineages.
 #' @param complete If complete = TRUE, the tree with the extinct lineages is returned. If complete = FALSE, the extinct lineages are suppressed.
 #' @param stochsampling When `stochsampling=TRUE`: Each extant tip is included into the final tree with probability frac.
 #' @param hyb.rate.fxn The probability of a successful hybridization as a function of genetic distance between taxa. The default value of `NULL`` assumes that hybridization success is independent of genetic distance between taxa.
@@ -30,7 +30,7 @@
 #' }
 #' @export
 #' @examples
-#' set.seed(17) ##smallest Quartan prime as seed
+#' set.seed(17)
 #' ##Generate a tree with extinct leaves
 #' net<-sim.bdh.taxa.ssa(5,1,5,2,1.5,c(1/3,1/3,1/3),
 #' hyb.inher.fxn = make.uniform.draw(),complete=TRUE)[[1]]
@@ -38,7 +38,7 @@ sim.bdh.taxa.ssa <- function(n,numbsim,
                         lambda,mu,
                         nu, hybprops,
                         hyb.inher.fxn,
-                        frac=1,mrca=FALSE,complete=TRUE,stochsampling=FALSE,
+                        frac=1,twolineages=FALSE,complete=TRUE,stochsampling=FALSE,
                         hyb.rate.fxn=NULL,
                         trait.model=NULL){
 	out<-lapply(1:numbsim,FUN=sim.bdh.taxa.ssa.help,
@@ -47,7 +47,7 @@ sim.bdh.taxa.ssa <- function(n,numbsim,
 	            nu=nu,hybprops=hybprops,
 	            hyb.rate.fxn=hyb.rate.fxn,
 	            hyb.inher.fxn=hyb.inher.fxn,
-	            frac=frac,mrca=mrca,
+	            frac=frac,mrca=twolineages,
 	            complete=complete,stochsampling=stochsampling,
 	            trait.model=trait.model)
 	class(out)<-c('list','multiPhylo')
@@ -70,7 +70,7 @@ sim.bdh.taxa.ssa <- function(n,numbsim,
 #' @param hybprops Vector that represents the proportion of Hybridizations that are lineage generative, lineage degenerative, and lineage neutral respectively.
 #' @param hyb.inher.fxn A function for drawing the hybrid inheritance probabilities.
 #' @param frac Sampling fraction: The proportion of extant tips included in the phylogeny (incomplete sampling).
-#' @param mrca If `mrca=FALSE`: age is the time since origin. If `mrca=TRUE`: age is the time since most recent common ancestor of the extant tips.
+#' @param twolineages If `twolineages=TRUE`: The process originates with two lineages that share a common ancestor. If `twolineages=FALSE`: The process originates with two lineages.
 #' @param complete If complete = TRUE, the tree with the extinct lineages is returned. If complete = FALSE, the extinct lineages are suppressed.
 #' @param stochsampling When `stochsampling=TRUE`: Each extant tip is included into the final tree with probability frac.
 #' @param hyb.rate.fxn The probability of a successful hybridization as a function of genetic distance between taxa. The default value of `NULL`` assumes that hybridization success is independent of genetic distance between taxa.
@@ -100,7 +100,7 @@ sim.bdh.taxa.gsa <-function(m,n,numbsim,
                         lambda,mu,
                         nu, hybprops,
                         hyb.inher.fxn,
-                        frac=1,mrca=FALSE,
+                        frac=1,twolineages=FALSE,
                         complete=TRUE,stochsampling=FALSE,
                         hyb.rate.fxn=NULL,
                         trait.model=NULL){
@@ -110,7 +110,7 @@ sim.bdh.taxa.gsa <-function(m,n,numbsim,
               nu=nu,hybprops=hybprops,
               hyb.rate.fxn=hyb.rate.fxn,
               hyb.inher.fxn=hyb.inher.fxn,
-              frac=frac,mrca=mrca,
+              frac=frac,mrca=twolineages,
               complete=complete,stochsampling=stochsampling,
               trait.model=trait.model)
   class(out)<-c('list','multiPhylo')

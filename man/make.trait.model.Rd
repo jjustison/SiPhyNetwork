@@ -13,7 +13,7 @@ make.trait.model(
 )
 }
 \arguments{
-\item{initial_states}{the initial state on the phylogeny. if simulating networks with \code{MRCA=TRUE} then a vector of length two will be required.}
+\item{initial_states}{the initial state on the phylogeny. if simulating networks with \code{twolineages=TRUE} then a vector of length two will be required.}
 
 \item{hyb.event.fxn}{A function that describes how the trait changes after hybridization events. See Details for more information}
 
@@ -39,4 +39,47 @@ The default value of \code{NULL} indicates that trait values will not evolve wit
 
 \code{spec.fxn} is a function that describes how trait values change at speciation events. The function should have the argument \code{tip_state} which has the state of the lineage just before speciation. The function should return a vector with two values, one denoting the trait of each of the two new species after the event.
 The default value of \code{NULL} causes the two children lineage to inherit the same trait value as the parental lineage
+}
+\examples{
+initial_val<-2 ## The root starts off at 2N
+
+###function for what happens at hybridization event
+hyb_e_fxn <- function(parent_states,inheritance){
+ ##For allopolyploidy we add the ploidy of both parents
+ return(sum(parent_states))
+}
+
+##Function for determining whether hybridization occurs
+hyb_c_fxn <-function(parent_states,hybrid_state){
+ ##Hybridization occurs only when the ploidy is the same
+ return(parent_states[1]==parent_states[2])
+}
+
+
+##Function for how the trait changes over time
+t_fxn <- function(trait_states,timestep){
+ ##We assume that autopolyploidy occur exponentially with rate lambda
+ lambda<- 2 ##Rate of autopolyploidy
+
+ ##The number of autopolyploidy events that occur on each lineage over the timestep
+ nevents<-rpois(length(trait_states),timestep)
+
+ ##each event doubles the ploidy
+ new_states<- trait_states * (2^nevents)
+ return(new_states)
+}
+
+##Function for how the trait changes at speciation events
+s_fxn <-function(tip_state){
+ ##Ploidy doesn't change at speciation events.
+ ##Both daughter lineages have the same ploidy as the parent
+ return(c(tip_state,tip_state))
+}
+
+trait_model<-make.trait.model(initial_states = initial_val,
+                             hyb.event.fxn = hyb_e_fxn,
+                             hyb.compatibility.fxn = hyb_c_fxn,
+                             time.fxn = t_fxn,
+                             spec.fxn = s_fxn)
+
 }

@@ -13,7 +13,7 @@ sim.bdh.taxa.ssa(
   hybprops,
   hyb.inher.fxn,
   frac = 1,
-  mrca = FALSE,
+  twolineages = FALSE,
   complete = TRUE,
   stochsampling = FALSE,
   hyb.rate.fxn = NULL,
@@ -37,7 +37,7 @@ sim.bdh.taxa.ssa(
 
 \item{frac}{Sampling fraction: The proportion of extant tips included in the phylogeny (incomplete sampling).}
 
-\item{mrca}{If \code{mrca=FALSE}: age is the time since origin. If \code{mrca=TRUE}: age is the time since most recent common ancestor of the extant tips.}
+\item{twolineages}{If \code{twolineages=TRUE}: The process originates with two lineages that share a common ancestor. If \code{twolineages=FALSE}: The process originates with two lineages.}
 
 \item{complete}{If complete = TRUE, the tree with the extinct lineages is returned. If complete = FALSE, the extinct lineages are suppressed.}
 
@@ -68,7 +68,7 @@ Simulates a Phylogenetic Network under a birth-death-hybridization model. Simula
 }
 }
 \examples{
-set.seed(17) ##smallest Quartan prime as seed
+set.seed(17)
 ##Generate a tree with extinct leaves
 net<-sim.bdh.taxa.ssa(5,1,5,2,1.5,c(1/3,1/3,1/3),
 hyb.inher.fxn = make.uniform.draw(),complete=TRUE)[[1]]

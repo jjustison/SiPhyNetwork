@@ -14,7 +14,7 @@ sim.bdh.taxa.gsa(
   hybprops,
   hyb.inher.fxn,
   frac = 1,
-  mrca = FALSE,
+  twolineages = FALSE,
   complete = TRUE,
   stochsampling = FALSE,
   hyb.rate.fxn = NULL,
@@ -40,7 +40,7 @@ sim.bdh.taxa.gsa(
 
 \item{frac}{Sampling fraction: The proportion of extant tips included in the phylogeny (incomplete sampling).}
 
-\item{mrca}{If \code{mrca=FALSE}: age is the time since origin. If \code{mrca=TRUE}: age is the time since most recent common ancestor of the extant tips.}
+\item{twolineages}{If \code{twolineages=TRUE}: The process originates with two lineages that share a common ancestor. If \code{twolineages=FALSE}: The process originates with two lineages.}
 
 \item{complete}{If complete = TRUE, the tree with the extinct lineages is returned. If complete = FALSE, the extinct lineages are suppressed.}
 
