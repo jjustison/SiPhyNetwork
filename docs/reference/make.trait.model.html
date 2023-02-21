@@ -69,7 +69,7 @@
     <div id="arguments">
     <h2>Arguments</h2>
     <dl><dt>initial_states</dt>
-<dd><p>the initial state on the phylogeny. if simulating networks with <code>MRCA=TRUE</code> then a vector of length two will be required.</p></dd>
+<dd><p>the initial state on the phylogeny. if simulating networks with <code>twolineages=TRUE</code> then a vector of length two will be required.</p></dd>
 
 
 <dt>hyb.event.fxn</dt>
@@ -104,6 +104,51 @@ The default value of <code>NULL</code> indicates that trait values will not evol
 The default value of <code>NULL</code> causes the two children lineage to inherit the same trait value as the parental lineage</p>
     </div>
 
+    <div id="ref-examples">
+    <h2>Examples</h2>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="va">initial_val</span><span class="op">&lt;-</span><span class="fl">2</span> <span class="co">## The root starts off at 2N</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co">###function for what happens at hybridization event</span></span></span>
+<span class="r-in"><span><span class="va">hyb_e_fxn</span> <span class="op">&lt;-</span> <span class="kw">function</span><span class="op">(</span><span class="va">parent_states</span>,<span class="va">inheritance</span><span class="op">)</span><span class="op">{</span></span></span>
+<span class="r-in"><span> <span class="co">##For allopolyploidy we add the ploidy of both parents</span></span></span>
+<span class="r-in"><span> <span class="kw"><a href="https://rdrr.io/r/base/function.html" class="external-link">return</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/sum.html" class="external-link">sum</a></span><span class="op">(</span><span class="va">parent_states</span><span class="op">)</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="op">}</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co">##Function for determining whether hybridization occurs</span></span></span>
+<span class="r-in"><span><span class="va">hyb_c_fxn</span> <span class="op">&lt;-</span><span class="kw">function</span><span class="op">(</span><span class="va">parent_states</span>,<span class="va">hybrid_state</span><span class="op">)</span><span class="op">{</span></span></span>
+<span class="r-in"><span> <span class="co">##Hybridization occurs only when the ploidy is the same</span></span></span>
+<span class="r-in"><span> <span class="kw"><a href="https://rdrr.io/r/base/function.html" class="external-link">return</a></span><span class="op">(</span><span class="va">parent_states</span><span class="op">[</span><span class="fl">1</span><span class="op">]</span><span class="op">==</span><span class="va">parent_states</span><span class="op">[</span><span class="fl">2</span><span class="op">]</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="op">}</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co">##Function for how the trait changes over time</span></span></span>
+<span class="r-in"><span><span class="va">t_fxn</span> <span class="op">&lt;-</span> <span class="kw">function</span><span class="op">(</span><span class="va">trait_states</span>,<span class="va">timestep</span><span class="op">)</span><span class="op">{</span></span></span>
+<span class="r-in"><span> <span class="co">##We assume that autopolyploidy occur exponentially with rate lambda</span></span></span>
+<span class="r-in"><span> <span class="va">lambda</span><span class="op">&lt;-</span> <span class="fl">2</span> <span class="co">##Rate of autopolyploidy</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span> <span class="co">##The number of autopolyploidy events that occur on each lineage over the timestep</span></span></span>
+<span class="r-in"><span> <span class="va">nevents</span><span class="op">&lt;-</span><span class="fu"><a href="https://rdrr.io/r/stats/Poisson.html" class="external-link">rpois</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/length.html" class="external-link">length</a></span><span class="op">(</span><span class="va">trait_states</span><span class="op">)</span>,<span class="va">timestep</span><span class="op">)</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span> <span class="co">##each event doubles the ploidy</span></span></span>
+<span class="r-in"><span> <span class="va">new_states</span><span class="op">&lt;-</span> <span class="va">trait_states</span> <span class="op">*</span> <span class="op">(</span><span class="fl">2</span><span class="op">^</span><span class="va">nevents</span><span class="op">)</span></span></span>
+<span class="r-in"><span> <span class="kw"><a href="https://rdrr.io/r/base/function.html" class="external-link">return</a></span><span class="op">(</span><span class="va">new_states</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="op">}</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co">##Function for how the trait changes at speciation events</span></span></span>
+<span class="r-in"><span><span class="va">s_fxn</span> <span class="op">&lt;-</span><span class="kw">function</span><span class="op">(</span><span class="va">tip_state</span><span class="op">)</span><span class="op">{</span></span></span>
+<span class="r-in"><span> <span class="co">##Ploidy doesn't change at speciation events.</span></span></span>
+<span class="r-in"><span> <span class="co">##Both daughter lineages have the same ploidy as the parent</span></span></span>
+<span class="r-in"><span> <span class="kw"><a href="https://rdrr.io/r/base/function.html" class="external-link">return</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="va">tip_state</span>,<span class="va">tip_state</span><span class="op">)</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="op">}</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="va">trait_model</span><span class="op">&lt;-</span><span class="fu">make.trait.model</span><span class="op">(</span>initial_states <span class="op">=</span> <span class="va">initial_val</span>,</span></span>
+<span class="r-in"><span>                             hyb.event.fxn <span class="op">=</span> <span class="va">hyb_e_fxn</span>,</span></span>
+<span class="r-in"><span>                             hyb.compatibility.fxn <span class="op">=</span> <span class="va">hyb_c_fxn</span>,</span></span>
+<span class="r-in"><span>                             time.fxn <span class="op">=</span> <span class="va">t_fxn</span>,</span></span>
+<span class="r-in"><span>                             spec.fxn <span class="op">=</span> <span class="va">s_fxn</span><span class="op">)</span></span></span>
+<span class="r-in"><span></span></span>
+</code></pre></div>
+    </div>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
     <nav id="toc" data-toggle="toc" class="sticky-top"><h2 data-toc-skip>Contents</h2>
@@ -116,7 +161,7 @@ The default value of <code>NULL</code> causes the two children lineage to inheri
 </div>
 
 <div class="pkgdown">
-  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.6.</p>
+  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.7.</p>
 </div>
 
       </footer></div>

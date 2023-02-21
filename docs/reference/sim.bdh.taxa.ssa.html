@@ -66,7 +66,7 @@
 <span>  <span class="va">hybprops</span>,</span>
 <span>  <span class="va">hyb.inher.fxn</span>,</span>
 <span>  frac <span class="op">=</span> <span class="fl">1</span>,</span>
-<span>  mrca <span class="op">=</span> <span class="cn">FALSE</span>,</span>
+<span>  twolineages <span class="op">=</span> <span class="cn">FALSE</span>,</span>
 <span>  complete <span class="op">=</span> <span class="cn">TRUE</span>,</span>
 <span>  stochsampling <span class="op">=</span> <span class="cn">FALSE</span>,</span>
 <span>  hyb.rate.fxn <span class="op">=</span> <span class="cn">NULL</span>,</span>
@@ -108,8 +108,8 @@
 <dd><p>Sampling fraction: The proportion of extant tips included in the phylogeny (incomplete sampling).</p></dd>
 
 
-<dt>mrca</dt>
-<dd><p>If <code>mrca=FALSE</code>: age is the time since origin. If <code>mrca=TRUE</code>: age is the time since most recent common ancestor of the extant tips.</p></dd>
+<dt>twolineages</dt>
+<dd><p>If <code>twolineages=TRUE</code>: The process originates with two lineages that share a common ancestor. If <code>twolineages=FALSE</code>: The process originates with two lineages.</p></dd>
 
 
 <dt>complete</dt>
@@ -147,7 +147,7 @@
 
     <div id="ref-examples">
     <h2>Examples</h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/Random.html" class="external-link">set.seed</a></span><span class="op">(</span><span class="fl">17</span><span class="op">)</span> <span class="co">##smallest Quartan prime as seed</span></span></span>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/Random.html" class="external-link">set.seed</a></span><span class="op">(</span><span class="fl">17</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="co">##Generate a tree with extinct leaves</span></span></span>
 <span class="r-in"><span><span class="va">net</span><span class="op">&lt;-</span><span class="fu">sim.bdh.taxa.ssa</span><span class="op">(</span><span class="fl">5</span>,<span class="fl">1</span>,<span class="fl">5</span>,<span class="fl">2</span>,<span class="fl">1.5</span>,<span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">1</span><span class="op">/</span><span class="fl">3</span>,<span class="fl">1</span><span class="op">/</span><span class="fl">3</span>,<span class="fl">1</span><span class="op">/</span><span class="fl">3</span><span class="op">)</span>,</span></span>
 <span class="r-in"><span>hyb.inher.fxn <span class="op">=</span> <span class="fu"><a href="make.uniform.draw.html">make.uniform.draw</a></span><span class="op">(</span><span class="op">)</span>,complete<span class="op">=</span><span class="cn">TRUE</span><span class="op">)</span><span class="op">[[</span><span class="fl">1</span><span class="op">]</span><span class="op">]</span></span></span>
@@ -165,7 +165,7 @@
 </div>
 
 <div class="pkgdown">
-  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.6.</p>
+  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.7.</p>
 </div>
 
       </footer></div>

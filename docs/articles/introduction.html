@@ -72,8 +72,10 @@
   <div class="col-md-9 contents">
     <div class="page-header toc-ignore">
       <h1 data-toc-skip>Introduction</h1>
-            <h3 data-toc-skip class="subtitle">An R Package for Simulating Phylogenetic Networks</h3>
-                        <h4 data-toc-skip class="author">Josh Justison</h4>
+            <h3 data-toc-skip class="subtitle">An R Package for
+Simulating Phylogenetic Networks</h3>
+                        <h4 data-toc-skip class="author">Josh
+Justison</h4>
             
       
       
@@ -86,59 +88,126 @@
 <div class="section level2">
 <h2 id="overview">Overview<a class="anchor" aria-label="anchor" href="#overview"></a>
 </h2>
-<p>The SiPhyNetwork R package is a tool for simulating phylogenetic networks under birth-death-hybridization based models. It provides functions for creating complex hybridization models, functions for simulating phylogenies under these models, as well as utility functions for characterizing the types of phylogenetic networks, visualizing networks, and saving phylogenetic networks in the Extended Newick format. This allows users to simulate phylogenetic networks under a suite of more biologically realistic models. The SiPhyNetwork package is released under the GPL-3 license and can be downloaded from CRAN or the source code is avaliable on <a href="https://github.com/jjustison/SiPhyNetwork" class="external-link">GitHub</a></p>
+<p>The SiPhyNetwork R package is a tool for simulating phylogenetic
+networks under birth-death-hybridization based models. It provides
+functions for creating complex hybridization models, functions for
+simulating phylogenies under these models, as well as utility functions
+for characterizing the types of phylogenetic networks, visualizing
+networks, and saving phylogenetic networks in the Extended Newick
+format. This allows users to simulate phylogenetic networks under a
+suite of more biologically realistic models. The SiPhyNetwork package is
+released under the GPL-3 license and can be downloaded from CRAN or the
+source code is avaliable on <a href="https://github.com/jjustison/SiPhyNetwork" class="external-link">GitHub</a></p>
 </div>
 <div class="section level2">
 <h2 id="introduction">Introduction<a class="anchor" aria-label="anchor" href="#introduction"></a>
 </h2>
-<p>Birth-death processes are commonly used to describe species diversification <em><span class="citation">(Nee 2006)</span></em>. There exist several phylogenetic simulation tools that generate trees under the birth-death process <em><span class="citation">(See Stadler 2011)</span></em> as well as extensions for density-dependent diversification , time-dependent rates <em><span class="citation">(Höhna 2013; Höhna, May, and Moore 2015)</span></em>, lineage age dependent rates <em><span class="citation">(Hagen and Stadler 2018)</span></em>, and fossilization <em><span class="citation">(Barido-Sottani et al. 2019)</span></em>.</p>
-<p>Gene flow and hybridization is found throughout the tree of life and has had a nontrivial role in shaping diversity <em><span class="citation">(Mallet, Besansky, and Hahn 2016)</span></em>. Recently, an extension of the birth-death process that includes hybridization was developed as a prior for Bayesian phylogenetic inference <em><span class="citation">(Zhang et al. 2018)</span></em>. This model assumes the waiting time between hybridizations is exponentially distributed with rate parameter <span class="math inline">\({ntaxa \choose 2}\nu\)</span>, where <span class="math inline">\(\nu\)</span> is the hybridization rate. A few tools exist that simulate phylogenetic networks under variants of this model <em><span class="citation">(Morin and Moret 2006; Woodhams, Lockhart, and Holland 2016; Davín et al. 2020)</span></em>, however they all have different conceptualizations on how hybridization events affect the number of lineages on the phylogeny. As process-based phylogenetic inference methods receive increased attention, it becomes imperative that we can simulate biologically relevant phylogenetic network for the testing of these methods and for creating hypotheses about empirical systems.</p>
+<p>Birth-death processes are commonly used to describe species
+diversification <em><span class="citation">(Nee 2006)</span></em>. There
+exist several phylogenetic simulation tools that generate trees under
+the birth-death process <em><span class="citation">(See Stadler
+2011)</span></em> as well as extensions for density-dependent
+diversification , time-dependent rates <em><span class="citation">(Höhna
+2013; Höhna, May, and Moore 2015)</span></em>, lineage age dependent
+rates <em><span class="citation">(Hagen and Stadler 2018)</span></em>,
+and fossilization <em><span class="citation">(Barido-Sottani et al.
+2019)</span></em>.</p>
+<p>Gene flow and hybridization is found throughout the tree of life and
+has had a nontrivial role in shaping diversity <em><span class="citation">(Mallet, Besansky, and Hahn 2016)</span></em>.
+Recently, an extension of the birth-death process that includes
+hybridization was developed as a prior for Bayesian phylogenetic
+inference <em><span class="citation">(Zhang et al. 2018)</span></em>.
+This model assumes the waiting time between hybridizations is
+exponentially distributed with rate parameter <span class="math inline">\({ntaxa \choose 2}\nu\)</span>, where <span class="math inline">\(\nu\)</span> is the hybridization rate. A few
+tools exist that simulate phylogenetic networks under variants of this
+model <em><span class="citation">(Morin and Moret 2006; Woodhams,
+Lockhart, and Holland 2016; Davín et al. 2020)</span></em>, however they
+all have different conceptualizations on how hybridization events affect
+the number of lineages on the phylogeny. As process-based phylogenetic
+inference methods receive increased attention, it becomes imperative
+that we can simulate biologically relevant phylogenetic network for the
+testing of these methods and for creating hypotheses about empirical
+systems.</p>
 </div>
 <div class="section level2">
 <h2 id="the-siphynetwork-package">The SiPhyNetwork Package<a class="anchor" aria-label="anchor" href="#the-siphynetwork-package"></a>
 </h2>
-<p>The SiPhyNetwork R package allows simulation of phylogenetic networks under a birth-death-hybridization process. This package extends the capabilities of other existing birth-death-hybridization based simulators by allowing:</p>
+<p>The SiPhyNetwork R package allows simulation of phylogenetic networks
+under a birth-death-hybridization process. This package extends the
+capabilities of other existing birth-death-hybridization based
+simulators by allowing:</p>
 <ul>
 <li>Simulating to a fixed time or fixed number of species</li>
 <li>Incomplete sampling sampling</li>
 <li>Sampling of extinct taxa</li>
-<li>Hybridization events to be either a lineage generating, a lineage neutral, or a lineage degenerative process.<br>
+<li>Hybridization events to be either a lineage generating, a lineage
+neutral, or a lineage degenerative process.<br>
 </li>
-<li>Successful hybridization events to be an arbitrary function of genetic distance</li>
-<li>Successful hybridization events to be dependent on a trait that evolves along the network</li>
-<li>Functions for visualizing, writing, and reading phylogenetic networks in R</li>
+<li>Successful hybridization events to be an arbitrary function of
+genetic distance</li>
+<li>Successful hybridization events to be dependent on a trait that
+evolves along the network</li>
+<li>Functions for visualizing, writing, and reading phylogenetic
+networks in R</li>
 </ul>
-<p>Throughout this vignette we will cover how to use these features in SiPhyNetwork.</p>
+<p>Throughout this vignette we will cover how to use these features in
+SiPhyNetwork.</p>
 <div class="section level3">
 <h3 id="simulating-networks">Simulating Networks<a class="anchor" aria-label="anchor" href="#simulating-networks"></a>
 </h3>
-<p>There are three core functions for simulating phylogenetic networks: <code>sim.bdh.age</code>, <code>sim.bdh.taxa.ssa</code>, and <code>sim.bdh.taxa.gsa</code> (collectively referred to as <code>sim.bdh</code> style functions). These functions all use the same birth-death-hybridization models but differ in their stopping conditions.</p>
+<p>There are three core functions for simulating phylogenetic networks:
+<code>sim.bdh.age</code>, <code>sim.bdh.taxa.ssa</code>, and
+<code>sim.bdh.taxa.gsa</code> (collectively referred to as
+<code>sim.bdh</code> style functions). These functions all use the same
+birth-death-hybridization models but differ in their stopping
+conditions.</p>
 <ul>
-<li>The <code>sim.bdh.age</code> function simulates until a specified <code>age</code>.</li>
-<li>The <code>sim.bdh.taxa.ssa</code> function uses the Simple Sampling Approach (SSA) to simulate to a specified number of taxa <code>n</code>, that is, the simulation will stop once the phylogeny has <code>n</code> tips.</li>
-<li>The <code>sim.bdh.taxa.gsa</code> function uses the General Sampling Approach (GSA) to simulate to a specified number of taxa <code>n</code>. Briefly, the GSA simulates <code>m</code> taxa under the SSA and samples the phylogeny from time periods where <code>n</code> taxa are present.</li>
+<li>The <code>sim.bdh.age</code> function simulates until a specified
+<code>age</code>.</li>
+<li>The <code>sim.bdh.taxa.ssa</code> function uses the Simple Sampling
+Approach (SSA) to simulate to a specified number of taxa <code>n</code>,
+that is, the simulation will stop once the phylogeny has <code>n</code>
+tips.</li>
+<li>The <code>sim.bdh.taxa.gsa</code> function uses the General Sampling
+Approach (GSA) to simulate to a specified number of taxa <code>n</code>.
+Briefly, the GSA simulates <code>m</code> taxa under the SSA and samples
+the phylogeny from time periods where <code>n</code> taxa are
+present.</li>
 </ul>
-<p>Both the SSA and GSA are described with greater detail in <em><span class="citation">Hartmann, Wong, and Stadler (2010)</span></em> and <em><span class="citation">Stadler (2011)</span></em>.</p>
+<p>Both the SSA and GSA are described with greater detail in <em><span class="citation">Hartmann, Wong, and Stadler (2010)</span></em> and
+<em><span class="citation">Stadler (2011)</span></em>.</p>
 <div class="section level4">
-<h4 id="example-1-simulating-networks-under-a-simple-hybridization-model">Example 1: Simulating Networks Under A Simple Hybridization Model<a class="anchor" aria-label="anchor" href="#example-1-simulating-networks-under-a-simple-hybridization-model"></a>
+<h4 id="example-1-simulating-networks-under-a-simple-hybridization-model">Example 1: Simulating Networks Under A Simple Hybridization
+Model<a class="anchor" aria-label="anchor" href="#example-1-simulating-networks-under-a-simple-hybridization-model"></a>
 </h4>
-<p>The <code>sim.bdh</code> style functions have many optional arguments with default values. For this first set of simulations we won’t adjust any optional arguments, we’ll be playing with these arguments in later sections. However, it is important to know the assumptions we are making with our model by using default parameters. Specifically, we assume:</p>
+<p>The <code>sim.bdh</code> style functions have many optional arguments
+with default values. For this first set of simulations we won’t adjust
+any optional arguments, we’ll be playing with these arguments in later
+sections. However, it is important to know the assumptions we are making
+with our model by using default parameters. Specifically, we assume:</p>
 <ul>
 <li>
-<code>frac = 1</code> and <code>stochsampling = FALSE</code> assumes that all extant taxa are sampled in the phylogeny.</li>
+<code>frac = 1</code> and <code>stochsampling = FALSE</code> assumes
+that all extant taxa are sampled in the phylogeny.</li>
 <li>
-<code>mrca=TRUE</code> means that we start with a single lineage rather than the MRCA of two lineages</li>
+<code>twolineages=FALSE</code> means that we start with a one
+lineage rather than two lineages that share a common ancestor</li>
 <li>
-<code>complete = TRUE</code> leaves extinct species on the phylogeny.</li>
+<code>complete = TRUE</code> leaves extinct species on the
+phylogeny.</li>
 <li>
-<code>hyb.rate.fxn = NULL</code> assumes that successful hybridization events are not a function of the genetic distance between taxa.</li>
+<code>hyb.rate.fxn = NULL</code> assumes that successful
+hybridization events are not a function of the genetic distance between
+taxa.</li>
 <li>
-<code>trait.model = NULL</code> assumes that successful hybridization events do not depend on a trait value between taxa.</li>
+<code>trait.model = NULL</code> assumes that successful
+hybridization events do not depend on a trait value between taxa.</li>
 </ul>
 <p>The arguments we will be using are:</p>
 <ul>
 <li>
-<code>age</code>, <code>m</code>, and <code>n</code>: These parameters are used for the stopping condition of the simulations.</li>
+<code>age</code>, <code>m</code>, and <code>n</code>: These
+parameters are used for the stopping condition of the simulations.</li>
 <li>
 <code>numbsim</code>: The number of simulations performed</li>
 <li>
@@ -148,14 +217,16 @@
 <li>
 <code>nu</code> The hybridization rate</li>
 <li>
-<code>hybprops</code>: A vector of length three that denotes the proportion of hybridizations that are lineage generative, lineage degenerative, and lineage neutral.</li>
+<code>hybprops</code>: A vector of length three that denotes the
+proportion of hybridizations that are lineage generative, lineage
+degenerative, and lineage neutral.</li>
 <li>
-<code>hyb.inher.fxn</code>: This is a function used for determining the inheritance proportions.</li>
+<code>hyb.inher.fxn</code>: This is a function used for determining
+the inheritance proportions.</li>
 </ul>
 <p>Now we can try running some simulations</p>
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="http://ape-package.ird.fr/" class="external-link">ape</a></span><span class="op">)</span></span>
-<span><span class="co">#&gt; Warning: package 'ape' was built under R version 4.1.3</span></span>
 <span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va">SiPhyNetwork</span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/Random.html" class="external-link">set.seed</a></span><span class="op">(</span><span class="fl">82589933</span><span class="op">)</span> <span class="co">##set the seed for reproducibility. This is the exponent of the largest known Mersenne prime number</span></span>
 <span></span>
@@ -204,8 +275,18 @@
 <span>                    nu<span class="op">=</span><span class="fl">0.25</span>, hybprops <span class="op">=</span> <span class="va">hybrid_proportions</span>,</span>
 <span>                    hyb.inher.fxn <span class="op">=</span> <span class="va">inheritance.fxn</span><span class="op">)</span></span>
 <span><span class="va">age_net</span><span class="op">&lt;-</span><span class="va">age_nets</span><span class="op">[[</span><span class="fl">8</span><span class="op">]</span><span class="op">]</span></span></code></pre></div>
-<p>There are a few things worth noting here. Firstly, if we looked at <code>age_nets</code> we would notice that some of the elements are <code>0</code>, the <code>sim.bdh</code> style functions return <code>0</code> if the phylogeny goes extinct before reaching the stopping condition.</p>
-<p>Secondly, we can see that each phylogeny is an <code>evonet</code> object, however, they have an additional attribute <code>inheritance</code>. <code>inheritance</code> contains a vector of inheritance probabilities. The <span class="math inline">\(i^{th}\)</span> element in <code>inheritance</code> corresponds to the inheritance probability of the hybrid edge denoted in the <span class="math inline">\(i^{th}\)</span> row of the <code>reticulation</code> attribute.</p>
+<p>There are a few things worth noting here. Firstly, if we looked at
+<code>age_nets</code> we would notice that some of the elements are
+<code>0</code>, the <code>sim.bdh</code> style functions return
+<code>0</code> if the phylogeny goes extinct before reaching the
+stopping condition.</p>
+<p>Secondly, we can see that each phylogeny is an <code>evonet</code>
+object, however, they have an additional attribute
+<code>inheritance</code>. <code>inheritance</code> contains a vector of
+inheritance probabilities. The <span class="math inline">\(i^{th}\)</span> element in
+<code>inheritance</code> corresponds to the inheritance probability of
+the hybrid edge denoted in the <span class="math inline">\(i^{th}\)</span> row of the
+<code>reticulation</code> attribute.</p>
 <div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">age_net</span><span class="op">$</span><span class="va">inheritance</span> <span class="co">##This corresponds to the edges found in reticulation</span></span>
 <span><span class="co">#&gt; [1] 0.3674308 0.3716242 0.4939105 0.5539802</span></span>
@@ -215,7 +296,10 @@
 <span><span class="co">#&gt; [2,]   15 18</span></span>
 <span><span class="co">#&gt; [3,]   17 21</span></span>
 <span><span class="co">#&gt; [4,]   22 20</span></span></code></pre></div>
-<p>Further, we can use the <code>gsa.network()</code> function to sample phylogenies under the GSA. This allows us to properly sample <span class="math inline">\(n\)</span> taxa from any phylogenetic model, regardless if the phylogenetic networks were generated from the <code>SiPhyNetwork</code> package or not.</p>
+<p>Further, we can use the <code>gsa.network()</code> function to sample
+phylogenies under the GSA. This allows us to properly sample <span class="math inline">\(n\)</span> taxa from any phylogenetic model,
+regardless if the phylogenetic networks were generated from the
+<code>SiPhyNetwork</code> package or not.</p>
 <div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co">##We can simulate to 30 extant tips under the SSA. In this case the 30 acts as the m parameter of the GSA</span></span>
 <span><span class="va">ssa_nets</span><span class="op">&lt;-</span><span class="fu"><a href="../reference/sim.bdh.taxa.ssa.html">sim.bdh.taxa.ssa</a></span><span class="op">(</span>n<span class="op">=</span><span class="fl">30</span>,numbsim<span class="op">=</span><span class="fl">10</span>,</span>
@@ -225,20 +309,55 @@
 <span></span>
 <span><span class="va">my_net</span><span class="op">&lt;-</span><span class="va">ssa_nets</span><span class="op">[[</span><span class="fl">1</span><span class="op">]</span><span class="op">]</span></span>
 <span><span class="va">my_net</span><span class="op">&lt;-</span><span class="fu"><a href="../reference/network.gsa.html">network.gsa</a></span><span class="op">(</span>net<span class="op">=</span><span class="va">my_net</span>,ntaxa<span class="op">=</span><span class="fl">5</span>,complete<span class="op">=</span><span class="cn">T</span>,frac<span class="op">=</span><span class="fl">1</span>,stochsampling<span class="op">=</span><span class="cn">F</span><span class="op">)</span></span></code></pre></div>
-<p>Lastly, Most of the arguments in the <code>sim.bdh</code> type functions take either a numeric or boolean, however, <code>hyb.inher.fxn</code>, <code>hyb.rate.fxn</code> take functions as arguments while <code>trait.model</code> takes a list of functions as an argument. These take functions as arguments so the user can define functions as they please to model the specific biology of interest. Some utility functions exist to aid in creating functions that fit the specific purpose of these arguments.</p>
-<p>For example, when simulating above, we used <code>make.beta.draw(10,10)</code> to create a function that makes draws from a beta distribution with shape parameters 10 and 10. We might chose a beta function like this if we believed that inheritance proportions are generally equal but have some variation. Alternatively, <code><a href="../reference/make.uniform.draw.html">make.uniform.draw()</a></code>, and <code><a href="../reference/make.categorical.draw.html">make.categorical.draw()</a></code> are other utility functions for creating appropriate functions for the <code>hyb.inher.fxn</code> argument. In fact, any function will work as long as that function requires no arguments itself and returns values on the range <span class="math inline">\([0,1]\)</span>.</p>
-<p>We will explore how to appropriately make arguments for <code>hyb.rate.fxn</code> and <code>trait.model</code> later in this vignette.</p>
+<p>Lastly, Most of the arguments in the <code>sim.bdh</code> type
+functions take either a numeric or boolean, however,
+<code>hyb.inher.fxn</code>, <code>hyb.rate.fxn</code> take functions as
+arguments while <code>trait.model</code> takes a list of functions as an
+argument. These take functions as arguments so the user can define
+functions as they please to model the specific biology of interest. Some
+utility functions exist to aid in creating functions that fit the
+specific purpose of these arguments.</p>
+<p>For example, when simulating above, we used
+<code>make.beta.draw(10,10)</code> to create a function that makes draws
+from a beta distribution with shape parameters 10 and 10. We might chose
+a beta function like this if we believed that inheritance proportions
+are generally equal but have some variation. Alternatively,
+<code><a href="../reference/make.uniform.draw.html">make.uniform.draw()</a></code>, and
+<code><a href="../reference/make.categorical.draw.html">make.categorical.draw()</a></code> are other utility functions for
+creating appropriate functions for the <code>hyb.inher.fxn</code>
+argument. In fact, any function will work as long as that function
+requires no arguments itself and returns values on the range <span class="math inline">\([0,1]\)</span>.</p>
+<p>We will explore how to appropriately make arguments for
+<code>hyb.rate.fxn</code> and <code>trait.model</code> later in this
+vignette.</p>
 </div>
 <div class="section level4">
 <h4 id="types-of-hybridization">Types of Hybridization<a class="anchor" aria-label="anchor" href="#types-of-hybridization"></a>
 </h4>
-<p>We often think of hybridization as a species forming event, a new hybrid species gets created. Although a new hybrid species gets created, the net number of lineages doesn’t need to strictly increase. We should also consider cases where one or both of the parental lineages go extinct as a result of the hybridization. The hybrid species could either outcompete one or both of the parental lineages and displace them or the hybrid species could continually backcross with the parental lineages until one homogenous lineage remains, a process known as genetic assimilation. If one parental lineage goes extinct we have zero change in the number of lineages while if both parental lineages go extinct we have a net loss of one lineage even with the creation of the hybrid species. We call these different outcomes lineage generative, lineage neutral, and lineage degenerative hybridization.</p>
+<p>We often think of hybridization as a species forming event, a new
+hybrid species gets created. Although a new hybrid species gets created,
+the net number of lineages doesn’t need to strictly increase. We should
+also consider cases where one or both of the parental lineages go
+extinct as a result of the hybridization. The hybrid species could
+either outcompete one or both of the parental lineages and displace them
+or the hybrid species could continually backcross with the parental
+lineages until one homogenous lineage remains, a process known as
+genetic assimilation. If one parental lineage goes extinct we have zero
+change in the number of lineages while if both parental lineages go
+extinct we have a net loss of one lineage even with the creation of the
+hybrid species. We call these different outcomes lineage generative,
+lineage neutral, and lineage degenerative hybridization.</p>
 <p><img src="figures/hybridization_types.png" style="width:100.0%"></p>
 </div>
 <div class="section level4">
 <h4 id="example-2-types-of-hybridization-in-siphynetwork">Example 2 Types of Hybridization in SiPhyNetwork<a class="anchor" aria-label="anchor" href="#example-2-types-of-hybridization-in-siphynetwork"></a>
 </h4>
-<p>Modeling the different types of hybridization in SiPhyNetwork is relatively straightforward with use of the <code>hybprops</code> argument in the <code>sim.bdh</code> functions. <code>hybprops</code> is a vector of length three that denotes the relative probability that a hybridization event is lineage generative, lineage degenerative, or lineage neutral respectively.</p>
+<p>Modeling the different types of hybridization in SiPhyNetwork is
+relatively straightforward with use of the <code>hybprops</code>
+argument in the <code>sim.bdh</code> functions. <code>hybprops</code> is
+a vector of length three that denotes the relative probability that a
+hybridization event is lineage generative, lineage degenerative, or
+lineage neutral respectively.</p>
 <div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span></span>
 <span><span class="co">##Equal chance of all three types</span></span>
@@ -267,11 +386,14 @@
 <div class="section level3">
 <h3 id="characterizing-and-using-phylogenetic-networks">Characterizing And Using Phylogenetic Networks<a class="anchor" aria-label="anchor" href="#characterizing-and-using-phylogenetic-networks"></a>
 </h3>
-<p>After simulating phylogenetic networks it can be helpful to identify certain characteristics of the networks and eventually save those networks to file so they can be used in other pipelines.</p>
+<p>After simulating phylogenetic networks it can be helpful to identify
+certain characteristics of the networks and eventually save those
+networks to file so they can be used in other pipelines.</p>
 <div class="section level4">
 <h4 id="example-3-plotting-networks">Example 3 Plotting Networks<a class="anchor" aria-label="anchor" href="#example-3-plotting-networks"></a>
 </h4>
-<p>One of the first ways of understanding the type of phylogenetic networks we generated would be to plot them</p>
+<p>One of the first ways of understanding the type of phylogenetic
+networks we generated would be to plot them</p>
 <div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">ssa_net</span>,main<span class="op">=</span><span class="st">"SSA Network"</span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">gsa_net</span>,main<span class="op">=</span><span class="st">"GSA Network"</span><span class="op">)</span> </span>
@@ -279,13 +401,36 @@
 <span><span class="co">#&gt; Warning in max(x): no non-missing arguments to max; returning -Inf</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">age_net</span>,main<span class="op">=</span><span class="st">"Age Network"</span><span class="op">)</span></span></code></pre></div>
 <p><img src="introduction_files/figure-html/unnamed-chunk-5-1.png" width="700"><img src="introduction_files/figure-html/unnamed-chunk-5-2.png" width="700"><img src="introduction_files/figure-html/unnamed-chunk-5-3.png" width="700"></p>
-<p>A few odd things happened here when we tried plotting the networks we simulated. We will go over these network by network.</p>
+<p>A few odd things happened here when we tried plotting the networks we
+simulated. We will go over these network by network.</p>
 <ul>
-<li>The <strong>SSA network</strong> only shows one hybridization event although we can see from the <code>reticulation</code> element that there are two events. This occurs when there is a hybridization where the two donor lineages have the same parental node.</li>
-<li>From the <strong>GSA network</strong> figure we can notice two issues. Firstly, it looks cut off or was plotting incorrectly. While the edge and reticulation matrix would confirm that the network is properly conformed, the plotting function of <code>ape</code> doesn’t always render networks correctly. Secondly, the GSA network has a diagonal hybrid edge, and while this isn’t improper, it does muddle the interpretation of the phylogeny. The diagonal line would seem to imply that there was gene flow from a lineage in the past to a more recent lineage. This clearly isn’t the case as no lineages that we know of can time travel. These diagonal hybrid edges can result from incomplete lineage sampling, gene flow from a now extinct species, or lineage degenerative hybridization but it can still be hard to interpret diagonal edges.</li>
-<li>In the <strong>Age network</strong> we can see the same issue with one of the hybrid edges not appearing as in the <strong>SSA network</strong> and the diagonal edges as in the <strong>GSA network</strong>.</li>
+<li>The <strong>SSA network</strong> only shows one hybridization event
+although we can see from the <code>reticulation</code> element that
+there are two events. This occurs when there is a hybridization where
+the two donor lineages have the same parental node.</li>
+<li>From the <strong>GSA network</strong> figure we can notice two
+issues. Firstly, it looks cut off or was plotting incorrectly. While the
+edge and reticulation matrix would confirm that the network is properly
+conformed, the plotting function of <code>ape</code> doesn’t always
+render networks correctly. Secondly, the GSA network has a diagonal
+hybrid edge, and while this isn’t improper, it does muddle the
+interpretation of the phylogeny. The diagonal line would seem to imply
+that there was gene flow from a lineage in the past to a more recent
+lineage. This clearly isn’t the case as no lineages that we know of can
+time travel. These diagonal hybrid edges can result from incomplete
+lineage sampling, gene flow from a now extinct species, or lineage
+degenerative hybridization but it can still be hard to interpret
+diagonal edges.</li>
+<li>In the <strong>Age network</strong> we can see the same issue with
+one of the hybrid edges not appearing as in the <strong>SSA
+network</strong> and the diagonal edges as in the <strong>GSA
+network</strong>.</li>
 </ul>
-<p>We correct these issues by using the <code><a href="../reference/plottable.net.html">plottable.net()</a></code> function to modify the phylogeny to a more plotting-friendly network where gene flow always occurs between contemporary lineages. We aren’t changing anything fundamental about the network, just how the edges get drawn.</p>
+<p>We correct these issues by using the <code><a href="../reference/plottable.net.html">plottable.net()</a></code>
+function to modify the phylogeny to a more plotting-friendly network
+where gene flow always occurs between contemporary lineages. We aren’t
+changing anything fundamental about the network, just how the edges get
+drawn.</p>
 <div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span></span>
 <span><span class="va">ssa_pnet</span> <span class="op">&lt;-</span><span class="fu"><a href="../reference/plottable.net.html">plottable.net</a></span><span class="op">(</span><span class="va">ssa_net</span><span class="op">)</span></span>
@@ -300,16 +445,32 @@
 <div class="section level4">
 <h4 id="example-4-network-classification">Example 4 Network Classification<a class="anchor" aria-label="anchor" href="#example-4-network-classification"></a>
 </h4>
-<p>Certain classes of phylogenetic networks have ideal properties. As such we may wish to know which classes our networks belong. Specifically, we can check whether our simulated networks are:</p>
+<p>Certain classes of phylogenetic networks have ideal properties. As
+such we may wish to know which classes our networks belong.
+Specifically, we can check whether our simulated networks are:</p>
 <ul>
 <li>
-<strong>Tree-Child:</strong> We can use <code>isTreeChild</code> to determine if a phylogenetic network is tree-child. A networks belongs to the tree-child class if for all internal nodes there exists at least one child node that is a tree-node <em><span class="citation">(Cardona, Pons, and Scornavacca 2019)</span></em>.</li>
+<strong>Tree-Child:</strong> We can use <code>isTreeChild</code> to
+determine if a phylogenetic network is tree-child. A networks belongs to
+the tree-child class if for all internal nodes there exists at least one
+child node that is a tree-node <em><span class="citation">(Cardona,
+Pons, and Scornavacca 2019)</span></em>.</li>
 <li>
-<strong>Tree-Based:</strong> We can use <code>isTreeBased</code> to determine if a phylogenetic network is tree-based. A phylogenetic network is said to be tree-based if it can be constructed with a base tree that has additional linking arcs added <em><span class="citation">(Pons, Semple, and Steel 2019)</span></em>.</li>
+<strong>Tree-Based:</strong> We can use <code>isTreeBased</code> to
+determine if a phylogenetic network is tree-based. A phylogenetic
+network is said to be tree-based if it can be constructed with a base
+tree that has additional linking arcs added <em><span class="citation">(Pons, Semple, and Steel 2019)</span></em>.</li>
 <li>
-<strong>FU-Stable:</strong> <code>isFUstable</code> can be used to determine if a phylogenetic network is FU-stable. A phylogenetic network is considered FU-stable if the unfolding and refolding of the network is isomorphic to the original network <span class="math inline">\(N = F(U(N))\)</span> <em><span class="citation">(Huber et al. 2016)</span></em>.</li>
+<strong>FU-Stable:</strong> <code>isFUstable</code> can be used to
+determine if a phylogenetic network is FU-stable. A phylogenetic network
+is considered FU-stable if the unfolding and refolding of the network is
+isomorphic to the original network <span class="math inline">\(N =
+F(U(N))\)</span> <em><span class="citation">(Huber et al.
+2016)</span></em>.</li>
 <li>
-<strong>Level-k:</strong> <code>getNetworkLevel</code> can be used to determine the level of the network. A level-k network has at least one biconnected component with k reticulations <em><span class="citation">(Gambette, Berry, and Paul 2009)</span></em>.</li>
+<strong>Level-k:</strong> <code>getNetworkLevel</code> can be used
+to determine the level of the network. A level-k network has at least
+one biconnected component with k reticulations <em><span class="citation">(Gambette, Berry, and Paul 2009)</span></em>.</li>
 </ul>
 <p>We can see these functions in action below:</p>
 <div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
@@ -325,7 +486,13 @@
 <div class="section level4">
 <h4 id="example-5-network-input-and-output">Example 5 Network Input And Output<a class="anchor" aria-label="anchor" href="#example-5-network-input-and-output"></a>
 </h4>
-<p>Now that we’ve gotten a look at the networks we may wish to save these networks to file. We will be using the rich Newick Format for saving the phylogenies <em><span class="citation">(Cardona, Rosselló, and Valiente 2008; but see Wen et al. 2018)</span></em>. Notably, the <code>ape</code> function <code>write.evonet</code> does not save inheritance probabilities to file so we defined <code>write.net</code> for this purpose</p>
+<p>Now that we’ve gotten a look at the networks we may wish to save
+these networks to file. We will be using the rich Newick Format for
+saving the phylogenies <em><span class="citation">(Cardona, Rosselló,
+and Valiente 2008; but see Wen et al. 2018)</span></em>. Notably, the
+<code>ape</code> function <code>write.evonet</code> does not save
+inheritance probabilities to file so we defined <code>write.net</code>
+for this purpose</p>
 <div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span></span>
 <span><span class="fu"><a href="https://rdrr.io/pkg/ape/man/evonet.html" class="external-link">write.evonet</a></span><span class="op">(</span><span class="va">ssa_net</span>,file<span class="op">=</span><span class="st">''</span><span class="op">)</span> <span class="co">##we can see that inheritance probabilities aren't included here</span></span>
@@ -363,11 +530,24 @@
 <div class="section level3">
 <h3 id="reconstructed-phylogenies-incomplete-sampling">Reconstructed Phylogenies &amp; Incomplete Sampling<a class="anchor" aria-label="anchor" href="#reconstructed-phylogenies-incomplete-sampling"></a>
 </h3>
-<p>Often not all extant tips on a phylogeny are sampled, nor do we have clear fossil records that tell us about the extinct species. We may wish to reflect this lack of knowledge by generating phylogenies with incomplete sampling or extinct lineages pruned. We can do this directly in the <code>sim.bdh</code> type functions by changing the <code>frac</code> and <code>stochsampling</code> arguments for incomplete sampling and by setting the <code>complete</code> argument to <code>FALSE</code> for the reconstructed phylogeny with extinct lineages removed. However, we can also do both of these actions post-hoc with the <code><a href="../reference/incompleteSampling.html">incompleteSampling()</a></code> and <code><a href="../reference/reconstructedNetwork.html">reconstructedNetwork()</a></code> functions.</p>
+<p>Often not all extant tips on a phylogeny are sampled, nor do we have
+clear fossil records that tell us about the extinct species. We may wish
+to reflect this lack of knowledge by generating phylogenies with
+incomplete sampling or extinct lineages pruned. We can do this directly
+in the <code>sim.bdh</code> type functions by changing the
+<code>frac</code> and <code>stochsampling</code> arguments for
+incomplete sampling and by setting the <code>complete</code> argument to
+<code>FALSE</code> for the reconstructed phylogeny with extinct lineages
+removed. However, we can also do both of these actions post-hoc with the
+<code><a href="../reference/incompleteSampling.html">incompleteSampling()</a></code> and
+<code><a href="../reference/reconstructedNetwork.html">reconstructedNetwork()</a></code> functions.</p>
 <div class="section level4">
-<h4 id="example-6-post-hoc-incomplete-sampling-an-reconstructed-networks">Example 6: Post-hoc Incomplete Sampling an Reconstructed Networks<a class="anchor" aria-label="anchor" href="#example-6-post-hoc-incomplete-sampling-an-reconstructed-networks"></a>
+<h4 id="example-6-post-hoc-incomplete-sampling-an-reconstructed-networks">Example 6: Post-hoc Incomplete Sampling an Reconstructed
+Networks<a class="anchor" aria-label="anchor" href="#example-6-post-hoc-incomplete-sampling-an-reconstructed-networks"></a>
 </h4>
-<p>Our GSA network had a few extinct lineages, we can try pruning those with <code>reconstructedNetwork</code>. We will then randomly subsample 5 out of the 7 extant tips.</p>
+<p>Our GSA network had a few extinct lineages, we can try pruning those
+with <code>reconstructedNetwork</code>. We will then randomly subsample
+5 out of the 7 extant tips.</p>
 <div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span></span>
 <span><span class="va">pruned_gsa</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/reconstructedNetwork.html">reconstructedNetwork</a></span><span class="op">(</span><span class="va">gsa_net</span><span class="op">)</span></span>
@@ -382,13 +562,34 @@
 </h3>
 <p>We can extend our model of hybridization in two main ways:</p>
 <ol style="list-style-type: decimal">
-<li><p><strong>Make the probability of a successful hybridization a function of genetic distance.</strong> We can do this to model the belief that it is less likely for more distantly related taxa to hybridize. This function will take in the genetic distance between two taxa and return the probability that the hybridization is successful. We use the same matrix of genetic distances that is defined in <em><span class="citation">Woodhams, Lockhart, and Holland (2016)</span></em>. Briefly, the genetic distance between two non hybrid taxa <span class="math inline">\(X\)</span> and <span class="math inline">\(Y\)</span> is defined as the summation of all edge lengths on the path from <span class="math inline">\(X\)</span> to <span class="math inline">\(Y\)</span>. Genetic distances involving hybridized taxa is similar but hybridizations lead to multiple paths from <span class="math inline">\(X\)</span> to <span class="math inline">\(Y\)</span>; in this case we use a weighted summation across all different paths where the weight for each path depends on the inheritance probabilities.</p></li>
-<li><p><strong>Make successful hybridizations depend on some trait that also evolves along the tree.</strong> This extension was made to model the belief that typically only lineages with the same ploidy and chromosome number can hybridize, although this can be generalized to model any discrete or continuous trait and have arbitrary rules for restricting hybridization.</p></li>
+<li><p><strong>Make the probability of a successful hybridization a
+function of genetic distance.</strong> We can do this to model the
+belief that it is less likely for more distantly related taxa to
+hybridize. This function will take in the genetic distance between two
+taxa and return the probability that the hybridization is successful. We
+use the same matrix of genetic distances that is defined in <em><span class="citation">Woodhams, Lockhart, and Holland (2016)</span></em>.
+Briefly, the genetic distance between two non hybrid taxa <span class="math inline">\(X\)</span> and <span class="math inline">\(Y\)</span> is defined as the summation of all edge
+lengths on the path from <span class="math inline">\(X\)</span> to <span class="math inline">\(Y\)</span>. Genetic distances involving hybridized
+taxa is similar but hybridizations lead to multiple paths from <span class="math inline">\(X\)</span> to <span class="math inline">\(Y\)</span>; in this case we use a weighted
+summation across all different paths where the weight for each path
+depends on the inheritance probabilities.</p></li>
+<li><p><strong>Make successful hybridizations depend on some trait that
+also evolves along the tree.</strong> This extension was made to model
+the belief that typically only lineages with the same ploidy and
+chromosome number can hybridize, although this can be generalized to
+model any discrete or continuous trait and have arbitrary rules for
+restricting hybridization.</p></li>
 </ol>
 <div class="section level4">
 <h4 id="example-7a-hybridizations-dependent-on-genetic-distance">Example 7A: Hybridizations Dependent On Genetic Distance<a class="anchor" aria-label="anchor" href="#example-7a-hybridizations-dependent-on-genetic-distance"></a>
 </h4>
-<p>We can make the probability that a hybridization is successful by providing a function that is defined on the range <span class="math inline">\([0,\infty)\)</span> for genetic distances and returns values from <span class="math inline">\(0\)</span> to <span class="math inline">\(1\)</span> for the probability of a successful hybridization. We have implemented several <code>make</code> functions for creating functions that fit these criteria. These functions are then used as the <code>hyb.rate.fxn</code> argument in the <code>sim.bdh</code> style functions.</p>
+<p>We can make the probability that a hybridization is successful by
+providing a function that is defined on the range <span class="math inline">\([0,\infty)\)</span> for genetic distances and
+returns values from <span class="math inline">\(0\)</span> to <span class="math inline">\(1\)</span> for the probability of a successful
+hybridization. We have implemented several <code>make</code> functions
+for creating functions that fit these criteria. These functions are then
+used as the <code>hyb.rate.fxn</code> argument in the
+<code>sim.bdh</code> style functions.</p>
 <div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co">##Here are some of the make functions</span></span>
 <span><span class="va">f1</span><span class="op">&lt;-</span><span class="fu"><a href="../reference/make.exp.decay.html">make.exp.decay</a></span><span class="op">(</span>t<span class="op">=</span><span class="fl">1</span>,s<span class="op">=</span><span class="fl">1</span><span class="op">)</span></span>
@@ -407,21 +608,59 @@
 <div class="section level4">
 <h4 id="example-7b-trait-dependent-hybridization">Example 7B: Trait Dependent Hybridization<a class="anchor" aria-label="anchor" href="#example-7b-trait-dependent-hybridization"></a>
 </h4>
-<p>A vast array of traits (both discrete and continuous) and mechanisms can control whether hybridization can occur between two species. We provide a general framework that gives the flexability to model many of these interactions. Later we give examples to showcase the some of the flavors of trait-dependent hybridization scenarios.</p>
-<p>We can model trait dependent hybridization by supplying a list for the argument <code>trait.model</code> in the <code>sim.bdh</code> functions. This list contains initial value(s) for the trait at the beginning of the process, functions describing how the trait evolves, and a function that dictates whether taxa can hybridize based on the trait values between taxa. Specifically the list contains these named elements:</p>
+<p>A vast array of traits (both discrete and continuous) and mechanisms
+can control whether hybridization can occur between two species. We
+provide a general framework that gives the flexability to model many of
+these interactions. Later we give examples to showcase the some of the
+flavors of trait-dependent hybridization scenarios.</p>
+<p>We can model trait dependent hybridization by supplying a list for
+the argument <code>trait.model</code> in the <code>sim.bdh</code>
+functions. This list contains initial value(s) for the trait at the
+beginning of the process, functions describing how the trait evolves,
+and a function that dictates whether taxa can hybridize based on the
+trait values between taxa. Specifically the list contains these named
+elements:</p>
 <ul>
 <li>
-<strong>initial</strong> The initial trait state on the phylogeny. <strong>NOTE:</strong> if the <code>MRCA</code> argument in the <code>sim.bdh</code> style functions is <code>TRUE</code>, 2 initial values will be needed since the process starts with 2 lineages.</li>
+<strong>initial</strong> The initial trait state on the phylogeny.
+<strong>NOTE:</strong> if the <code>MRCA</code> argument in the
+<code>sim.bdh</code> style functions is <code>TRUE</code>, 2 initial
+values will be needed since the process starts with 2 lineages.</li>
 <li>
-<strong>hyb.event.fxn</strong> A function that denotes the trait of a hybrid child after a hybridization event. The function should have the arguments <code>parent_states</code> and <code>inheritance</code>. <code>parent_states</code> is vector with the ploidy states of the hybrid parents while <code>inheritance</code> is the inheritance probability of the first lineage denoted in <code>parent_states</code>.</li>
+<strong>hyb.event.fxn</strong> A function that denotes the trait of
+a hybrid child after a hybridization event. The function should have the
+arguments <code>parent_states</code> and <code>inheritance</code>.
+<code>parent_states</code> is vector with the ploidy states of the
+hybrid parents while <code>inheritance</code> is the inheritance
+probability of the first lineage denoted in
+<code>parent_states</code>.</li>
 <li>
-<strong>hyb.compatibility.fxn</strong> A function that describes when hybridization events can occur between two taxa based on their traits. The function should have the argument <code>parent_states</code>, a vector with the trait states of the two parents to the hybrid child. The function should return <code>TRUE</code> for when a hybridization event is allowed to proceed and <code>FALSE</code> otherwise.</li>
+<strong>hyb.compatibility.fxn</strong> A function that describes
+when hybridization events can occur between two taxa based on their
+traits. The function should have the argument
+<code>parent_states</code>, a vector with the trait states of the two
+parents to the hybrid child. The function should return
+<code>TRUE</code> for when a hybridization event is allowed to proceed
+and <code>FALSE</code> otherwise.</li>
 <li>
-<strong>time.fxn</strong> A function that describes how traits change over time. The function should have the arguments <code>poly_states</code> and <code>timestep</code> in that order. <code>poly_states</code> is a vector containing the ploidy of all taxa while <code>timestep</code> is the amount of time given for trait evolution. The function should return a vector with the updated ploidy states of all taxa.</li>
+<strong>time.fxn</strong> A function that describes how traits
+change over time. The function should have the arguments
+<code>poly_states</code> and <code>timestep</code> in that order.
+<code>poly_states</code> is a vector containing the ploidy of all taxa
+while <code>timestep</code> is the amount of time given for trait
+evolution. The function should return a vector with the updated ploidy
+states of all taxa.</li>
 <li>
-<strong>spec.fxn</strong> A function that describes how the trait changes at speciation events.The function should have the argument <code>tip_state</code> which has the state of the lineage just before speciation. The function should return a vector with two values, one denoting the trait of each of the two new species after the event.</li>
+<strong>spec.fxn</strong> A function that describes how the trait
+changes at speciation events.The function should have the argument
+<code>tip_state</code> which has the state of the lineage just before
+speciation. The function should return a vector with two values, one
+denoting the trait of each of the two new species after the event.</li>
 </ul>
-<p>Here we give an example of simple ploidy evolution that considers autopolyploidy and allopolyploid hybridization. We restrict allopolyploidy events to only occur between lineages with the same ploidy.</p>
+<p>Here we give an example of simple ploidy evolution that considers
+autopolyploidy and allopolyploid hybridization. We restrict
+allopolyploidy events to only occur between lineages with the same
+ploidy.</p>
 <div class="sourceCode" id="cb11"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span></span>
 <span></span>
@@ -472,7 +711,14 @@
 <span>                    nu<span class="op">=</span><span class="fl">0.25</span>, hybprops <span class="op">=</span> <span class="va">hybrid_proportions</span>,</span>
 <span>                    hyb.inher.fxn <span class="op">=</span> <span class="va">inheritance.fxn</span>,</span>
 <span>                    trait.model <span class="op">=</span> <span class="va">trait_model</span><span class="op">)</span></span></code></pre></div>
-<p>Next we give an example of a continuous trait evolution where the trait dissimilarity determines hybrid compatibility between two species. This might reflect something like differences in body size mechanically isolating the two species or the time of the mating seasons creating temporal isolation. We choose to take a probabilistic approach by saying, much like the genetic-distance dependent hybridization, that there is some decay function that relates hybridization success to trait dissimilarity.</p>
+<p>Next we give an example of a continuous trait evolution where the
+trait dissimilarity determines hybrid compatibility between two species.
+This might reflect something like differences in body size mechanically
+isolating the two species or the time of the mating seasons creating
+temporal isolation. We choose to take a probabilistic approach by
+saying, much like the genetic-distance dependent hybridization, that
+there is some decay function that relates hybridization success to trait
+dissimilarity.</p>
 <div class="sourceCode" id="cb12"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">initial_val</span><span class="op">&lt;-</span><span class="fl">0</span> <span class="co">## The root starts off at 0</span></span>
 <span></span>
@@ -525,7 +771,14 @@
 <span>                    nu<span class="op">=</span><span class="fl">0.25</span>, hybprops <span class="op">=</span> <span class="va">hybrid_proportions</span>,</span>
 <span>                    hyb.inher.fxn <span class="op">=</span> <span class="va">inheritance.fxn</span>,</span>
 <span>                    trait.model <span class="op">=</span> <span class="va">trait_model</span><span class="op">)</span></span></code></pre></div>
-<p>Lastly, we model a case where hybridization can only occur if the hybrid species is sufficiently different enough from the parental ones. This might be used to model hybrid breakdown and the hybrid lineage needing to exploit a different niche than the parental lineages due to a lower fitness. We also decide to allow transgressive trait evolution in the hybrid lineages. The trait in the hybrid lineage is not always an intermediate value between the two lineages but sometimes something else entirely, we model that here.</p>
+<p>Lastly, we model a case where hybridization can only occur if the
+hybrid species is sufficiently different enough from the parental ones.
+This might be used to model hybrid breakdown and the hybrid lineage
+needing to exploit a different niche than the parental lineages due to a
+lower fitness. We also decide to allow transgressive trait evolution in
+the hybrid lineages. The trait in the hybrid lineage is not always an
+intermediate value between the two lineages but sometimes something else
+entirely, we model that here.</p>
 <div class="sourceCode" id="cb13"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">initial_val</span><span class="op">&lt;-</span><span class="fl">0</span> <span class="co">## The root starts off at 0</span></span>
 <span></span>
@@ -597,58 +850,102 @@
 </h2>
 <div id="refs" class="references csl-bib-body hanging-indent">
 <div id="ref-BaridoSottani2019" class="csl-entry">
-Barido-Sottani, Joëlle, Walker Pett, Joseph E. O’Reilly, and Rachel C. M. Warnock. 2019. <span>“FossilSim: An r Package for Simulating Fossil Occurrence Data Under Mechanistic Models of Preservation and Recovery.”</span> <em>Methods in Ecology and Evolution</em> 10 (6): 835–40. https://doi.org/<a href="https://doi.org/10.1111/2041-210X.13170" class="external-link">https://doi.org/10.1111/2041-210X.13170</a>.
+Barido-Sottani, Joëlle, Walker Pett, Joseph E. O’Reilly, and Rachel C.
+M. Warnock. 2019. <span>“FossilSim: An r Package for Simulating Fossil
+Occurrence Data Under Mechanistic Models of Preservation and
+Recovery.”</span> <em>Methods in Ecology and Evolution</em> 10 (6):
+835–40. https://doi.org/<a href="https://doi.org/10.1111/2041-210X.13170" class="external-link">https://doi.org/10.1111/2041-210X.13170</a>.
 </div>
 <div id="ref-Cardona2019" class="csl-entry">
-Cardona, Gabriel, Joan Carles Pons, and Celine Scornavacca. 2019. <span>“Generation of Binary Tree-Child Phylogenetic Networks.”</span> <em>PLOS Computational Biology</em> 15 (9): e1007347. <a href="https://doi.org/10.1371/journal.pcbi.1007347" class="external-link">https://doi.org/10.1371/journal.pcbi.1007347</a>.
+Cardona, Gabriel, Joan Carles Pons, and Celine Scornavacca. 2019.
+<span>“Generation of Binary Tree-Child Phylogenetic Networks.”</span>
+<em>PLOS Computational Biology</em> 15 (9): e1007347. <a href="https://doi.org/10.1371/journal.pcbi.1007347" class="external-link">https://doi.org/10.1371/journal.pcbi.1007347</a>.
 </div>
 <div id="ref-Cardona2008" class="csl-entry">
-Cardona, Gabriel, Francesc Rosselló, and Gabriel Valiente. 2008. <span>“Extended Newick: It Is Time for a Standard Representation of Phylogenetic Networks.”</span> <em>BMC Bioinformatics</em> 9 (1): 532. <a href="https://doi.org/10.1186/1471-2105-9-532" class="external-link">https://doi.org/10.1186/1471-2105-9-532</a>.
+Cardona, Gabriel, Francesc Rosselló, and Gabriel Valiente. 2008.
+<span>“Extended Newick: It Is Time for a Standard Representation of
+Phylogenetic Networks.”</span> <em>BMC Bioinformatics</em> 9 (1): 532.
+<a href="https://doi.org/10.1186/1471-2105-9-532" class="external-link">https://doi.org/10.1186/1471-2105-9-532</a>.
 </div>
 <div id="ref-Davin2020" class="csl-entry">
-Davín, Adrián A., Théo Tricou, Eric Tannier, Damien M. de Vienne, and Gergely J. Szöllosi. 2020. <span>“Zombi: A Phylogenetic Simulator of Trees, Genomes and Sequences That Accounts for Dead Linages.”</span> <em>Bioinformatics</em> 36 (4): 1286–88. <a href="https://doi.org/10.1093/bioinformatics/btz710" class="external-link">https://doi.org/10.1093/bioinformatics/btz710</a>.
+Davín, Adrián A., Théo Tricou, Eric Tannier, Damien M. de Vienne, and
+Gergely J. Szöllosi. 2020. <span>“Zombi: A Phylogenetic Simulator of
+Trees, Genomes and Sequences That Accounts for Dead Linages.”</span>
+<em>Bioinformatics</em> 36 (4): 1286–88. <a href="https://doi.org/10.1093/bioinformatics/btz710" class="external-link">https://doi.org/10.1093/bioinformatics/btz710</a>.
 </div>
 <div id="ref-Gambette2009" class="csl-entry">
-Gambette, Philippe, Vincent Berry, and Christophe Paul. 2009. <span>“The Structure of Level-k Phylogenetic Networks.”</span> In <em>Annual Symposium on Combinatorial Pattern Matching</em>, 289–300. Springer.
+Gambette, Philippe, Vincent Berry, and Christophe Paul. 2009. <span>“The
+Structure of Level-k Phylogenetic Networks.”</span> In <em>Annual
+Symposium on Combinatorial Pattern Matching</em>, 289–300. Springer.
 </div>
 <div id="ref-Hagen2018" class="csl-entry">
-Hagen, Oskar, and Tanja Stadler. 2018. <span>“TreeSimGM: Simulating Phylogenetic Trees Under General Bellman–Harris Models with Lineage-Specific Shifts of Speciation and Extinction in r.”</span> <em>Methods in Ecology and Evolution</em> 9 (3): 754–60. https://doi.org/<a href="https://doi.org/10.1111/2041-210X.12917" class="external-link">https://doi.org/10.1111/2041-210X.12917</a>.
+Hagen, Oskar, and Tanja Stadler. 2018. <span>“TreeSimGM: Simulating
+Phylogenetic Trees Under General Bellman–Harris Models with
+Lineage-Specific Shifts of Speciation and Extinction in r.”</span>
+<em>Methods in Ecology and Evolution</em> 9 (3): 754–60.
+https://doi.org/<a href="https://doi.org/10.1111/2041-210X.12917" class="external-link">https://doi.org/10.1111/2041-210X.12917</a>.
 </div>
 <div id="ref-Hartmann2010" class="csl-entry">
-Hartmann, Klaas, Dennis Wong, and Tanja Stadler. 2010. <span>“<span class="nocase">Sampling Trees from Evolutionary Models</span>.”</span> <em>Systematic Biology</em> 59 (4): 465–76. <a href="https://doi.org/10.1093/sysbio/syq026" class="external-link">https://doi.org/10.1093/sysbio/syq026</a>.
+Hartmann, Klaas, Dennis Wong, and Tanja Stadler. 2010. <span>“<span class="nocase">Sampling Trees from Evolutionary Models</span>.”</span>
+<em>Systematic Biology</em> 59 (4): 465–76. <a href="https://doi.org/10.1093/sysbio/syq026" class="external-link">https://doi.org/10.1093/sysbio/syq026</a>.
 </div>
 <div id="ref-Hoehna2013" class="csl-entry">
-Höhna, Sebastian. 2013. <span>“<span class="nocase">Fast simulation of reconstructed phylogenies under global time-dependent birth–death processes</span>.”</span> <em>Bioinformatics</em> 29 (11): 1367–74. <a href="https://doi.org/10.1093/bioinformatics/btt153" class="external-link">https://doi.org/10.1093/bioinformatics/btt153</a>.
+Höhna, Sebastian. 2013. <span>“<span class="nocase">Fast simulation of
+reconstructed phylogenies under global time-dependent birth–death
+processes</span>.”</span> <em>Bioinformatics</em> 29 (11): 1367–74. <a href="https://doi.org/10.1093/bioinformatics/btt153" class="external-link">https://doi.org/10.1093/bioinformatics/btt153</a>.
 </div>
 <div id="ref-Hoehna2015" class="csl-entry">
-Höhna, Sebastian, Michael R. May, and Brian R. Moore. 2015. <span>“<span class="nocase">TESS: an R package for efficiently simulating phylogenetic trees and performing Bayesian inference of lineage diversification rates</span>.”</span> <em>Bioinformatics</em> 32 (5): 789–91. <a href="https://doi.org/10.1093/bioinformatics/btv651" class="external-link">https://doi.org/10.1093/bioinformatics/btv651</a>.
+Höhna, Sebastian, Michael R. May, and Brian R. Moore. 2015. <span>“<span class="nocase">TESS: an R package for efficiently simulating
+phylogenetic trees and performing Bayesian inference of lineage
+diversification rates</span>.”</span> <em>Bioinformatics</em> 32 (5):
+789–91. <a href="https://doi.org/10.1093/bioinformatics/btv651" class="external-link">https://doi.org/10.1093/bioinformatics/btv651</a>.
 </div>
 <div id="ref-Huber2016" class="csl-entry">
-Huber, Katharina T., Vincent Moulton, Mike Steel, and Taoyang Wu. 2016. <span>“Folding and Unfolding Phylogenetic Trees and Networks.”</span> <em>Journal of Mathematical Biology</em> 73 (6): 1761–80.
+Huber, Katharina T., Vincent Moulton, Mike Steel, and Taoyang Wu. 2016.
+<span>“Folding and Unfolding Phylogenetic Trees and Networks.”</span>
+<em>Journal of Mathematical Biology</em> 73 (6): 1761–80.
 </div>
 <div id="ref-Mallet2016" class="csl-entry">
-Mallet, James, Nora Besansky, and Matthew W. Hahn. 2016. <span>“How Reticulated Are Species?”</span> <em>BioEssays</em> 38 (2): 140–49. <a href="https://doi.org/10.1002/bies.201500149" class="external-link">https://doi.org/10.1002/bies.201500149</a>.
+Mallet, James, Nora Besansky, and Matthew W. Hahn. 2016. <span>“How
+Reticulated Are Species?”</span> <em>BioEssays</em> 38 (2): 140–49. <a href="https://doi.org/10.1002/bies.201500149" class="external-link">https://doi.org/10.1002/bies.201500149</a>.
 </div>
 <div id="ref-Morin2006" class="csl-entry">
-Morin, M. M., and B. M. E. Moret. 2006. <span>“<span>NetGen</span>: Generating Phylogenetic Networks with Diploid Hybrids.”</span> <em>Bioinformatics</em> 22 (15): 1921–23. <a href="https://doi.org/10.1093/bioinformatics/btl191" class="external-link">https://doi.org/10.1093/bioinformatics/btl191</a>.
+Morin, M. M., and B. M. E. Moret. 2006. <span>“<span>NetGen</span>:
+Generating Phylogenetic Networks with Diploid Hybrids.”</span>
+<em>Bioinformatics</em> 22 (15): 1921–23. <a href="https://doi.org/10.1093/bioinformatics/btl191" class="external-link">https://doi.org/10.1093/bioinformatics/btl191</a>.
 </div>
 <div id="ref-Nee2006" class="csl-entry">
-Nee, Sean. 2006. <span>“Birth-Death Models in Macroevolution.”</span> <em>Annual Review of Ecology, Evolution, and Systematics</em> 37 (1): 1–17. <a href="https://doi.org/10.1146/annurev.ecolsys.37.091305.110035" class="external-link">https://doi.org/10.1146/annurev.ecolsys.37.091305.110035</a>.
+Nee, Sean. 2006. <span>“Birth-Death Models in Macroevolution.”</span>
+<em>Annual Review of Ecology, Evolution, and Systematics</em> 37 (1):
+1–17. <a href="https://doi.org/10.1146/annurev.ecolsys.37.091305.110035" class="external-link">https://doi.org/10.1146/annurev.ecolsys.37.091305.110035</a>.
 </div>
 <div id="ref-Pons2019" class="csl-entry">
-Pons, Joan Carles, Charles Semple, and Mike Steel. 2019. <span>“Tree-Based Networks: Characterisations, Metrics, and Support Trees.”</span> <em>Journal of Mathematical Biology</em> 78 (4): 899–918.
+Pons, Joan Carles, Charles Semple, and Mike Steel. 2019.
+<span>“Tree-Based Networks: Characterisations, Metrics, and Support
+Trees.”</span> <em>Journal of Mathematical Biology</em> 78 (4): 899–918.
 </div>
 <div id="ref-Stadler2011" class="csl-entry">
-Stadler, Tanja. 2011. <span>“<span class="nocase">Simulating Trees with a Fixed Number of Extant Species</span>.”</span> <em>Systematic Biology</em> 60 (5): 676–84. <a href="https://doi.org/10.1093/sysbio/syr029" class="external-link">https://doi.org/10.1093/sysbio/syr029</a>.
+Stadler, Tanja. 2011. <span>“<span class="nocase">Simulating Trees with
+a Fixed Number of Extant Species</span>.”</span> <em>Systematic
+Biology</em> 60 (5): 676–84. <a href="https://doi.org/10.1093/sysbio/syr029" class="external-link">https://doi.org/10.1093/sysbio/syr029</a>.
 </div>
 <div id="ref-Wen2018" class="csl-entry">
-Wen, Dingqiao, Yun Yu, Jiafan Zhu, and Luay Nakhleh. 2018. <span>“<span>Inferring Phylogenetic Networks Using PhyloNet</span>.”</span> <em>Systematic Biology</em> 67 (4): 735–40. <a href="https://doi.org/10.1093/sysbio/syy015" class="external-link">https://doi.org/10.1093/sysbio/syy015</a>.
+Wen, Dingqiao, Yun Yu, Jiafan Zhu, and Luay Nakhleh. 2018.
+<span>“<span>Inferring Phylogenetic Networks Using
+PhyloNet</span>.”</span> <em>Systematic Biology</em> 67 (4): 735–40. <a href="https://doi.org/10.1093/sysbio/syy015" class="external-link">https://doi.org/10.1093/sysbio/syy015</a>.
 </div>
 <div id="ref-Woodhams2016" class="csl-entry">
-Woodhams, Michael D., Peter J. Lockhart, and Barbara R. Holland. 2016. <span>“Simulating and <span>Summarizing</span> <span>Sources</span> of <span>Gene</span> <span>Tree</span> <span>Incongruence</span>.”</span> <em>Genome Biology and Evolution</em> 8 (5): 1299–1315. <a href="https://doi.org/10.1093/gbe/evw065" class="external-link">https://doi.org/10.1093/gbe/evw065</a>.
+Woodhams, Michael D., Peter J. Lockhart, and Barbara R. Holland. 2016.
+<span>“Simulating and <span>Summarizing</span> <span>Sources</span> of
+<span>Gene</span> <span>Tree</span> <span>Incongruence</span>.”</span>
+<em>Genome Biology and Evolution</em> 8 (5): 1299–1315. <a href="https://doi.org/10.1093/gbe/evw065" class="external-link">https://doi.org/10.1093/gbe/evw065</a>.
 </div>
 <div id="ref-Zhang2018" class="csl-entry">
-Zhang, Chi, Huw A. Ogilvie, Alexei J. Drummond, and Tanja Stadler. 2018. <span>“Bayesian <span>Inference</span> of <span>Species</span> <span>Networks</span> from <span>Multilocus</span> <span>Sequence</span> <span>Data</span>.”</span> <em>Molecular Biology and Evolution</em> 35 (2): 504–17. <a href="https://doi.org/10.1093/molbev/msx307" class="external-link">https://doi.org/10.1093/molbev/msx307</a>.
+Zhang, Chi, Huw A. Ogilvie, Alexei J. Drummond, and Tanja Stadler. 2018.
+<span>“Bayesian <span>Inference</span> of <span>Species</span>
+<span>Networks</span> from <span>Multilocus</span> <span>Sequence</span>
+<span>Data</span>.”</span> <em>Molecular Biology and Evolution</em> 35
+(2): 504–17. <a href="https://doi.org/10.1093/molbev/msx307" class="external-link">https://doi.org/10.1093/molbev/msx307</a>.
 </div>
 </div>
 </div>
@@ -671,7 +968,7 @@ Zhang, Chi, Huw A. Ogilvie, Alexei J. Drummond, and Tanja Stadler. 2018. <span>�
 
 <div class="pkgdown">
   <p></p>
-<p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.6.</p>
+<p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.7.</p>
 </div>
 
       </footer>
