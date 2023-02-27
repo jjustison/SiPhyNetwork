@@ -18,7 +18,8 @@ sim.bdh.taxa.gsa(
   complete = TRUE,
   stochsampling = FALSE,
   hyb.rate.fxn = NULL,
-  trait.model = NULL
+  trait.model = NULL,
+  mrca = deprecated()
 )
 }
 \arguments{
@@ -71,7 +72,8 @@ Simulates a Phylogenetic Network under a birth-death-hybridization model. Simula
 }
 }
 \examples{
-set.seed(17) ##smallest Quartan prime as seed
+##smallest Quartan prime as seed for reproducibility
+set.seed(17)
 ##Generate a tree with extinct leaves
 net<-sim.bdh.taxa.gsa(m=21,n=5,1,3,2,0.5,c(1/3,1/3,1/3),
 hyb.inher.fxn = make.uniform.draw(),complete=TRUE)[[1]]

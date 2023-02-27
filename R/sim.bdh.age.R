@@ -1,4 +1,5 @@
 #' Simulate a Phylogenetic Network to a Specified Number of Taxa
+#' @import lifecycle
 #'
 #' @description Simulates a Phylogenetic Network under a birth-death-hybridization model. Simulates to a specified ages.
 #'
@@ -11,6 +12,7 @@
 #' @param hyb.inher.fxn A function for drawing the hybrid inheritance probabilities.
 #' @param frac Sampling fraction: The proportion of extant tips included in the phylogeny (incomplete sampling).
 #' @param twolineages If `twolineages=TRUE`: The process originates with two lineages that share a common ancestor. If `twolineages=FALSE`: The process originates with two lineages.
+#' @param mrca `r lifecycle::badge("deprecated")` Use the `twolineages` argument
 #' @param complete If complete = TRUE, the tree with the extinct lineages is returned. If complete = FALSE, the extinct lineages are suppressed.
 #' @param stochsampling When `stochsampling=TRUE`: Each extant tip is included into the final tree with probability frac.
 #' @param hyb.rate.fxn The probability of a successful hybridization as a function of genetic distance between taxa. The default value of `NULL`` assumes that hybridization success is independent of genetic distance between taxa.
@@ -31,7 +33,8 @@
 #' @export
 #'
 #' @examples
-#' set.seed(17) ##smallest Quartan prime as seed
+#' ##smallest Quartan prime as seed for reproducibility
+#' set.seed(17)
 #' #Generate a tree with extinct leaves
 #' net<-sim.bdh.age(1,1,5,2,1,c(1/3,1/3,1/3),hyb.inher.fxn = make.uniform.draw(),complete=TRUE)[[1]]
 
@@ -41,7 +44,12 @@ sim.bdh.age <-function(age,numbsim,
                       hyb.inher.fxn,
                       frac=1,twolineages=FALSE,complete=TRUE,stochsampling=FALSE,
                       hyb.rate.fxn=NULL,
-                      trait.model=NULL){
+                      trait.model=NULL,
+                      mrca=deprecated()){
+  if (is_present(mrca)) {
+    lifecycle::deprecate_warn("1.1.0", "sim.bdh.age(mrca)", "sim.bdh.age(twolineages)")
+    twolineages <- mrca
+  }
 	out<-lapply(1:numbsim,sim.bdh.age.help,
 	            age=age,
 	            lambda=lambda,mu=mu,

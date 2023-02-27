@@ -17,7 +17,8 @@ sim.bdh.taxa.ssa(
   complete = TRUE,
   stochsampling = FALSE,
   hyb.rate.fxn = NULL,
-  trait.model = NULL
+  trait.model = NULL,
+  mrca = deprecated()
 )
 }
 \arguments{
@@ -46,6 +47,8 @@ sim.bdh.taxa.ssa(
 \item{hyb.rate.fxn}{The probability of a successful hybridization as a function of genetic distance between taxa. The default value of `NULL`` assumes that hybridization success is independent of genetic distance between taxa.}
 
 \item{trait.model}{A list that dictates how a trait affects the hybridization process. The default value of \code{NULL} doesn't take a trait into account for simulation. See Details for more information.}
+
+\item{mrca}{\ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#deprecated}{\figure{lifecycle-deprecated.svg}{options: alt='[Deprecated]'}}}{\strong{[Deprecated]}} Use the \code{twolineages} argument}
 }
 \value{
 out Returns a list of numbsim networks with the time since origin / most recent common ancestor being 'age.' If tree goes extinct or no tips are sampled, return value is '0'. If only one extant and no extinct tips are sampled, return value is '1'. Each network has an additional attribute "inheritance" that represents the inheritance probabilities on the edges in the "reticulation" attribute.
@@ -68,6 +71,7 @@ Simulates a Phylogenetic Network under a birth-death-hybridization model. Simula
 }
 }
 \examples{
+##smallest Quartan prime as seed for reproducibility
 set.seed(17)
 ##Generate a tree with extinct leaves
 net<-sim.bdh.taxa.ssa(5,1,5,2,1.5,c(1/3,1/3,1/3),

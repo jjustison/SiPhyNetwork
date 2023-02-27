@@ -11,6 +11,7 @@
 #' @param hyb.inher.fxn A function for drawing the hybrid inheritance probabilities.
 #' @param frac Sampling fraction: The proportion of extant tips included in the phylogeny (incomplete sampling).
 #' @param twolineages If `twolineages=TRUE`: The process originates with two lineages that share a common ancestor. If `twolineages=FALSE`: The process originates with two lineages.
+#' @param mrca `r lifecycle::badge("deprecated")` Use the `twolineages` argument
 #' @param complete If complete = TRUE, the tree with the extinct lineages is returned. If complete = FALSE, the extinct lineages are suppressed.
 #' @param stochsampling When `stochsampling=TRUE`: Each extant tip is included into the final tree with probability frac.
 #' @param hyb.rate.fxn The probability of a successful hybridization as a function of genetic distance between taxa. The default value of `NULL`` assumes that hybridization success is independent of genetic distance between taxa.
@@ -30,6 +31,7 @@
 #' }
 #' @export
 #' @examples
+#' ##smallest Quartan prime as seed for reproducibility
 #' set.seed(17)
 #' ##Generate a tree with extinct leaves
 #' net<-sim.bdh.taxa.ssa(5,1,5,2,1.5,c(1/3,1/3,1/3),
@@ -40,8 +42,13 @@ sim.bdh.taxa.ssa <- function(n,numbsim,
                         hyb.inher.fxn,
                         frac=1,twolineages=FALSE,complete=TRUE,stochsampling=FALSE,
                         hyb.rate.fxn=NULL,
-                        trait.model=NULL){
-	out<-lapply(1:numbsim,FUN=sim.bdh.taxa.ssa.help,
+                        trait.model=NULL,
+                        mrca=deprecated()){
+  if (is_present(mrca)) {
+    lifecycle::deprecate_warn("1.1.0", "sim.bdh.taxa.ssa(mrca)", "sim.bdh.taxa.ssa(twolineages)")
+    twolineages <- mrca
+  }
+  out<-lapply(1:numbsim,FUN=sim.bdh.taxa.ssa.help,
 	            n=n,
 	            lambda=lambda,mu=mu,
 	            nu=nu,hybprops=hybprops,
@@ -91,7 +98,8 @@ sim.bdh.taxa.ssa <- function(n,numbsim,
 #' @export
 #'
 #' @examples
-#' set.seed(17) ##smallest Quartan prime as seed
+#' ##smallest Quartan prime as seed for reproducibility
+#' set.seed(17)
 #' ##Generate a tree with extinct leaves
 #' net<-sim.bdh.taxa.gsa(m=21,n=5,1,3,2,0.5,c(1/3,1/3,1/3),
 #' hyb.inher.fxn = make.uniform.draw(),complete=TRUE)[[1]]
@@ -103,7 +111,12 @@ sim.bdh.taxa.gsa <-function(m,n,numbsim,
                         frac=1,twolineages=FALSE,
                         complete=TRUE,stochsampling=FALSE,
                         hyb.rate.fxn=NULL,
-                        trait.model=NULL){
+                        trait.model=NULL,
+                        mrca=deprecated()){
+  if (is_present(mrca)) {
+    lifecycle::deprecate_warn("1.1.0", "sim.bdh.taxa.gsa(mrca)", "sim.bdh.taxa.gsa(twolineages)")
+    twolineages <- mrca
+  }
   out<-lapply(1:numbsim,sim.bdh.taxa.gsa.help,
               m=m,n=n,
               lambda=lambda,mu=mu,

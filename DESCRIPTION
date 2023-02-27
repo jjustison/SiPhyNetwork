@@ -1,6 +1,6 @@
 Package: SiPhyNetwork
 Title: A Phylogenetic Simulator for Reticulate Evolution 
-Version: 1.0.1
+Version: 1.1.0
 Authors@R: 
     c(person("Joshua", "Justison", email = "justisnojo@gmail.com", role = c("aut", "cre","cph")),
     		person(c("Claudia","Solis-Lemus"), role=c("aut","cph")),
@@ -24,7 +24,8 @@ Imports:
     stats,
     ape,
     Rcpp,
-	rstackdeque
+	rstackdeque,
+	lifecycle
 VignetteBuilder: knitr
 LinkingTo: 
     Rcpp,
