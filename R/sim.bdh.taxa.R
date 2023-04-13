@@ -76,6 +76,7 @@ sim.bdh.taxa.ssa <- function(n,numbsim,
 #' @param nu Hybridization rate.
 #' @param hybprops Vector that represents the proportion of Hybridizations that are lineage generative, lineage degenerative, and lineage neutral respectively.
 #' @param hyb.inher.fxn A function for drawing the hybrid inheritance probabilities.
+#' @param mrca `r lifecycle::badge("deprecated")` Use the `twolineages` argument
 #' @param frac Sampling fraction: The proportion of extant tips included in the phylogeny (incomplete sampling).
 #' @param twolineages If `twolineages=TRUE`: The process originates with two lineages that share a common ancestor. If `twolineages=FALSE`: The process originates with two lineages.
 #' @param complete If complete = TRUE, the tree with the extinct lineages is returned. If complete = FALSE, the extinct lineages are suppressed.

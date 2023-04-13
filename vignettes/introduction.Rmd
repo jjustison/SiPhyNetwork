@@ -2,7 +2,8 @@
 title: "Introduction"
 subtitle: "An R Package for Simulating Phylogenetic Networks"
 author: "Josh Justison"
-output: rmarkdown::html_vignette
+output: 
+  rmarkdown::html_vignette
 bibliography: ./refs.bib
 vignette: >
   %\VignetteIndexEntry{Introduction}
