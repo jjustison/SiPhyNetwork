@@ -273,7 +273,7 @@ isNormal <-function(net){
 }
 
 
-vcv.net <- function(net,tol=1e-8){
+vcv_net <- function(net,tol=1e-8){
   hyb_nds<-net$reticulation[,2]
   edges<-rbind(net$edge,net$reticulation)
   rt<-as.integer(length(net$tip.label)+1)

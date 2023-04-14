@@ -1,0 +1,19 @@
+Here are the notes for things to change
+
+1. Please change the author initials in your Author Contributions statement to whole author names
+We changed this
+
+2.For data/code stored in GitHub, please also archive it in Zenodo using GitHub's integration with Zenodo. Please add the Zenodo reference to your References list and cite it in your Data Availability statement
+We have Zenodo integration and have this noted in the data avalability statement
+
+3. Field studies must have appropriate licences and permits to carry out the work, and details of these should be given in the methods section of the manuscript, including details of the body that granted them and relevant licence and permit numbers. If you did not need permission for fieldwork, please state this. If your study did not involve fieldwork please disregard this.
+We don't do any field studies
+
+4. Please upload your final document as a Word file. Unfortunately, our typesetters are unable to work with PDFs. LaTex files are also acceptable, however Word documents are preferred.
+We added the latex files to our submission
+
+5. Please thoroughly check and proofread any supporting information for errors, typos, etc. Any corrections or changes to supporting information should be made at this stage. Supporting information is not proofread by Wiley and cannot be altered after publication. Please group files of the same type into one file where possible. We recommend uploading SI files in a universal format (e.g. PDF files) that do not require proprietary software to read. Please remove SI files that are no longer needed because they contain data/code that is uploaded to an online archive.
+The supplementary was checked
+
+6. If you are planning a press release for your manuscript and have not does so yet, please contact the editorial office at coordinator@methodsinecologyandevolution.org so we can inform production when your manuscript is exported.
+We are not doing a press release

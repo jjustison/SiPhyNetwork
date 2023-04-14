@@ -1,4 +1,35 @@
-## Submission Notes
+## ReSubmission Notes 
+
+The submission failed the pre-tests with the following notes:
+package SiPhyNetwork_1.1.0.tar.gz does not pass the incoming checks automatically, please see the following pre-tests:
+
+Windows: <https://win-builder.r-project.org/incoming_pretest/SiPhyNetwork_1.1.0_20230414_172842/Windows/00check.log>
+Status: OK
+
+Looking at the log here everything seemed fine
+
+
+Debian: <https://win-builder.r-project.org/incoming_pretest/SiPhyNetwork_1.1.0_20230414_172842/Debian/00check.log>
+Status: 1 NOTE
+
+The one note had to do with a unexported function 'vcv.net'. I changed the name to vcv_net to avoid any potential method issues.
+
+
+## Submission notes
+
+The package was checked on both release and development versions of R on the latest versions of Windows, Mac, and Linux
+0 errors | 0 warnings | 1 notes
+
+There was one note from devtools:check():
+checking for future file timestamps ... NOTE
+  unable to verify current time
+
+This seemed like a note that is dependent on the clock webpage: https://stackoverflow.com/questions/63613301/r-cmd-check-note-unable-to-verify-current-time
+
+
+There are no known dependencies on this package
+
+## Old Submission Notes
 
 There was one warning from the web checks:
 
