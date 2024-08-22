@@ -384,8 +384,8 @@ handleTipsTaxa<-function(phy,complete,target_ntaxa,current_n){
     phy<-deleteTips(phy,deltips)
     
     if(has_traits){
-      trait_inds<-match(phy$tip.label,old_tip_states) ##how the tips of the new phy mapped to the old one
-      phy$tip.states<-old_tip_states[tip_inds] ##Use the mapping to keep and order the appropriate trait values
+      trait_inds<-match(phy$tip.label,old_tip_names) ##how the tips of the new phy mapped to the old one
+      phy$tip.states<-old_tip_states[trait_inds] ##Use the mapping to keep and order the appropriate trait values
     }
     
   }
