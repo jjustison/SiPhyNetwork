@@ -351,6 +351,12 @@ internalTimeSliceNetwork<-function(net,time,node_times,extinct_labels=NULL){
 
 handleTipsTaxa<-function(phy,complete,target_ntaxa,current_n){
 
+  has_traits<-!is.null(phy$tip.states)
+  if(!is.null(phy$tip.states)){## if there are tip trait states, we want to keep the tips that remain
+    old_tip_names<-phy$tip.label
+    old_tip_states<-phy$tip.states
+  }
+  
   ##delete nessecary tips
   deltips<-phy$hyb_tips ##These are tips that result form the bdh process and should be fused
   extinct_tips<-getReconstructedTips(phy$tip.label,phy$extinct)
@@ -376,6 +382,12 @@ handleTipsTaxa<-function(phy,complete,target_ntaxa,current_n){
     return(1)
   }else{
     phy<-deleteTips(phy,deltips)
+    
+    if(has_traits){
+      trait_inds<-match(phy$tip.label,old_tip_states) ##how the tips of the new phy mapped to the old one
+      phy$tip.states<-old_tip_states[tip_inds] ##Use the mapping to keep and order the appropriate trait values
+    }
+    
   }
   phy$hyb_tips <- NULL
   phy$extinct <- NULL

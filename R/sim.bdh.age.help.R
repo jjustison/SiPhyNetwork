@@ -69,6 +69,7 @@ sim2.bdh.origin <- function(m=0,n=0,age,lambda,mu,nu,hyb.inher.fxn,hybprops,hyb.
 
 
       trait_state <- trait.model[['initial']]
+      ext_trait_state<-c()
       if(length(trait_state)!= (mrca+1)){
         stop(paste('there are ',(mrca+1),' starting species. There were ',length(trait_state),' initial polyploid states',sep = ''))
       }
@@ -187,6 +188,7 @@ sim2.bdh.origin <- function(m=0,n=0,age,lambda,mu,nu,hyb.inher.fxn,hybprops,hyb.
               }
             }
             if(!is_null_trait){
+              ext_trait_state<-c(ext_trait_state,trait_state[del])
               trait_state<-trait_state[-del]
             }
             nleaves<-nleaves-1
@@ -297,6 +299,7 @@ sim2.bdh.origin <- function(m=0,n=0,age,lambda,mu,nu,hyb.inher.fxn,hybprops,hyb.
                 }
                 if(!is_null_trait){
                   trait_state<-c( trait_state, hyb_trait)
+                  ext_trait_state<-c(ext_trait_state,trait_state[del])
                   trait_state<-trait_state[-del]
                 }
 
@@ -406,10 +409,26 @@ sim2.bdh.origin <- function(m=0,n=0,age,lambda,mu,nu,hyb.inher.fxn,hybprops,hyb.
       timecreation_order<-rep(NA,length(timecreation)) ##reorder timecreation so node numbers and creation match
       Nextinct<-1
       for (j in (1:num_nodes)){
-        if (sum(match(leaves,- j,0)) + sum(match(extinct,- j,0)) == 0) {
+        inleaves <- (leaves  %in% (-j))
+        inextinct<- (extinct %in% (-j))
+        if (!(any(inleaves) | any(inextinct))){ ##we are at an internal node
           replaced_value <- interior
           interior <- interior +1
-        } else {
+        } else { ## We are at a tip of some sort (extant,extinct, or hybrid)
+          
+          if(!is_null_trait){##if a trait model
+            tip_states<-c()
+            #record the trait value of the leaf we are at
+            
+            ##determine if we are at an extant or extinct tip
+            if(any(inleaves)){ #we are in an extant leaf
+              trait_value <- trait_states[which(-j==leaves)]
+            }else{ ##we are extinct leaf
+              trait_value <- ext_trait_states[which(-j==extinct)]
+            }
+            tip_states<-c(tip_states,trait_value)
+          }
+          
           replaced_value <- leaf
           leaf <- leaf +1
           if(sum(match(extinct,-j,0))==1){
@@ -437,6 +456,10 @@ sim2.bdh.origin <- function(m=0,n=0,age,lambda,mu,nu,hyb.inher.fxn,hybprops,hyb.
       phy$hyb_tips<-extinct_tips[hyb_tip_indices] ## Keep track of tips that have an edge going into a hybrid one. These will be fused later
       phy$extinct<-phy$tip.label[extinct_tips[!hyb_tip_indices]] ##Keep track of extinct tips. Will be used if using the reconstructed tree
 
+      if(!is_null_trait){
+        phy$tip.states<-tip_states
+      }
+      
       if(n!=0){ ##we use these for GSA
         phy$timecreation <- timecreation_order
         if(is.null(time_in_n)){
