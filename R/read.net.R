@@ -288,7 +288,6 @@ as.evonet.phylo2 <- function(x, ...)
 read.net <- function(file = "", text = NULL, comment.char = "", ...)
 {
   x <- read.tree2(file = file, text = text, comment.char = comment.char, ...)
-  as.evonet.phylo2(x[[1]])
   if("multiPhylo" %in% class(x)){
     lapply(x,as.evonet.phylo2)
   }else{
