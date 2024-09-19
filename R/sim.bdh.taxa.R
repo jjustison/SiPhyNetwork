@@ -43,6 +43,7 @@ sim.bdh.taxa.ssa <- function(n,numbsim,
                         frac=1,twolineages=FALSE,complete=TRUE,stochsampling=FALSE,
                         hyb.rate.fxn=NULL,
                         trait.model=NULL,
+                        beta=NULL,
                         mrca=deprecated()){
   if (is_present(mrca)) {
     lifecycle::deprecate_warn("1.1.0", "sim.bdh.taxa.ssa(mrca)", "sim.bdh.taxa.ssa(twolineages)")
@@ -56,7 +57,8 @@ sim.bdh.taxa.ssa <- function(n,numbsim,
 	            hyb.inher.fxn=hyb.inher.fxn,
 	            frac=frac,mrca=twolineages,
 	            complete=complete,stochsampling=stochsampling,
-	            trait.model=trait.model)
+	            trait.model=trait.model,
+              beta=beta)
 	class(out)<-c('list','multiPhylo')
 
 	out
@@ -113,6 +115,7 @@ sim.bdh.taxa.gsa <-function(m,n,numbsim,
                         complete=TRUE,stochsampling=FALSE,
                         hyb.rate.fxn=NULL,
                         trait.model=NULL,
+                        beta=NULL,
                         mrca=deprecated()){
   if (is_present(mrca)) {
     lifecycle::deprecate_warn("1.1.0", "sim.bdh.taxa.gsa(mrca)", "sim.bdh.taxa.gsa(twolineages)")
@@ -126,7 +129,8 @@ sim.bdh.taxa.gsa <-function(m,n,numbsim,
               hyb.inher.fxn=hyb.inher.fxn,
               frac=frac,mrca=twolineages,
               complete=complete,stochsampling=stochsampling,
-              trait.model=trait.model)
+              trait.model=trait.model,
+              beta=beta)
   class(out)<-c('list','multiPhylo')
 
   out

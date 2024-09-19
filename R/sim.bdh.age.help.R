@@ -2,7 +2,8 @@ sim.bdh.age.help <-function(dummy,age,lambda,mu,
                            nu, hybprops,hyb.rate.fxn,
                            hyb.inher.fxn,
                            frac=1,mrca=FALSE,complete=TRUE,stochsampling=FALSE,
-                           trait.model){
+                           trait.model,
+                           beta){
 	out<-sim.bdh.age.loop(age=age,
 	                      lambda=lambda,mu=mu,
 	                      nu=nu, hybprops=hybprops,
@@ -10,7 +11,8 @@ sim.bdh.age.help <-function(dummy,age,lambda,mu,
 	                      hyb.rate.fxn=hyb.rate.fxn,
 	                      frac=frac,mrca=mrca,
 	                      complete=complete,stochsampling=stochsampling,
-	                      trait.model=trait.model)
+	                      trait.model=trait.model,
+	                      beta=beta)
 	out
 }
 
@@ -20,7 +22,8 @@ sim.bdh.age.loop <- function(age,
                              hyb.inher.fxn,
                              hyb.rate.fxn,
                              frac=1,mrca,complete,stochsampling,
-                             trait.model) {
+                             trait.model,
+                             beta) {
     phy <- sim2.bdh.origin(m=0,n=0,
                            age=age,
                            lambda=lambda,mu=mu,
@@ -28,7 +31,8 @@ sim.bdh.age.loop <- function(age,
                            hyb.inher.fxn=hyb.inher.fxn,
                            hybprops=hybprops,hyb.rate.fxn=hyb.rate.fxn,
                            mrca=mrca,
-                           trait.model=trait.model)
+                           trait.model=trait.model,
+                           beta=beta)
 
     if( "phylo" %in% class(phy)){
       nleaves<-phy$nleaves
@@ -47,7 +51,7 @@ sim.bdh.age.loop <- function(age,
     phy
   }
 
-sim2.bdh.origin <- function(m=0,n=0,age,lambda,mu,nu,hyb.inher.fxn,hybprops,hyb.rate.fxn,mrca,trait.model){
+sim2.bdh.origin <- function(m=0,n=0,age,lambda,mu,nu,hyb.inher.fxn,hybprops,hyb.rate.fxn,mrca,trait.model,beta){
 
     ##TODO make edge a list and convert to a matrix at the end for quicker building
     hyb_edge<-list()    #list of hybrid edges
@@ -59,6 +63,7 @@ sim2.bdh.origin <- function(m=0,n=0,age,lambda,mu,nu,hyb.inher.fxn,hybprops,hyb.
     stop = 0
     time_in_n<-c()##records the times we have n number of lineages
 
+    
     is_null_trait<- is.null(trait.model)
     if(!is_null_trait){
 
@@ -66,18 +71,19 @@ sim2.bdh.origin <- function(m=0,n=0,age,lambda,mu,nu,hyb.inher.fxn,hybprops,hyb.
         stop('the trait model does not have all the needed named components')
       }
 
-
-
       trait_state <- trait.model[['initial']]
       ext_trait_state<-c()
       if(length(trait_state)!= (mrca+1)){
         stop(paste('there are ',(mrca+1),' starting species. There were ',length(trait_state),' initial polyploid states',sep = ''))
       }
     }
+    
+    do_beta_split <- !is.null(beta)
 
     if(!mrca){#Start with one lineage
       edge <- matrix(c(-1,-2),nrow=1,ncol=2)		#matrix of edges
       leaves <- c(-2)			#list of extant leaves
+      leaf_weights<-c(1)
       nleaves<-1
       timecreation <-c(0,0)		#time when species -2, -3, ... -n was created after origin
       maxspecies <- -2		#smallest species
@@ -86,6 +92,8 @@ sim2.bdh.origin <- function(m=0,n=0,age,lambda,mu,nu,hyb.inher.fxn,hybprops,hyb.
     }else{#start with two lineages
       edge<-rbind(c(-1,-2),c(-1,-3))
       leaves<-c(-2,-3)
+      lf<-rbeta(1,beta,beta)
+      leaf_weights<-c(lf,1-lf)
       nleaves<-2
       timecreation<-c(0,0,0)
       maxspecies<- -3
@@ -122,7 +130,12 @@ sim2.bdh.origin <- function(m=0,n=0,age,lambda,mu,nu,hyb.inher.fxn,hybprops,hyb.
             trait_state<-trait.model[['time.fxn']](trait_state,timestep)
           }
 
-          species <- sample(leaves,1+(nleaves>1))
+          if(do_beta_split){
+            species <- sample(leaves,1+(nleaves>1),prob = leaf_weights)
+          }else{
+            species <- sample(leaves,1+(nleaves>1))
+          }
+          
           del <- match(species,leaves)
           edgespecevent <- match(species,edge) - length(edge.length)
 
@@ -138,6 +151,12 @@ sim2.bdh.origin <- function(m=0,n=0,age,lambda,mu,nu,hyb.inher.fxn,hybprops,hyb.
             edge <- rbind(edge,c(species,maxspecies-2))
             edge.length <- c(edge.length,0,0)
             leaves <- c(leaves,maxspecies-1,maxspecies-2)
+            
+            if(do_beta_split){ ## Beta Splitting 
+              lf <- leaf_weights[del]*rbeta(1,beta,beta)
+              leaf_weights <- c(leaf_weights,lf,1-lf)
+              leaf_weights<-leaf_weights[-del]
+            }
 
             leaves <- leaves[- del]
             timecreation <- c(timecreation,time,time)
@@ -174,6 +193,10 @@ sim2.bdh.origin <- function(m=0,n=0,age,lambda,mu,nu,hyb.inher.fxn,hybprops,hyb.
             ##update leaves and edges
             extinct <- c(extinct,leaves[del])
             leaves <- leaves[- del]
+            
+            if(do_beta_split){ ##Beta Splitting
+              leaf_weights<-leaf_weights[-del]
+            }
 
             ##update edge lengths
             edge.length[edgespecevent] <- time-timecreation[- species]
@@ -217,6 +240,14 @@ sim2.bdh.origin <- function(m=0,n=0,age,lambda,mu,nu,hyb.inher.fxn,hybprops,hyb.
                 ##update leaves
                 leaves <- c(leaves,(maxspecies- 2:4))
                 leaves <- leaves[- del]
+                
+                if(do_beta_split){ ##Beta Splitting
+                  lf1 <- leaf_weights[del[1]]*rbeta(1,beta,beta) ## how weight is split for parent 1
+                  lf2 <- leaf_weights[del[2]]*rbeta(1,beta,beta) ## how weight is split for parent 2
+                  leaf_weights <- c(leaf_weights,lf1,lf2, ((1-lf1)+(1-lf2)) ) ##Hybrid gets the other weights from both parents: 1-lf1+1-lf2
+                  leaf_weights<-leaf_weights[-del]
+                }
+                
                 ##Update the edge matrices
                 edge <- rbind(edge,c(species[1],maxspecies-2))  ##Create new leaf for a parent lineage
                 edge <- rbind(edge,c(species[2],maxspecies-3)) ##Create a new leaf for the other parent lineage
@@ -270,6 +301,13 @@ sim2.bdh.origin <- function(m=0,n=0,age,lambda,mu,nu,hyb.inher.fxn,hybprops,hyb.
                 extinct <- c(extinct,species[2])
                 leaves<-c(leaves,maxspecies-1)
                 leaves <- leaves[- del]
+                
+                if(do_beta_split){ ##Beta Splitting
+                  hyb_weight <- sum(leaf_weights[del]) # hybrid gets the weight of both parents 
+                  leaf_weights <- c(leaf_weights,hyb_weight)
+                  leaf_weights<-leaf_weights[-del]
+                }
+                
                 ##update edge matrices
                 edge <- rbind(edge,c(species[1],maxspecies-1))
                 hyb_edge[[num_hybs]]<-c(species[2],species[1])
@@ -311,6 +349,15 @@ sim2.bdh.origin <- function(m=0,n=0,age,lambda,mu,nu,hyb.inher.fxn,hybprops,hyb.
                 ##update leaves
                 leaves<-c(leaves,maxspecies-1:2) ##maxspecies-1 will be the hybrid and 'recipient' lineage while maxspecies-2 will be the 'donor' lineage
                 leaves <- leaves[- del]
+                
+                if(do_beta_split){ ##Beta Splitting
+                  ###I ought to test this to ensure I didn't mess up the directionality! TODO 
+                  lf <- leaf_weights[del[2]] * rbeta(1,beta,beta) ##Leaf of the donor loses some of its weight...
+                  hyb_weight <- leaf_weights[del[1]] + (1-lf) ##... and gives it to the hybrid
+                  leaf_weights <- c(leaf_weights,hyb_weight,lf)
+                  leaf_weights<-leaf_weights[-del]
+                }
+                
                 ##update edge matrices
                 edge <- rbind(edge,c(species[1],maxspecies-1))
                 edge <- rbind(edge,c(species[2],maxspecies-2))

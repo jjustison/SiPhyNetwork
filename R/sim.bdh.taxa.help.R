@@ -3,7 +3,8 @@ sim.bdh.taxa.ssa.help <-function(dummy,n,numbsim,
                              nu, hybprops, hyb.rate.fxn=NULL,
                              hyb.inher.fxn,
                              frac=1,mrca=FALSE,complete=TRUE,stochsampling=FALSE,
-                             trait.model){
+                             trait.model,
+                             beta){
 
   effective_n<-getEffectiveN(n=n,frac = frac,stochsampling = stochsampling)
 	phy<-sim2.bdh.origin(m=effective_n,n=0,age=Inf,
@@ -12,7 +13,8 @@ sim.bdh.taxa.ssa.help <-function(dummy,n,numbsim,
 	                     hyb.inher.fxn = hyb.inher.fxn,
 	                     hybprops=hybprops,hyb.rate.fxn=hyb.rate.fxn,
 	                     mrca=mrca,
-	                     trait.model=trait.model)
+	                     trait.model=trait.model,
+	                     beta=beta)
 
 	##handle incomplete sampling and reconstruction
 	if( "phylo" %in% class(phy)){
@@ -29,7 +31,8 @@ sim.bdh.taxa.gsa.help <-function(dummy,m,n,numbsim,
                                  nu, hybprops, hyb.rate.fxn=NULL,
                                  hyb.inher.fxn,
                                  frac=1,mrca=FALSE,complete=TRUE,stochsampling=FALSE,
-                                 trait.model){
+                                 trait.model,
+                                 beta){
 
   effective_n<-getEffectiveN(n=n,frac = frac,stochsampling = stochsampling)
 
@@ -39,7 +42,8 @@ sim.bdh.taxa.gsa.help <-function(dummy,m,n,numbsim,
                        hyb.inher.fxn = hyb.inher.fxn,
                        hybprops=hybprops,hyb.rate.fxn=hyb.rate.fxn,
                        mrca=mrca,
-                       trait.model)
+                       trait.model,
+                       beta=beta)
 
 
   ##only do things if we have a phylogeny
