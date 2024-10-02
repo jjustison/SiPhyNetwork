@@ -20,7 +20,7 @@ sim.times.age <- function(
               mrca=startinglineages)
 }
 
-
+#' @export
 sim.times.taxa.ssa <- function(
     n,numbism,
     lambda,mu,
@@ -35,6 +35,8 @@ sim.times.taxa.ssa <- function(
   class(out)<-c('list')
 }
 
+
+#' @export
 sim.times.taxa.gsa <- function(
     n,m,numbism,
     lambda,mu,
@@ -290,8 +292,7 @@ waiting.to.phylo.beta<-function(ltt,beta,complete=T){
       timecreation[-species]<-time
     }
   }
-        
-        
+  nleaves<-ltt[nrow(ltt),2]
   #assign pendant edge length
   for (j in (1:length(leaves))){
     k = which( edge == leaves[j]  ) - length(edge.length)
@@ -299,7 +300,6 @@ waiting.to.phylo.beta<-function(ltt,beta,complete=T){
   }
   timecreation[-leaves]<-time
 
-  
   ##convert hyb_edge to a data frame
   if(num_hybs==0){
     hyb_edge<-matrix(nrow=0,ncol=2)
@@ -338,6 +338,8 @@ waiting.to.phylo.beta<-function(ltt,beta,complete=T){
     hyb_edge[hyb_edge== - j]<-replaced_value
     edge[edge == -j]<-replaced_value
   }
+  
+
   
   ##create a list with all the 'phylo' bits
   phy <- list(edge = edge)
