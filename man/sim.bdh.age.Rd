@@ -18,6 +18,7 @@ sim.bdh.age(
   stochsampling = FALSE,
   hyb.rate.fxn = NULL,
   trait.model = NULL,
+  beta = NULL,
   mrca = deprecated()
 )
 }

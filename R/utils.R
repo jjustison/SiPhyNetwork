@@ -149,7 +149,6 @@ getNetworkLevel <- function(net){
 #' @description This function assesses whether a network is FU-stable
 #'
 #' @param net A phylogenetic network of class `evonet`.
-
 #' @return A logical that is `TRUE` if the network is FU-stable
 #' @export
 #'

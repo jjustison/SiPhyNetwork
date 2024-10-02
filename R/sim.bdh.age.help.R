@@ -154,7 +154,7 @@ sim2.bdh.origin <- function(m=0,n=0,age,lambda,mu,nu,hyb.inher.fxn,hybprops,hyb.
             
             if(do_beta_split){ ## Beta Splitting 
               lf <- leaf_weights[del]*rbeta(1,beta,beta)
-              leaf_weights <- c(leaf_weights,lf,1-lf)
+              leaf_weights <- c(leaf_weights,lf,leaf_weights[del]-lf)
               leaf_weights<-leaf_weights[-del]
             }
 
@@ -244,7 +244,7 @@ sim2.bdh.origin <- function(m=0,n=0,age,lambda,mu,nu,hyb.inher.fxn,hybprops,hyb.
                 if(do_beta_split){ ##Beta Splitting
                   lf1 <- leaf_weights[del[1]]*rbeta(1,beta,beta) ## how weight is split for parent 1
                   lf2 <- leaf_weights[del[2]]*rbeta(1,beta,beta) ## how weight is split for parent 2
-                  leaf_weights <- c(leaf_weights,lf1,lf2, ((1-lf1)+(1-lf2)) ) ##Hybrid gets the other weights from both parents: 1-lf1+1-lf2
+                  leaf_weights <- c(leaf_weights,lf1,lf2, ((leaf_weights[del[1]]-lf1)+(leaf_weights[del[2]]-lf2)) ) ##Hybrid gets the other weights from both parents: 1-lf1+1-lf2
                   leaf_weights<-leaf_weights[-del]
                 }
                 
@@ -353,7 +353,7 @@ sim2.bdh.origin <- function(m=0,n=0,age,lambda,mu,nu,hyb.inher.fxn,hybprops,hyb.
                 if(do_beta_split){ ##Beta Splitting
                   ###I ought to test this to ensure I didn't mess up the directionality! TODO 
                   lf <- leaf_weights[del[2]] * rbeta(1,beta,beta) ##Leaf of the donor loses some of its weight...
-                  hyb_weight <- leaf_weights[del[1]] + (1-lf) ##... and gives it to the hybrid
+                  hyb_weight <- leaf_weights[del[1]] + (leaf_weights[del[2]]-lf) ##... and gives it to the hybrid
                   leaf_weights <- c(leaf_weights,hyb_weight,lf)
                   leaf_weights<-leaf_weights[-del]
                 }

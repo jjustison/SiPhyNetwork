@@ -19,6 +19,7 @@ sim.bdh.taxa.gsa(
   stochsampling = FALSE,
   hyb.rate.fxn = NULL,
   trait.model = NULL,
+  beta = NULL,
   mrca = deprecated()
 )
 }
